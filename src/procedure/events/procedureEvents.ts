@@ -10,7 +10,7 @@ export const ProcedureCompletedEventType = "procedureCompletedEvent"
 export type ProcedureCompletedEvent = ChangeEvent<{ status: "complete" }>
 
 export const ExternalProcedureCompletedEventType = "procedureCompletedEvent"
-export type ExternalProcedureCompletedEvent = ChangeEvent<{ status: "complete" }>
+export type ExternalProcedureCompletedEvent = ChangeEvent<Procedure>
 
 export type ProcedureEvents = ProcedureCreatedEvent | GoodsConsumedOnProcedureEvent | ProcedureCompletedEvent
 
@@ -52,7 +52,7 @@ export const buildProcedureEvents = () => {
         },
       }
     },
-    externalCompleted: (procedure: Procedure, version: number): ProcedureCompletedEvent => {
+    externalCompleted: (procedure: Procedure, version: number): ExternalProcedureCompletedEvent => {
       return {
         version,
         type: ProcedureCompletedEventType,
