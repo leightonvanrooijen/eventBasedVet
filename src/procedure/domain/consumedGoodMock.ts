@@ -7,6 +7,7 @@ export const consumedGoodMock = (overrides?: Partial<ConsumedGood>): ConsumedGoo
     quantity: faker.datatype.number({ min: 1, max: 100 }),
     typeOfGood: "product",
     goodId: faker.datatype.uuid(),
+    businessFunction: "sell",
     ...overrides,
   }
 }

@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker"
 import { procedureMock } from "../domain/procedureMock"
 import {
+  ExternalProcedureCompletedEvent,
   GoodsConsumedOnProcedureEvent,
   GoodsConsumedOnProcedureEventType,
   ProcedureCompletedEvent,
@@ -40,6 +41,19 @@ export const procedureCompletedEventMock = (overrides?: Partial<ProcedureComplet
     aggregateId: faker.datatype.uuid(),
     date: Date.now().toString(),
     data: { status: "complete" },
+    ...overrides,
+  }
+}
+
+export const externalProcedureCompletedEventMock = (
+  overrides?: Partial<ExternalProcedureCompletedEvent>,
+): ExternalProcedureCompletedEvent => {
+  return {
+    version: faker.datatype.number(),
+    type: ProcedureCompletedEventType,
+    aggregateId: faker.datatype.uuid(),
+    date: Date.now().toString(),
+    data: procedureMock(),
     ...overrides,
   }
 }

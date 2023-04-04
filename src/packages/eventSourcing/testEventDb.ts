@@ -1,6 +1,6 @@
 import { ChangeEvent } from "./changeEvent.types"
 import { EventBus } from "../events/eventBus.types"
-import { buildEventBus } from "../events/eventBus"
+import { buildTestEventBus } from "../events/eventBus"
 
 export type EventDb<Event extends Record<string, any>> = {
   saveEvents(events: Event[]): Promise<void>
@@ -12,7 +12,7 @@ export type EventStore<Event extends ChangeEvent<any>> = Record<string, Event[]>
 const afterSave = () => {}
 
 export const buildTestEventDb = <Event extends ChangeEvent<any>>({
-  eventBus = buildEventBus(),
+  eventBus = buildTestEventBus(),
   defaultStore = {},
 }: {
   eventBus?: EventBus

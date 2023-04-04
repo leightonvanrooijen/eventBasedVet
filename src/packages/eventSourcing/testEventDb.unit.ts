@@ -1,8 +1,8 @@
 import { buildTestEventDb } from "./testEventDb"
 import { mockChangeEvents } from "./changeEvent.mock"
-import { buildEventBus } from "../events/eventBus"
+import { buildTestEventBus } from "../events/eventBus"
 
-const setUp = (defaultStore, eventBus = buildEventBus()) => {
+const setUp = (defaultStore, eventBus = buildTestEventBus()) => {
   const testEventDb = buildTestEventDb({ eventBus, defaultStore })
 
   return { testEventDb }

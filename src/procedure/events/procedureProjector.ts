@@ -15,7 +15,7 @@ export const buildProcedureProjector = ({
   procedureActions: ProcedureActions
   procedureEventsChecker: ProcedureEventChecker
 }) => {
-  // Move these out
+  // Move this out
   const apply = (state: ProcedureProjection, event: ProcedureEvents): ProcedureProjection => {
     if (procedureEventsChecker.isProcedureCreatedEvent(event)) {
       const procedure = procedureActions.create(event.data)
@@ -26,9 +26,17 @@ export const buildProcedureProjector = ({
     }
     if (procedureEventsChecker.isGoodsConsumedOnProcedureEvent(event)) {
       const procedure = procedureActions.consumeGood({ procedure: state.aggregate, consumedGood: event.data })
+      return {
+        version: event.version,
+        aggregate: procedure,
+      }
     }
     if (procedureEventsChecker.isProcedureCompletedEventType(event)) {
       const procedure = procedureActions.complete({ procedure: state.aggregate })
+      return {
+        version: event.version,
+        aggregate: procedure,
+      }
     }
   }
   return {

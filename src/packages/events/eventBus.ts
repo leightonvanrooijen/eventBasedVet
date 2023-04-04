@@ -1,6 +1,6 @@
 import { EventBus, EventHandler } from "./eventBus.types"
 
-export const buildEventBus = (initialHandlers: EventHandler[] = []): EventBus => {
+export const buildTestEventBus = (initialHandlers: EventHandler[] = []): EventBus => {
   const handlers: EventHandler[] = initialHandlers
   return {
     registerHandler: (handler: EventHandler) => {

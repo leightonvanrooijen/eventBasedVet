@@ -1,18 +1,11 @@
 import { append, curry, lensPath, lensProp, over } from "ramda"
-
-export type Uuid = () => string
-
-export type Product = { id: string; name: string; type: "product" }
+import { Uuid } from "../../packages/uuid/uuid.types"
 
 export type ConsumedGood = {
   quantity: number
   typeOfGood: "product"
   goodId: string
-}
-
-export type Offer = {
-  price: number
-  priceCurrency: "NZD" // ISO_4217
+  businessFunction: "sell"
 }
 
 export type Procedure = {
@@ -55,7 +48,7 @@ export type ProcedureActions = ReturnType<typeof buildProcedureActions>
 export const buildProcedureActions = ({ uuid, makeProcedure }: { uuid: Uuid; makeProcedure: MakeProcedure }) => {
   return {
     create: (input: Omit<ProcedureProps, "id">) => {
-      return makeProcedure({ id: uuid(), ...input })
+      return makeProcedure({ ...input, id: uuid() })
     },
     consumeGood: ({ procedure, consumedGood }: { procedure: Procedure; consumedGood: ConsumedGood }) => {
       const foundIndex = procedure.goodsConsumed.findIndex((contained) => contained.goodId === consumedGood.goodId)

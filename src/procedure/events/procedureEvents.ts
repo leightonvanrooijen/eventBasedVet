@@ -55,7 +55,7 @@ export const buildProcedureEvents = () => {
     externalCompleted: (procedure: Procedure, version: number): ExternalProcedureCompletedEvent => {
       return {
         version,
-        type: ProcedureCompletedEventType,
+        type: ExternalProcedureCompletedEventType,
         aggregateId: procedure.id,
         date: Date.now().toString(),
         data: {
