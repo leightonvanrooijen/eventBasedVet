@@ -10,6 +10,7 @@ import {
   ProcedureCreatedEventType,
 } from "./procedureEvents"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
+
 export const procedureCreatedEventMock = (overrides?: Partial<ProcedureCreatedEvent>): ProcedureCreatedEvent => {
   return {
     version: 1,

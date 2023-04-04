@@ -7,8 +7,9 @@ import { EventBus } from "../../packages/events/eventBus.types"
 
 export type CreateProcedureProps = {
   name: string
-  goodsConsumed: ConsumedGood[]
 }
+
+export type ProcedureCommands = ReturnType<typeof buildProcedureCommands>
 
 export const buildProcedureCommands = ({
   procedureRepo,
@@ -27,9 +28,7 @@ export const buildProcedureCommands = ({
 }) => {
   return {
     create: async (input: CreateProcedureProps) => {
-      // check it can be created in the domain
       const procedure = procedureActions.create(input)
-      // hasn't thrown, so we can create and save the event
       const createdEvent = procedureEvents.created(procedure)
       await procedureRepo.save([createdEvent])
     },

@@ -17,8 +17,7 @@ import { procedureProductMock } from "../domain/product/procedureProductMock"
 import { ProcedureProductRepo } from "../repo/procedureProductRepo"
 import { EventBus } from "../../packages/events/eventBus.types"
 
-// thinking I could simplify this with different functions for different set ups - i.e complete, create etc
-// I've also coupled these tests way to much to the domain - will fix when I shift to Thespain
+// TODO decouple once Acceptance tests are in place
 const setUp = ({ procedureId = "123", dbData = {}, procedureProductRepoFns = {}, externalEventBusMocks = {} } = {}) => {
   const db = buildTestEventDb({ defaultStore: dbData })
   const procedureRepo = buildProcedureRepo({ db })
@@ -55,7 +54,7 @@ describe("buildProcedureCommands", () => {
 
       const fakeInput = procedureMock()
 
-      await commands.create({ name: fakeInput.name, goodsConsumed: fakeInput.goodsConsumed })
+      await commands.create({ name: fakeInput.name })
 
       const savedEvents = await db.getEvents(procedureId)
       expect(savedEvents[0].aggregateId).toEqual(procedureId)

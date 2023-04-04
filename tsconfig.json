@@ -10,7 +10,9 @@
     "preserveWatchOutput": true,
     "rootDir": "./src",
     "sourceMap": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "declaration": true,
+    "declarationDir": "./declarations",
   },
   "include": ["*"],
   "exclude": [

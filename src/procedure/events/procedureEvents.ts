@@ -26,7 +26,6 @@ export const buildProcedureEvents = () => {
         date: Date.now().toString(),
         data: {
           name: procedure.name,
-          goodsConsumed: procedure.goodsConsumed,
         },
       }
     },

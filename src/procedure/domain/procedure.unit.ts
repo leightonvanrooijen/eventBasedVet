@@ -45,15 +45,14 @@ describe("procedure", () => {
     }
     describe("create", () => {
       it("should create a procedure", () => {
-        const { name, goodsConsumed } = procedureMock()
+        const { name } = procedureMock()
         const procedureActions = setUp()
 
         const procedure = procedureActions.create({
           name,
-          goodsConsumed,
         })
 
-        expect(procedure).toEqual(expect.objectContaining({ name, goodsConsumed }))
+        expect(procedure).toEqual(expect.objectContaining({ name, goodsConsumed: [] }))
       })
     })
     describe("consumeGood", () => {

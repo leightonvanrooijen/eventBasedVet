@@ -1,19 +1,21 @@
 import { IWorldOptions, setWorldConstructor, World } from "@cucumber/cucumber"
-import axios from "axios"
+import { ProcedureCommands } from "../../procedure/commands/procedureCommands"
+import { EventBus } from "../events/eventBus.types"
+
+export type ProcedureService = {
+  externalEventBus: EventBus
+  internalEventBus: EventBus
+  commands: ProcedureCommands
+}
 
 export class CustomWorld extends World {
-  url: string
+  procedureService: ProcedureService
+  // productService: ProductCommands
+  // invoiceService: InvoiceCommands
 
-  constructor(options: IWorldOptions) {
+  constructor(options: IWorldOptions, procedureService: ProcedureService) {
     super(options)
-  }
-
-  async post(endpoint: string, body: Record<string, any>) {
-    return axios.post(this.url + endpoint, body)
-  }
-
-  async get(endpoint: string, params: Record<string, string> = {}) {
-    return axios.get(this.url + endpoint, { params })
+    this.procedureService = procedureService
   }
 }
 

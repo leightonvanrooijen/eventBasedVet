@@ -1,8 +1,6 @@
 import { After, Before, BeforeAll } from "@cucumber/cucumber"
-import { app } from "../../app"
-
-const port = 4000
-const bootTestApp = async () => app(port)
+import { buildProcedureService } from "../../procedure/buildProcedureService"
+import { buildTestEventBus } from "../events/eventBus"
 
 Before({ tags: "@ignore" }, async function () {
   return "skipped"
@@ -17,7 +15,13 @@ Before({ tags: "@manual" }, async function () {
 })
 
 Before({ tags: "@acceptance" }, async function (scenario) {
-  this.url = `http://localhost:${port}/`
+  const externalEventBus = buildTestEventBus()
+  const { procedureCommands, internalEventBus } = buildProcedureService({ externalEventBus })
+  this.procedureService = {
+    commands: procedureCommands,
+    externalEventBus,
+    internalEventBus,
+  }
 
   this.context = {
     ...this.context,
@@ -30,6 +34,4 @@ Before({ tags: "@acceptance" }, async function (scenario) {
 
 After({ tags: "@acceptance" }, async function (scenario) {})
 
-BeforeAll(async function () {
-  await bootTestApp()
-})
+BeforeAll(async function () {})

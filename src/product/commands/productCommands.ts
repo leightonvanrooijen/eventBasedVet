@@ -3,6 +3,7 @@ import { ProductRepo } from "../repo/productRepo"
 import { ProductEventsMaker } from "../events/productEvents"
 import { EventBus } from "../../packages/events/eventBus.types"
 
+export type ProductCommands = ReturnType<typeof buildProductCommands>
 export const buildProductCommands = ({
   productActions,
   productRepo,

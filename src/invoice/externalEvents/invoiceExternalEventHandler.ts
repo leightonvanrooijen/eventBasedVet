@@ -3,7 +3,6 @@ import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import {
   ExternalProcedureCompletedEvent,
   ExternalProcedureCompletedEventType,
-  ProcedureCompletedEventType,
 } from "../../procedure/events/procedureEvents"
 import { InvoiceCommands } from "../commmands/invoiceCommands"
 
@@ -41,4 +40,4 @@ const procedureCompleted = async (event: InvoiceProcedureCompletedEvent, command
 }
 
 const isInvoiceProcedureCompletedEvent = (event: InvoiceExternalEvents): event is InvoiceProcedureCompletedEvent =>
-  event.type === ProcedureCompletedEventType
+  event.type === InvoiceProcedureCompletedEventType
