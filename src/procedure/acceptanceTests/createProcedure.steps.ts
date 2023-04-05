@@ -1,14 +1,10 @@
 import { Then, When } from "@cucumber/cucumber"
 import { CustomWorld } from "../../packages/acceptanceTests/world"
-import { ProcedureCreatedEventType, ProcedureEvents } from "../events/procedureEvents"
+import { ProcedureCreatedEventType } from "../events/procedureEvents"
 import { procedureMock } from "../domain/procedureMock"
 import { assertThat } from "mismatched"
+import { buildEventCatcher } from "./buildEventCatcher"
 
-const buildEventCatcher = (world: CustomWorld) => {
-  return async (events: ProcedureEvents[]) => {
-    world["events"] = events
-  }
-}
 When("a user creates a procedure", async function (this: CustomWorld) {
   this.procedureService.internalEventBus.registerHandler(buildEventCatcher(this))
   const input = procedureMock()

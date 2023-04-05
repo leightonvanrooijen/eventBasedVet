@@ -1,6 +1,7 @@
 import { After, Before, BeforeAll } from "@cucumber/cucumber"
 import { buildProcedureService } from "../../procedure/buildProcedureService"
 import { buildTestEventBus } from "../events/eventBus"
+import { buildProcedureMockGenerator } from "../../procedure/acceptanceTests/buildProcedureMockGenerator"
 
 Before({ tags: "@ignore" }, async function () {
   return "skipped"
@@ -16,11 +17,16 @@ Before({ tags: "@manual" }, async function () {
 
 Before({ tags: "@acceptance" }, async function (scenario) {
   const externalEventBus = buildTestEventBus()
-  const { procedureCommands, internalEventBus } = buildProcedureService({ externalEventBus })
+  const { procedureCommands, internalEventBus, procedureDb, procedureProductDb } = buildProcedureService({
+    externalEventBus,
+  })
+  const procedureMockGenerator = buildProcedureMockGenerator({ procedureDb, procedureProductDb })
+
   this.procedureService = {
     commands: procedureCommands,
     externalEventBus,
     internalEventBus,
+    mocks: procedureMockGenerator,
   }
 
   this.context = {
@@ -32,6 +38,6 @@ Before({ tags: "@acceptance" }, async function (scenario) {
   }
 })
 
-After({ tags: "@acceptance" }, async function (scenario) {})
+After({ tags: "@acceptance" }, async function () {})
 
 BeforeAll(async function () {})

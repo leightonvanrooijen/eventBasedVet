@@ -37,5 +37,5 @@ export const buildProcedureService = ({ externalEventBus }: { externalEventBus: 
 
   externalEventBus.registerHandler(procedureExternalEventHandler)
 
-  return { procedureCommands, internalEventBus }
+  return { procedureCommands, internalEventBus, procedureProductDb, procedureDb }
 }
