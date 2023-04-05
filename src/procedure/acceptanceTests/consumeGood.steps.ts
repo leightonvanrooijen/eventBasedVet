@@ -14,6 +14,7 @@ When(/^a user consumes a good during a procedure$/, async function (this: Custom
   const productId = faker.datatype.uuid()
   await this.procedureService.mocks.createProduct({ id: productId })
   const mockConsumedGood = consumedGoodMock({ goodId: productId })
+
   await this.procedureService.commands.consumeGood(procedureId, mockConsumedGood)
 })
 Then(/^the good is consumed$/, function () {

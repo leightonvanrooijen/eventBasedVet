@@ -3,6 +3,10 @@ import { ProcedureEvents } from "../events/procedureEvents"
 
 export const buildEventCatcher = (world: CustomWorld) => {
   return async (events: ProcedureEvents[]) => {
-    world["events"] = events
+    if (!world["events"]) {
+      world["events"] = events
+      return
+    }
+    world["events"] = [...world["events"], ...events]
   }
 }

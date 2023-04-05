@@ -17,7 +17,7 @@ import { procedureProductMock } from "../domain/product/procedureProductMock"
 import { ProcedureProductRepo } from "../repo/procedureProductRepo"
 import { EventBus } from "../../packages/events/eventBus.types"
 
-// TODO decouple once Acceptance tests are in place
+// TODO decouple once Acceptance tests are in place.. Maybe?
 const setUp = ({ procedureId = "123", dbData = {}, procedureProductRepoFns = {}, externalEventBusMocks = {} } = {}) => {
   const db = buildTestEventDb({ defaultStore: dbData })
   const procedureRepo = buildProcedureRepo({ db })
@@ -25,6 +25,7 @@ const setUp = ({ procedureId = "123", dbData = {}, procedureProductRepoFns = {},
   const procedureEvents = buildProcedureEvents()
   const procedureEventsChecker = buildProcedureEventChecker()
   const procedureProjector = buildProcedureProjector({ procedureActions, procedureEventsChecker })
+
   const procedureProductRepo = {
     get: (id: string) => procedureProductMock({ id }),
     ...procedureProductRepoFns,
