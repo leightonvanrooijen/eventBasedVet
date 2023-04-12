@@ -10,7 +10,7 @@ When(/^a user consumes a good during a procedure$/, async function (this: Custom
   this.procedureService.internalEventBus.registerHandler(buildEventCatcher(this))
 
   const procedureId = faker.datatype.uuid()
-  await this.procedureService.mocks.createProcedure({ aggregateId: procedureId })
+  await this.procedureService.mocks.beginProcedure({ aggregateId: procedureId })
   const productId = faker.datatype.uuid()
   await this.procedureService.mocks.createProduct({ id: productId })
   const mockConsumedGood = consumedGoodMock({ goodId: productId })
@@ -18,5 +18,5 @@ When(/^a user consumes a good during a procedure$/, async function (this: Custom
   await this.procedureService.commands.consumeGood(procedureId, mockConsumedGood)
 })
 Then(/^the good is consumed$/, function () {
-  assertThat(this["events"][0].type).is(GoodsConsumedOnProcedureEventType)
+  assertThat(this["events"][1].type).is(GoodsConsumedOnProcedureEventType)
 })

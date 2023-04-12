@@ -1,9 +1,10 @@
 import { DataStore } from "../../packages/db/testDB"
 import { ProcedureProduct } from "../domain/product/procedureProduct"
 import { EventDb } from "../../packages/eventSourcing/testEventDb"
-import { ProcedureCreatedEvent, ProcedureEvents } from "../events/procedureEvents"
+import { ProcedureEvents } from "../events/procedureEvents"
 import { procedureProductMock } from "../domain/product/procedureProductMock"
-import { procedureCreatedEventMock } from "../events/procedureEventMocks"
+import { ProcedureBeganEvent } from "../events/procedureEvents"
+import { procedureBeganEventMock } from "../events/procedureEventMocks"
 
 export type ProcedureMockGenerator = ReturnType<typeof buildProcedureMockGenerator>
 export const buildProcedureMockGenerator = ({
@@ -18,8 +19,8 @@ export const buildProcedureMockGenerator = ({
       const mockProduct = procedureProductMock(overrides)
       await procedureProductDb.create(mockProduct)
     },
-    createProcedure: async (overrides?: Partial<ProcedureCreatedEvent>) => {
-      const createdEvent = procedureCreatedEventMock(overrides)
+    beginProcedure: async (overrides?: Partial<ProcedureBeganEvent>) => {
+      const createdEvent = procedureBeganEventMock(overrides)
       await procedureDb.saveEvents([createdEvent])
     },
   }

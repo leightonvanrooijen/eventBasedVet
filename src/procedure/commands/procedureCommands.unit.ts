@@ -4,18 +4,18 @@ import { buildTestEventDb } from "../../packages/eventSourcing/testEventDb"
 import { buildProcedureActions, makeProcedure } from "../domain/procedure"
 import { procedureMock } from "../domain/procedureMock"
 import {
-  ProcedureCreatedEventType,
   buildProcedureEvents,
   GoodsConsumedOnProcedureEventType,
   buildProcedureEventChecker,
   ProcedureCompletedEventType,
+  ProcedureBeganEventType,
 } from "../events/procedureEvents"
-import { procedureCreatedEventMock } from "../events/procedureEventMocks"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
 import { buildProcedureProjector } from "../events/procedureProjector"
 import { procedureProductMock } from "../domain/product/procedureProductMock"
 import { ProcedureProductRepo } from "../repo/procedureProductRepo"
 import { EventBus } from "../../packages/events/eventBus.types"
+import { procedureBeganEventMock } from "../events/procedureEventMocks"
 
 // TODO decouple once Acceptance tests are in place.. Maybe?
 const setUp = ({ procedureId = "123", dbData = {}, procedureProductRepoFns = {}, externalEventBusMocks = {} } = {}) => {
@@ -48,24 +48,18 @@ const setUp = ({ procedureId = "123", dbData = {}, procedureProductRepoFns = {},
 }
 
 describe("buildProcedureCommands", () => {
-  describe("create", () => {
-    it("creates a procedure", async () => {
+  describe("begin", () => {
+    it("begins a procedure", async () => {
       const procedureId = "123"
       const { commands, db } = setUp({ procedureId })
 
       const fakeInput = procedureMock()
 
-      await commands.create({ name: fakeInput.name })
+      await commands.begin({ name: fakeInput.name })
 
       const savedEvents = await db.getEvents(procedureId)
       expect(savedEvents[0].aggregateId).toEqual(procedureId)
-      expect(savedEvents[0].type).toEqual(ProcedureCreatedEventType)
-    })
-  })
-  describe("begin", () => {
-    it("begins a procedure", async () => {
-      const procedureId = "123"
-      const { commands, db } = setUp({ procedureId })
+      expect(savedEvents[0].type).toEqual(ProcedureBeganEventType)
     })
   })
   describe("consumeGood", () => {
@@ -73,7 +67,7 @@ describe("buildProcedureCommands", () => {
       const fakeInput = procedureMock()
       const consumedGood = consumedGoodMock()
 
-      const procedureCreatedEvent = procedureCreatedEventMock({ aggregateId: fakeInput.id })
+      const procedureCreatedEvent = procedureBeganEventMock({ aggregateId: fakeInput.id })
       const dbData = { [procedureCreatedEvent.aggregateId]: [procedureCreatedEvent] }
       const { commands, db } = setUp({ dbData })
 
@@ -87,7 +81,7 @@ describe("buildProcedureCommands", () => {
       const fakeInput = procedureMock()
       const consumedGood = consumedGoodMock()
 
-      const procedureCreatedEvent = procedureCreatedEventMock({ aggregateId: fakeInput.id })
+      const procedureCreatedEvent = procedureBeganEventMock({ aggregateId: fakeInput.id })
       const dbData = { [procedureCreatedEvent.aggregateId]: [procedureCreatedEvent] }
       const procedureProductRepoFns = {
         get: () => undefined,
@@ -103,7 +97,7 @@ describe("buildProcedureCommands", () => {
     it("completes the procedure", async () => {
       const fakeInput = procedureMock({ status: "active" })
 
-      const procedureCreatedEvent = procedureCreatedEventMock({ aggregateId: fakeInput.id, data: fakeInput })
+      const procedureCreatedEvent = procedureBeganEventMock({ aggregateId: fakeInput.id, data: fakeInput })
       const dbData = { [procedureCreatedEvent.aggregateId]: [procedureCreatedEvent] }
       const { commands, db } = setUp({ dbData })
 
@@ -116,7 +110,7 @@ describe("buildProcedureCommands", () => {
     it("fires an external procedure completed event", async () => {
       const fakeInput = procedureMock({ status: "active" })
 
-      const procedureCreatedEvent = procedureCreatedEventMock({ aggregateId: fakeInput.id, data: fakeInput })
+      const procedureCreatedEvent = procedureBeganEventMock({ aggregateId: fakeInput.id, data: fakeInput })
       const dbData = { [procedureCreatedEvent.aggregateId]: [procedureCreatedEvent] }
       const externalEventBusMocks = {
         processEvents: jest.fn(),

@@ -2,15 +2,15 @@ import { buildProcedureProjector } from "./procedureProjector"
 import { ProcedureActions } from "../domain/procedure"
 import {
   goodsConsumedOnProcedureEventMock,
+  procedureBeganEventMock,
   procedureCompletedEventMock,
-  procedureCreatedEventMock,
 } from "./procedureEventMocks"
 import { procedureMock } from "../domain/procedureMock"
 import { buildProcedureEventChecker } from "./procedureEvents"
 
 const setUp = (procedureActionMocks = {}) => {
   const procedureActions = {
-    create: jest.fn(),
+    begin: jest.fn(),
     consumeGood: jest.fn(),
     ...procedureActionMocks,
   } as unknown as ProcedureActions
@@ -25,22 +25,22 @@ describe("buildProcedureProjector", () => {
   describe("project", () => {
     it("returns the result of all applied events", () => {
       const result = procedureMock()
-      const create = jest.fn(() => result)
-      const { procedureProjection } = setUp({ create })
-      const mockEvent = procedureCreatedEventMock()
+      const begin = jest.fn(() => result)
+      const { procedureProjection } = setUp({ begin })
+      const mockEvent = procedureBeganEventMock()
 
       const projection = procedureProjection.project([mockEvent])
 
       expect(projection).toEqual({ version: mockEvent.version, aggregate: result })
     })
     it("calls the create action if one is received", () => {
-      const create = jest.fn()
-      const { procedureProjection } = setUp({ create })
-      const mockEvent = procedureCreatedEventMock()
+      const begin = jest.fn()
+      const { procedureProjection } = setUp({ begin })
+      const mockEvent = procedureBeganEventMock()
 
       procedureProjection.project([mockEvent])
 
-      expect(create).toHaveBeenCalledWith(mockEvent.data)
+      expect(begin).toHaveBeenCalledWith(mockEvent.data)
     })
     it("calls the consume good  action if one is received", () => {
       const consumeGood = jest.fn()

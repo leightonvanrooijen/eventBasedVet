@@ -23,12 +23,11 @@ export const buildProcedureCommands = ({
   externalEventBus: EventBus
 }) => {
   return {
-    create: async (input: { name: string }) => {
-      const procedure = procedureActions.create(input)
-      const createdEvent = procedureEvents.created(procedure)
+    begin: async ({ name }: { name: string }) => {
+      const procedure = procedureActions.begin({ name })
+      const createdEvent = procedureEvents.began(procedure)
       await procedureRepo.save([createdEvent])
-    },
-    begin: async ({ appointmentId }: { appointmentId: string }) => {}, // TODO complete this once booking domain is in place
+    }, // TODO change once appointment service in place
     consumeGood: async (procedureId: string, consumedGood: ConsumedGood) => {
       const existingProduct = procedureProductRepo.get(consumedGood.goodId)
       if (!existingProduct) throw new Error("The product being added does not exist")

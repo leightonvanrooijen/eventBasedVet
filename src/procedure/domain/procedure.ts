@@ -47,7 +47,7 @@ export const makeProcedure = ({ id, name, goodsConsumed, status }: ProcedureProp
 export type ProcedureActions = ReturnType<typeof buildProcedureActions>
 export const buildProcedureActions = ({ uuid, makeProcedure }: { uuid: Uuid; makeProcedure: MakeProcedure }) => {
   return {
-    create: (input: { name: string }) => {
+    begin: (input: { name: string }) => {
       return makeProcedure({ ...input, goodsConsumed: [], id: uuid() })
     },
     consumeGood: ({ procedure, consumedGood }: { procedure: Procedure; consumedGood: ConsumedGood }) => {

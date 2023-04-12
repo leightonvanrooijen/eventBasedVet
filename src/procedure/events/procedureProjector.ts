@@ -17,8 +17,8 @@ export const buildProcedureProjector = ({
 }) => {
   // Move this out
   const apply = (state: ProcedureProjection, event: ProcedureEvents): ProcedureProjection => {
-    if (procedureEventsChecker.isProcedureCreatedEvent(event)) {
-      const procedure = procedureActions.create(event.data)
+    if (procedureEventsChecker.isProcedureBeganEvent(event)) {
+      const procedure = procedureActions.begin(event.data)
       return {
         version: event.version,
         aggregate: procedure,

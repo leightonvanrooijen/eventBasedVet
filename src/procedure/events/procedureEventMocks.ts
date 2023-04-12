@@ -4,20 +4,20 @@ import {
   ExternalProcedureCompletedEvent,
   GoodsConsumedOnProcedureEvent,
   GoodsConsumedOnProcedureEventType,
+  ProcedureBeganEvent,
+  ProcedureBeganEventType,
   ProcedureCompletedEvent,
   ProcedureCompletedEventType,
-  ProcedureCreatedEvent,
-  ProcedureCreatedEventType,
 } from "./procedureEvents"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
 
-export const procedureCreatedEventMock = (overrides?: Partial<ProcedureCreatedEvent>): ProcedureCreatedEvent => {
+export const procedureBeganEventMock = (overrides?: Partial<ProcedureBeganEvent>): ProcedureBeganEvent => {
   return {
     version: 1,
-    type: ProcedureCreatedEventType,
+    type: ProcedureBeganEventType,
     aggregateId: faker.datatype.uuid(),
     date: Date.now().toString(),
-    data: procedureMock(),
+    data: procedureMock({ status: "active" }),
     ...overrides,
   }
 }

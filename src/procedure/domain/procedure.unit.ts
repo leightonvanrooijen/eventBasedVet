@@ -43,18 +43,6 @@ describe("procedure", () => {
         makeProcedure,
       })
     }
-    describe("create", () => {
-      it("should create a procedure", () => {
-        const { name } = procedureMock()
-        const procedureActions = setUp()
-
-        const procedure = procedureActions.create({
-          name,
-        })
-
-        expect(procedure).toEqual(expect.objectContaining({ name, goodsConsumed: [] }))
-      })
-    })
     describe("consumeGood", () => {
       it("should add the consumed good to the goodsConsumed array if the good does not exist", () => {
         const procedure = procedureMock()

@@ -9,8 +9,8 @@ Feature: Vets can preform procedures
 
   @acceptance
   Scenario: Create a new Procedure
-    When a user creates a procedure
-    Then a procedure is created
+    When a user begins a procedure
+    Then a procedure is began
 
   @acceptance
   Scenario: Consuming goods during procedure

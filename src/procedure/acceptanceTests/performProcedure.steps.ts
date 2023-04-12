@@ -8,7 +8,7 @@ import { GoodsConsumedOnProcedureEventType, ProcedureCompletedEventType } from "
 
 Given(/^a vet is preforming a procedure$/, async function (this: CustomWorld) {
   this["procedureId"] = faker.datatype.uuid()
-  await this.procedureService.mocks.createProcedure({ aggregateId: this["procedureId"] })
+  await this.procedureService.mocks.beginProcedure({ aggregateId: this["procedureId"] })
 
   this["productId"] = faker.datatype.uuid()
   this.procedureService.internalEventBus.registerHandler(buildEventCatcher(this))
