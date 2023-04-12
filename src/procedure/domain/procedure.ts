@@ -47,8 +47,8 @@ export const makeProcedure = ({ id, name, goodsConsumed, status }: ProcedureProp
 export type ProcedureActions = ReturnType<typeof buildProcedureActions>
 export const buildProcedureActions = ({ uuid, makeProcedure }: { uuid: Uuid; makeProcedure: MakeProcedure }) => {
   return {
-    begin: (input: { name: string }) => {
-      return makeProcedure({ ...input, goodsConsumed: [], id: uuid() })
+    begin: ({ name, id }: { name: string; id?: string }) => {
+      return makeProcedure({ name, goodsConsumed: [], id: id ? id : uuid() })
     },
     consumeGood: ({ procedure, consumedGood }: { procedure: Procedure; consumedGood: ConsumedGood }) => {
       const foundIndex = procedure.goodsConsumed.findIndex((contained) => contained.goodId === consumedGood.goodId)

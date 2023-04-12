@@ -12,12 +12,13 @@ import {
 import { consumedGoodMock } from "../domain/consumedGoodMock"
 
 export const procedureBeganEventMock = (overrides?: Partial<ProcedureBeganEvent>): ProcedureBeganEvent => {
+  const id = overrides?.aggregateId ? overrides.aggregateId : faker.datatype.uuid()
   return {
     version: 1,
     type: ProcedureBeganEventType,
-    aggregateId: faker.datatype.uuid(),
+    aggregateId: id,
     date: Date.now().toString(),
-    data: procedureMock({ status: "active" }),
+    data: procedureMock({ status: "active", id }),
     ...overrides,
   }
 }
@@ -49,12 +50,14 @@ export const procedureCompletedEventMock = (overrides?: Partial<ProcedureComplet
 export const externalProcedureCompletedEventMock = (
   overrides?: Partial<ExternalProcedureCompletedEvent>,
 ): ExternalProcedureCompletedEvent => {
+  const id = overrides?.aggregateId ? overrides.aggregateId : faker.datatype.uuid()
+
   return {
     version: faker.datatype.number(),
     type: ProcedureCompletedEventType,
-    aggregateId: faker.datatype.uuid(),
+    aggregateId: id,
     date: Date.now().toString(),
-    data: procedureMock(),
+    data: procedureMock({ id }),
     ...overrides,
   }
 }

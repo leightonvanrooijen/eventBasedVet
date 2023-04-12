@@ -26,7 +26,8 @@ export const buildTestEventDb = <Event extends ChangeEvent<any>>({
       const id = events[0].aggregateId
 
       const currentVersion = getCurrentVersion(store[id])
-      if (!isVersioningIncremental(currentVersion, events)) throw new Error("Event versions must be incremental")
+      if (!isVersioningIncremental(currentVersion, events))
+        throw new Error(`Event versions must be incremental ${currentVersion} ${events[0].version}`)
 
       if (!aggregateExistsInStore(store, id)) {
         store[id] = events
@@ -36,6 +37,7 @@ export const buildTestEventDb = <Event extends ChangeEvent<any>>({
 
       store[id] = [...store[id], ...events]
       await bus.processEvents(events)
+
       return
     },
     getEvents: async (id) => {

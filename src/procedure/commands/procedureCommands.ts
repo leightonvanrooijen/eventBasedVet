@@ -1,9 +1,6 @@
 import { ProcedureRepo } from "../repo/procedureRepo"
 import { ConsumedGood, ProcedureActions } from "../domain/procedure"
-import { ProcedureEventsMaker } from "../events/procedureEvents"
-import { ProcedureProjector } from "../events/procedureProjector"
 import { ProcedureProductRepo } from "../repo/procedureProductRepo"
-import { EventBus } from "../../packages/events/eventBus.types"
 
 export type ProcedureCommands = ReturnType<typeof buildProcedureCommands>
 
@@ -11,47 +8,30 @@ export const buildProcedureCommands = ({
   procedureRepo,
   procedureProductRepo,
   procedureActions,
-  procedureEvents,
-  procedureProjector,
-  externalEventBus,
 }: {
   procedureRepo: ProcedureRepo
   procedureProductRepo: ProcedureProductRepo
   procedureActions: ProcedureActions
-  procedureEvents: ProcedureEventsMaker
-  procedureProjector: ProcedureProjector
-  externalEventBus: EventBus
 }) => {
   return {
     begin: async ({ name }: { name: string }) => {
       const procedure = procedureActions.begin({ name })
-      const createdEvent = procedureEvents.began(procedure)
-      await procedureRepo.save([createdEvent])
-    }, // TODO change once appointment service in place
+      await procedureRepo.saveProcedureBegan(procedure)
+    },
     consumeGood: async (procedureId: string, consumedGood: ConsumedGood) => {
       const existingProduct = procedureProductRepo.get(consumedGood.goodId)
       if (!existingProduct) throw new Error("The product being added does not exist")
-      // I wounder if I could simplify the versioning as I don't like the manual step
-      const events = await procedureRepo.get(procedureId)
-      const projection = procedureProjector.project(events)
+
+      const projection = await procedureRepo.get(procedureId)
 
       procedureActions.consumeGood({ procedure: projection.aggregate, consumedGood })
-      const consumedGoodEvent = procedureEvents.goodConsumed(procedureId, consumedGood, projection.version + 1)
-
-      await procedureRepo.save([consumedGoodEvent])
+      await procedureRepo.saveGoodConsumed(projection, consumedGood)
     },
     complete: async (procedureId: string) => {
-      const events = await procedureRepo.get(procedureId)
-      const projection = procedureProjector.project(events)
+      const projection = await procedureRepo.get(procedureId)
 
       const procedure = procedureActions.complete({ procedure: projection.aggregate })
-      const version = projection.version + 1
-      const completedEvent = procedureEvents.completed(procedureId, version)
-
-      await procedureRepo.save([completedEvent])
-
-      const externalCompletedEvent = procedureEvents.externalCompleted(procedure, version)
-      await externalEventBus.processEvents([externalCompletedEvent])
+      await procedureRepo.saveProcedureCompleted(procedure, projection)
     },
   }
 }

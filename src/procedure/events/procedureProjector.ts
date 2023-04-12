@@ -15,7 +15,6 @@ export const buildProcedureProjector = ({
   procedureActions: ProcedureActions
   procedureEventsChecker: ProcedureEventChecker
 }) => {
-  // Move this out
   const apply = (state: ProcedureProjection, event: ProcedureEvents): ProcedureProjection => {
     if (procedureEventsChecker.isProcedureBeganEvent(event)) {
       const procedure = procedureActions.begin(event.data)

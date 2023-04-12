@@ -20,28 +20,25 @@ import { procedureBeganEventMock } from "../events/procedureEventMocks"
 // TODO decouple once Acceptance tests are in place.. Maybe?
 const setUp = ({ procedureId = "123", dbData = {}, procedureProductRepoFns = {}, externalEventBusMocks = {} } = {}) => {
   const db = buildTestEventDb({ defaultStore: dbData })
-  const procedureRepo = buildProcedureRepo({ db })
-  const procedureActions = buildProcedureActions({ uuid: () => procedureId, makeProcedure })
   const procedureEvents = buildProcedureEvents()
+  const procedureActions = buildProcedureActions({ uuid: () => procedureId, makeProcedure })
   const procedureEventsChecker = buildProcedureEventChecker()
   const procedureProjector = buildProcedureProjector({ procedureActions, procedureEventsChecker })
+  const externalEventBus = {
+    processEvents: jest.fn(),
+    ...externalEventBusMocks,
+  } as unknown as EventBus
+  const procedureRepo = buildProcedureRepo({ db, procedureEvents, procedureProjector, externalEventBus })
 
   const procedureProductRepo = {
     get: (id: string) => procedureProductMock({ id }),
     ...procedureProductRepoFns,
   } as unknown as ProcedureProductRepo
-  const externalEventBus = {
-    processEvents: jest.fn(),
-    ...externalEventBusMocks,
-  } as unknown as EventBus
 
   const commands = buildProcedureCommands({
     procedureRepo,
     procedureActions,
-    procedureEvents,
-    procedureProjector,
     procedureProductRepo,
-    externalEventBus,
   })
 
   return { commands, db }
@@ -69,7 +66,7 @@ describe("buildProcedureCommands", () => {
 
       const procedureCreatedEvent = procedureBeganEventMock({ aggregateId: fakeInput.id })
       const dbData = { [procedureCreatedEvent.aggregateId]: [procedureCreatedEvent] }
-      const { commands, db } = setUp({ dbData })
+      const { commands, db } = setUp({ dbData, procedureId: fakeInput.id })
 
       await commands.consumeGood(fakeInput.id, consumedGood)
 
@@ -99,7 +96,7 @@ describe("buildProcedureCommands", () => {
 
       const procedureCreatedEvent = procedureBeganEventMock({ aggregateId: fakeInput.id, data: fakeInput })
       const dbData = { [procedureCreatedEvent.aggregateId]: [procedureCreatedEvent] }
-      const { commands, db } = setUp({ dbData })
+      const { commands, db } = setUp({ dbData, procedureId: fakeInput.id })
 
       await commands.complete(fakeInput.id)
 

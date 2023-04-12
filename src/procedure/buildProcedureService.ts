@@ -24,15 +24,12 @@ export const buildProcedureService = ({ externalEventBus }: { externalEventBus: 
   const procedureActions = buildProcedureActions({ uuid: v4, makeProcedure })
   const procedureProjector = buildProcedureProjector({ procedureActions, procedureEventsChecker })
   const procedureDb = buildTestEventDb<ProcedureEvents>({ eventBus: internalEventBus })
-  const procedureRepo = buildProcedureRepo({ db: procedureDb })
+  const procedureRepo = buildProcedureRepo({ db: procedureDb, procedureProjector, externalEventBus, procedureEvents })
 
   const procedureCommands = buildProcedureCommands({
-    procedureEvents,
-    procedureProjector,
     procedureProductRepo,
     procedureRepo,
     procedureActions,
-    externalEventBus,
   })
 
   externalEventBus.registerHandler(procedureExternalEventHandler)
