@@ -62,6 +62,12 @@ describe("buildProcedureCommands", () => {
       expect(savedEvents[0].type).toEqual(ProcedureCreatedEventType)
     })
   })
+  describe("begin", () => {
+    it("begins a procedure", async () => {
+      const procedureId = "123"
+      const { commands, db } = setUp({ procedureId })
+    })
+  })
   describe("consumeGood", () => {
     it("consumes a good", async () => {
       const fakeInput = procedureMock()

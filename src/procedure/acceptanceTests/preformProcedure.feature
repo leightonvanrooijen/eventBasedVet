@@ -5,4 +5,15 @@ Feature: Vets can preform procedures
     Given a vet is preforming a procedure
     When the vet consumes a good
     And the vet completes the procedure
-    Then the procedure is completed with the consumed events on it
+    Then the procedure is completed with the consumed goods on it
+
+  @acceptance
+  Scenario: Create a new Procedure
+    When a user creates a procedure
+    Then a procedure is created
+
+  @acceptance
+  Scenario: Consuming goods during procedure
+    When a user consumes a good during a procedure
+    Then the good is consumed
+

@@ -1,9 +1,8 @@
 import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
-import { CreateProcedureProps } from "../commands/procedureCommands"
 import { ConsumedGood, Procedure } from "../domain/procedure"
 
 export const ProcedureCreatedEventType = "procedureCreatedEvent"
-export type ProcedureCreatedEvent = ChangeEvent<CreateProcedureProps>
+export type ProcedureCreatedEvent = ChangeEvent<{ name: string }>
 export const GoodsConsumedOnProcedureEventType = "goodsConsumedOnProcedureEvent"
 export type GoodsConsumedOnProcedureEvent = ChangeEvent<ConsumedGood>
 export const ProcedureCompletedEventType = "procedureCompletedEvent"

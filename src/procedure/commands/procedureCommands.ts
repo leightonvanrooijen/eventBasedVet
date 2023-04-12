@@ -5,10 +5,6 @@ import { ProcedureProjector } from "../events/procedureProjector"
 import { ProcedureProductRepo } from "../repo/procedureProductRepo"
 import { EventBus } from "../../packages/events/eventBus.types"
 
-export type CreateProcedureProps = {
-  name: string
-}
-
 export type ProcedureCommands = ReturnType<typeof buildProcedureCommands>
 
 export const buildProcedureCommands = ({
@@ -27,11 +23,12 @@ export const buildProcedureCommands = ({
   externalEventBus: EventBus
 }) => {
   return {
-    create: async (input: CreateProcedureProps) => {
+    create: async (input: { name: string }) => {
       const procedure = procedureActions.create(input)
       const createdEvent = procedureEvents.created(procedure)
       await procedureRepo.save([createdEvent])
     },
+    begin: async ({ appointmentId }: { appointmentId: string }) => {}, // TODO complete this once booking domain is in place
     consumeGood: async (procedureId: string, consumedGood: ConsumedGood) => {
       const existingProduct = procedureProductRepo.get(consumedGood.goodId)
       if (!existingProduct) throw new Error("The product being added does not exist")
