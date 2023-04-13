@@ -2,34 +2,35 @@ import { buildProcedureRepo } from "./procedureRepo"
 import { buildTestEventDb } from "../../packages/eventSourcing/testEventDb"
 import {
   buildProcedureEvents,
+  ExternalProcedureCompletedEventType,
   GoodsConsumedOnProcedureEventType,
   ProcedureBeganEventType,
   ProcedureCompletedEventType,
 } from "../events/procedureEvents"
 import { ProcedureHydrator } from "../events/procedureHydrator"
-import { buildTestEventBus } from "../../packages/events/eventBus"
-import { assertThat } from "mismatched"
+import { assertThat, match } from "mismatched"
 import { procedureMock } from "../domain/procedureMock"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
 import { Thespian } from "thespian"
 import { pipe } from "ramda"
 import { internalProcedureMockEvents } from "../events/procedureEventMocks"
 import { hydrationMock } from "../events/hydrationMock"
+import { EventBus } from "../../packages/events/eventBus.types"
 
 const setUp = (store = {}) => {
   const thespian = new Thespian()
   const db = buildTestEventDb({ store })
   const procedureEvents = buildProcedureEvents()
-  const externalEventBus = buildTestEventBus()
+  const externalEventBus = thespian.mock<EventBus>()
   const procedureHydrator = thespian.mock<ProcedureHydrator>()
   const repo = buildProcedureRepo({
     db,
     procedureEvents,
     procedureHydrator: procedureHydrator.object,
-    externalEventBus,
+    externalEventBus: externalEventBus.object,
   })
 
-  return { repo, procedureHydrator }
+  return { repo, procedureHydrator, externalEventBus }
 }
 describe("buildProcedureRepo", () => {
   describe("get", () => {
@@ -81,7 +82,9 @@ describe("buildProcedureRepo", () => {
       const store = {}
       const procedure = procedureMock()
       const mockHydratedProcedure = hydrationMock(procedure, { version: 0 })
-      const { repo } = setUp(store)
+      const { repo, externalEventBus } = setUp(store)
+
+      externalEventBus.setup((f) => f.processEvents(match.any()))
 
       await repo.saveProcedureCompleted(procedure, mockHydratedProcedure)
       const savedEventType = store[procedure.id][0].type
@@ -92,12 +95,11 @@ describe("buildProcedureRepo", () => {
       const store = {}
       const procedure = procedureMock()
       const mockHydratedProcedure = hydrationMock(procedure, { version: 0 })
-      const { repo } = setUp(store)
+      const { repo, externalEventBus } = setUp(store)
+
+      externalEventBus.setup((f) => f.processEvents([match.obj.has({ type: ExternalProcedureCompletedEventType })]))
 
       await repo.saveProcedureCompleted(procedure, mockHydratedProcedure)
-      const savedEventType = store[procedure.id][0].type
-
-      assertThat(savedEventType).is(ProcedureCompletedEventType)
     })
   })
 })
