@@ -8,8 +8,10 @@ import {
   ProcedureBeganEventType,
   ProcedureCompletedEvent,
   ProcedureCompletedEventType,
+  ProcedureEvents,
 } from "./procedureEvents"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
+import { getCurrentVersion } from "../../packages/eventSourcing/getCurrentVersion"
 
 export const procedureBeganEventMock = (overrides?: Partial<ProcedureBeganEvent>): ProcedureBeganEvent => {
   const id = overrides?.aggregateId ? overrides.aggregateId : faker.datatype.uuid()
@@ -60,4 +62,24 @@ export const externalProcedureCompletedEventMock = (
     data: procedureMock({ id }),
     ...overrides,
   }
+}
+
+export const internalProcedureMockEvents = {
+  addBegan: (events: ProcedureEvents[], overrides?: Partial<ProcedureBeganEvent>) => {
+    events.push(procedureBeganEventMock({ ...overrides }))
+    return events
+  },
+  addGoodsConsumed: (events: ProcedureEvents[], overrides?: Partial<GoodsConsumedOnProcedureEvent>) => {
+    const version = getCurrentVersion(events)
+    events.push(goodsConsumedOnProcedureEventMock({ ...overrides, aggregateId: events[0].aggregateId, version }))
+    return events
+  },
+  addCompleted: (events: ProcedureEvents[], overrides?: Partial<ProcedureCompletedEvent>) => {
+    const version = getCurrentVersion(events)
+    events.push(procedureCompletedEventMock({ ...overrides, aggregateId: events[0].aggregateId, version }))
+    return events
+  },
+  adaptToEventStore: (events: ProcedureEvents[]) => {
+    return { [events[0].aggregateId]: events }
+  },
 }

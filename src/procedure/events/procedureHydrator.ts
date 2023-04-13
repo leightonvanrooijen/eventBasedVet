@@ -1,21 +1,25 @@
 import { Procedure, ProcedureActions } from "../domain/procedure"
 import { ProcedureEventChecker, ProcedureEvents } from "./procedureEvents"
 
-export type ProcedureProjector = ReturnType<typeof buildProcedureProjector>
-export type ProcedureProjection = Projection<Procedure>
-export type Projection<T extends Record<string, any>> = {
+export type ProcedureHydrator = ReturnType<typeof buildProcedureHydrator>
+export type HydratedProcedure = Hydration<Procedure>
+export type Hydration<T extends Record<string, any>> = {
   version: number
   aggregate: T
 }
 
-export const buildProcedureProjector = ({
+// TODO change to Hydrator
+// TODO change version to event ID
+// TODO explore event ordering
+// TODO idempotency
+export const buildProcedureHydrator = ({
   procedureActions,
   procedureEventsChecker,
 }: {
   procedureActions: ProcedureActions
   procedureEventsChecker: ProcedureEventChecker
 }) => {
-  const apply = (state: ProcedureProjection, event: ProcedureEvents): ProcedureProjection => {
+  const apply = (state: HydratedProcedure, event: ProcedureEvents): HydratedProcedure => {
     if (procedureEventsChecker.isProcedureBeganEvent(event)) {
       const procedure = procedureActions.begin(event.data)
       return {
@@ -39,10 +43,10 @@ export const buildProcedureProjector = ({
     }
   }
   return {
-    project: (events: ProcedureEvents[]): ProcedureProjection => {
+    hydrate: (events: ProcedureEvents[]): HydratedProcedure => {
       return events.reduce((currentState, eventToApply: ProcedureEvents) => {
         return apply(currentState, eventToApply)
-      }, {} as ProcedureProjection)
+      }, {} as HydratedProcedure)
       // TODO add isProcedure check before returning
     },
   }

@@ -22,16 +22,16 @@ export const buildProcedureCommands = ({
       const existingProduct = procedureProductRepo.get(consumedGood.goodId)
       if (!existingProduct) throw new Error("The product being added does not exist")
 
-      const projection = await procedureRepo.get(procedureId)
+      const hydration = await procedureRepo.get(procedureId)
 
-      procedureActions.consumeGood({ procedure: projection.aggregate, consumedGood })
-      await procedureRepo.saveGoodConsumed(projection, consumedGood)
+      procedureActions.consumeGood({ procedure: hydration.aggregate, consumedGood })
+      await procedureRepo.saveGoodConsumed(hydration, consumedGood)
     },
     complete: async (procedureId: string) => {
-      const projection = await procedureRepo.get(procedureId)
+      const hydration = await procedureRepo.get(procedureId)
 
-      const procedure = procedureActions.complete({ procedure: projection.aggregate })
-      await procedureRepo.saveProcedureCompleted(procedure, projection)
+      const procedure = procedureActions.complete({ procedure: hydration.aggregate })
+      await procedureRepo.saveProcedureCompleted(procedure, hydration)
     },
   }
 }

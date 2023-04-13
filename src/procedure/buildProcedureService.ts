@@ -4,7 +4,7 @@ import { buildProcedureProductRepo } from "./repo/procedureProductRepo"
 import { buildProcedureExternalEventHandler } from "./externalEvents/procedureExternalEventHandler"
 import { buildProcedureEventChecker, buildProcedureEvents, ProcedureEvents } from "./events/procedureEvents"
 import { buildProcedureActions, makeProcedure } from "./domain/procedure"
-import { buildProcedureProjector } from "./events/procedureProjector"
+import { buildProcedureHydrator } from "./events/procedureHydrator"
 import { buildTestEventDb } from "../packages/eventSourcing/testEventDb"
 import { buildProcedureRepo } from "./repo/procedureRepo"
 import { buildProcedureCommands } from "./commands/procedureCommands"
@@ -22,9 +22,14 @@ export const buildProcedureService = ({ externalEventBus }: { externalEventBus: 
   const procedureEvents = buildProcedureEvents()
   const procedureEventsChecker = buildProcedureEventChecker()
   const procedureActions = buildProcedureActions({ uuid: v4, makeProcedure })
-  const procedureProjector = buildProcedureProjector({ procedureActions, procedureEventsChecker })
+  const procedureProjector = buildProcedureHydrator({ procedureActions, procedureEventsChecker })
   const procedureDb = buildTestEventDb<ProcedureEvents>({ eventBus: internalEventBus })
-  const procedureRepo = buildProcedureRepo({ db: procedureDb, procedureProjector, externalEventBus, procedureEvents })
+  const procedureRepo = buildProcedureRepo({
+    db: procedureDb,
+    procedureHydrator: procedureProjector,
+    externalEventBus,
+    procedureEvents,
+  })
 
   const procedureCommands = buildProcedureCommands({
     procedureProductRepo,

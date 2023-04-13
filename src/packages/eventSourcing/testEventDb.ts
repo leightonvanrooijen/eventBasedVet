@@ -1,6 +1,8 @@
 import { ChangeEvent } from "./changeEvent.types"
 import { EventBus } from "../events/eventBus.types"
 import { buildTestEventBus } from "../events/eventBus"
+import { isVersioningIncremental } from "./isVersioningIncremental"
+import { getCurrentVersion } from "./getCurrentVersion"
 
 export type EventDb<Event extends Record<string, any>> = {
   saveEvents(events: Event[]): Promise<void>
@@ -13,14 +15,11 @@ const afterSave = () => {}
 
 export const buildTestEventDb = <Event extends ChangeEvent<any>>({
   eventBus = buildTestEventBus(),
-  defaultStore = {},
+  store = {},
 }: {
   eventBus?: EventBus
-  defaultStore?: EventStore<Event>
+  store?: EventStore<Event>
 } = {}): EventDb<Event> => {
-  const bus = eventBus
-  const store = defaultStore
-
   return {
     saveEvents: async (events) => {
       const id = events[0].aggregateId
@@ -31,12 +30,12 @@ export const buildTestEventDb = <Event extends ChangeEvent<any>>({
 
       if (!aggregateExistsInStore(store, id)) {
         store[id] = events
-        await bus.processEvents(events)
+        await eventBus.processEvents(events)
         return
       }
 
       store[id] = [...store[id], ...events]
-      await bus.processEvents(events)
+      await eventBus.processEvents(events)
 
       return
     },
@@ -51,31 +50,3 @@ export const buildTestEventDb = <Event extends ChangeEvent<any>>({
 function aggregateExistsInStore(store: EventStore<any>, id: string) {
   return Boolean(store[id])
 }
-
-function isVersioningIncremental(currentVersion: number, events: ChangeEvent<any>[]) {
-  let isCorrect = true
-  events.forEach((event, index) => {
-    if (currentVersion + index + 1 !== event.version) isCorrect = false
-  })
-
-  return isCorrect
-}
-
-function getCurrentVersion(eventsInStore: ChangeEvent<any>[]) {
-  if (!eventsInStore) return 0
-
-  const lastIndex = eventsInStore.length - 1
-  return eventsInStore[lastIndex].version
-}
-
-// subjectCreated
-// subjectDeleted
-// subjectNameChanged
-
-// competencyNameChanged
-// competencyAdded
-// competencyRemoved
-
-// lessonNameChanged
-// lessonAdded
-// lessonRemoved

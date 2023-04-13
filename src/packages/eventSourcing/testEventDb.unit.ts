@@ -3,7 +3,7 @@ import { mockChangeEvents } from "./changeEvent.mock"
 import { buildTestEventBus } from "../events/eventBus"
 
 const setUp = (defaultStore, eventBus = buildTestEventBus()) => {
-  const testEventDb = buildTestEventDb({ eventBus, defaultStore })
+  const testEventDb = buildTestEventDb({ eventBus, store: defaultStore })
 
   return { testEventDb }
 }
