@@ -3,11 +3,11 @@ import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import {
   ExternalProcedureCompletedEvent,
   ExternalProcedureCompletedEventType,
-} from "../../procedure/events/procedureEvents"
+} from "../../procedure/internalEvents/procedureEvents"
 import { InvoiceCommands } from "../commmands/invoiceCommands"
 
 export const InvoiceProductCreatedEventType = "productCreatedEvent"
-export type InvoiceProductCreatedEvent = ChangeEvent<{ name: string; price: number }>
+export type InvoiceProductCreatedEvent = ChangeEvent<{ name: string; price: number; id: string }>
 
 export const InvoiceProcedureCompletedEventType = ExternalProcedureCompletedEventType
 export type InvoiceProcedureCompletedEvent = ExternalProcedureCompletedEvent
@@ -30,7 +30,7 @@ export const buildInvoiceExternalEventHandler = ({
 }
 
 const productCreated = async (event: InvoiceProductCreatedEvent, repo: InvoiceProductRepo) => {
-  await repo.create({ ...event.data, id: event.aggregateId })
+  await repo.create({ ...event.data })
 }
 
 const isInvoiceProductCreatedEvent = (event: InvoiceExternalEvents): event is InvoiceProductCreatedEvent =>

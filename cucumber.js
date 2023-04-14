@@ -5,7 +5,7 @@ module.exports = {
     parallel: 1,
     // format: ["json:reports/report.cucumber.json", "summary"],
     // formatOptions: { snippetInterface: "async-await" },
-    tags: "@acceptance",
+    tags: "@procedure or @acceptance or @invoice",
     publishQuiet: true,
     require: ["./src/**/acceptanceTests/**/*.ts"],
   },

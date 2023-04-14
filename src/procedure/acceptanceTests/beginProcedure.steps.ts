@@ -3,7 +3,7 @@ import { CustomWorld } from "../../packages/acceptanceTests/world"
 import { procedureMock } from "../domain/procedureMock"
 import { assertThat } from "mismatched"
 import { buildEventCatcher } from "./buildEventCatcher"
-import { ProcedureBeganEventType } from "../events/procedureEvents"
+import { ProcedureBeganEventType } from "../internalEvents/procedureEvents"
 
 When("a user begins a procedure", async function (this: CustomWorld) {
   this.procedureService.internalEventBus.registerHandler(buildEventCatcher(this))

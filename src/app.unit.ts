@@ -12,7 +12,7 @@ describe("acceptance tests", () => {
     // )
     //
     // const mockInvoiceId = v4()
-    // const { invoiceCommands, invoiceRepo, invoiceProductRepo } = setUpInvoiceService(externalEventBus, mockInvoiceId)
+    // const { invoiceCommands, invoiceRepo, invoiceProductRepo } = buildInvoiceService(externalEventBus, mockInvoiceId)
     //
     // // add products
     // const mockProducts = productMocks(10)

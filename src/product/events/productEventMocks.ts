@@ -9,6 +9,7 @@ export const productCreatedEventMock = (overrides?: Partial<ProductCreatedEvent>
     aggregateId: product.id,
     date: Date.now().toString(),
     data: {
+      id: product.id,
       name: product.name,
       price: product.price,
     },

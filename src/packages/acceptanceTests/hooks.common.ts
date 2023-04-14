@@ -1,7 +1,9 @@
 import { After, Before, BeforeAll } from "@cucumber/cucumber"
-import { buildProcedureService } from "../../procedure/buildProcedureService"
+import { buildProcedureService } from "../../procedure/acceptanceTests/buildProcedureService"
 import { buildTestEventBus } from "../events/eventBus"
 import { buildProcedureMockGenerator } from "../../procedure/acceptanceTests/buildProcedureMockGenerator"
+import { CustomWorld } from "./world"
+import { buildInvoiceService } from "../../invoice/acceptanceTests/buildInvoiceService"
 
 Before({ tags: "@ignore" }, async function () {
   return "skipped"
@@ -15,7 +17,7 @@ Before({ tags: "@manual" }, async function () {
   return "skipped"
 })
 
-Before({ tags: "@acceptance" }, async function (scenario) {
+Before({ tags: "@procedure" }, async function (this: CustomWorld) {
   const externalEventBus = buildTestEventBus()
   const { procedureCommands, internalEventBus, procedureDb, procedureProductDb } = buildProcedureService({
     externalEventBus,
@@ -28,16 +30,20 @@ Before({ tags: "@acceptance" }, async function (scenario) {
     internalEventBus,
     mocks: procedureMockGenerator,
   }
-
-  this.context = {
-    ...this.context,
-    scenario: {
-      id: scenario.pickle.id,
-      name: scenario.pickle.name,
-    },
-  }
 })
 
+Before({ tags: "@invoice" }, async function (this: CustomWorld) {
+  const externalEventBus = buildTestEventBus()
+
+  const { invoiceCommands, invoiceHelpers, invoiceDb } = buildInvoiceService({ externalEventBus })
+
+  this.invoiceService = {
+    commands: invoiceCommands,
+    helpers: invoiceHelpers,
+    db: invoiceDb,
+    externalEventBus,
+  }
+})
 After({ tags: "@acceptance" }, async function () {})
 
 BeforeAll(async function () {})

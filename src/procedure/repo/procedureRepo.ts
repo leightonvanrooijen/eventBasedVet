@@ -1,8 +1,8 @@
 import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
 import { EventDb } from "../../packages/eventSourcing/testEventDb"
 import { ConsumedGood, Procedure } from "../domain/procedure"
-import { ProcedureEventsMaker } from "../events/procedureEvents"
-import { HydratedProcedure, ProcedureHydrator } from "../events/procedureHydrator"
+import { ProcedureEventsMaker } from "../internalEvents/procedureEvents"
+import { HydratedProcedure, ProcedureHydrator } from "../internalEvents/procedureHydrator"
 import { EventBus } from "../../packages/events/eventBus.types"
 
 export type ProcedureRepo = ReturnType<typeof buildProcedureRepo>

@@ -1,10 +1,10 @@
 import { DataStore } from "../../packages/db/testDB"
 import { ProcedureProduct } from "../domain/product/procedureProduct"
 import { EventDb } from "../../packages/eventSourcing/testEventDb"
-import { ProcedureEvents } from "../events/procedureEvents"
+import { ProcedureEvents } from "../internalEvents/procedureEvents"
 import { procedureProductMock } from "../domain/product/procedureProductMock"
-import { ProcedureBeganEvent } from "../events/procedureEvents"
-import { procedureBeganEventMock } from "../events/procedureEventMocks"
+import { ProcedureBeganEvent } from "../internalEvents/procedureEvents"
+import { procedureBeganEventMock } from "../internalEvents/procedureEventMocks"
 
 export type ProcedureMockGenerator = ReturnType<typeof buildProcedureMockGenerator>
 export const buildProcedureMockGenerator = ({

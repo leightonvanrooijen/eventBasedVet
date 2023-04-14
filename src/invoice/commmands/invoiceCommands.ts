@@ -51,8 +51,6 @@ export const buildInvoiceCommands = ({
 }) => {
   return {
     createFromProcedure: async (procedure: Procedure) => {
-      // throw if not complete? I guess our internal version only handles complete ones
-
       const goodIdsContainedInProcedure = pluck("goodId")(procedure.goodsConsumed)
       const goods = await productRepo.getByIds(goodIdsContainedInProcedure)
       const order = invoiceAdapters.procedureToOrder(procedure, goods)
