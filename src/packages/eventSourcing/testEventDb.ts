@@ -1,6 +1,6 @@
 import { ChangeEvent } from "./changeEvent.types"
-import { EventBus } from "../events/eventBus.types"
-import { buildTestEventBus } from "../events/eventBus"
+import { EventBroker } from "../events/eventBroker.types"
+import { buildEventBroker } from "../events/eventBroker"
 import { isVersioningIncremental } from "./isVersioningIncremental"
 import { getCurrentEventId } from "./getCurrentEventId"
 
@@ -14,10 +14,10 @@ export type EventStore<Event extends ChangeEvent<any>> = Record<string, Event[]>
 const afterSave = () => {}
 
 export const buildTestEventDb = <Event extends ChangeEvent<any>>({
-  eventBus = buildTestEventBus(),
+  eventBroker = buildEventBroker(),
   store = {},
 }: {
-  eventBus?: EventBus
+  eventBroker?: EventBroker
   store?: EventStore<Event>
 } = {}): EventDb<Event> => {
   return {
@@ -30,12 +30,12 @@ export const buildTestEventDb = <Event extends ChangeEvent<any>>({
 
       if (!aggregateExistsInStore(store, id)) {
         store[id] = events
-        await eventBus.processEvents(events)
+        await eventBroker.processEvents(events)
         return
       }
 
       store[id] = [...store[id], ...events]
-      await eventBus.processEvents(events)
+      await eventBroker.processEvents(events)
 
       return
     },

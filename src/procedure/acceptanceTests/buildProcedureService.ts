@@ -9,11 +9,11 @@ import { buildTestEventDb } from "../../packages/eventSourcing/testEventDb"
 import { buildProcedureRepo } from "../repo/procedureRepo"
 import { buildProcedureCommands } from "../commands/procedureCommands"
 import { v4 } from "uuid"
-import { EventBus } from "../../packages/events/eventBus.types"
-import { buildTestEventBus } from "../../packages/events/eventBus"
+import { EventBroker } from "../../packages/events/eventBroker.types"
+import { buildEventBroker } from "../../packages/events/eventBroker"
 
-export const buildProcedureService = ({ externalEventBus }: { externalEventBus: EventBus }) => {
-  const internalEventBus = buildTestEventBus()
+export const buildProcedureService = ({ externaleventBroker }: { externaleventBroker: EventBroker }) => {
+  const internaleventBroker = buildEventBroker()
 
   const procedureProductDb = new TestDB<ProcedureProduct>([], "id")
   const procedureProductRepo = buildProcedureProductRepo({ db: procedureProductDb })
@@ -23,11 +23,11 @@ export const buildProcedureService = ({ externalEventBus }: { externalEventBus: 
   const procedureEventsChecker = buildProcedureEventChecker()
   const procedureActions = buildProcedureActions({ uuid: v4, makeProcedure })
   const procedureProjector = buildProcedureHydrator({ procedureActions, procedureEventsChecker })
-  const procedureDb = buildTestEventDb<ProcedureEvents>({ eventBus: internalEventBus })
+  const procedureDb = buildTestEventDb<ProcedureEvents>({ eventBroker: internaleventBroker })
   const procedureRepo = buildProcedureRepo({
     db: procedureDb,
     procedureHydrator: procedureProjector,
-    externalEventBus,
+    externaleventBroker,
     procedureEvents,
   })
 
@@ -37,7 +37,7 @@ export const buildProcedureService = ({ externalEventBus }: { externalEventBus: 
     procedureActions,
   })
 
-  externalEventBus.registerHandler(procedureExternalEventHandler)
+  externaleventBroker.registerHandler(procedureExternalEventHandler)
 
-  return { procedureCommands, internalEventBus, procedureProductDb, procedureDb }
+  return { procedureCommands, internaleventBroker, procedureProductDb, procedureDb }
 }

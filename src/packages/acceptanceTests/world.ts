@@ -1,6 +1,6 @@
 import { IWorldOptions, setWorldConstructor, World } from "@cucumber/cucumber"
 import { ProcedureCommands } from "../../procedure/commands/procedureCommands"
-import { EventBus } from "../events/eventBus.types"
+import { EventBroker } from "../events/eventBroker.types"
 import { ProcedureMockGenerator } from "../../procedure/acceptanceTests/buildProcedureMockGenerator"
 import { InvoiceCommands } from "../../invoice/commmands/invoiceCommands"
 import { InvoiceServiceHelpers } from "../../invoice/acceptanceTests/buildInvoiceServiceHelpers"
@@ -8,14 +8,14 @@ import { DataStore } from "../db/testDB"
 import { Invoice } from "../../invoice/domain/invoice"
 
 export type ProcedureService = {
-  externalEventBus: EventBus
-  internalEventBus: EventBus
+  externaleventBroker: EventBroker
+  internaleventBroker: EventBroker
   commands: ProcedureCommands
   mocks: ProcedureMockGenerator
 }
 
 export type InvoiceService = {
-  externalEventBus: EventBus
+  externaleventBroker: EventBroker
   commands: InvoiceCommands
   helpers: InvoiceServiceHelpers
   db: DataStore<Invoice>

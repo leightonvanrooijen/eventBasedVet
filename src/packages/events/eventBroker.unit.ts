@@ -1,12 +1,12 @@
-import { buildTestEventBus } from "./eventBus"
+import { buildEventBroker } from "./eventBroker"
 import { mockChangeEvents } from "../eventSourcing/changeEvent.mock"
 
-describe("eventConsumer", () => {
+describe("buildEventBroker", () => {
   describe("registerHandler", () => {
     it("should add the handler onto the array", () => {
       const fakeHandler = (e) => Promise.resolve()
       const initialHandlers = []
-      const eventConsumer = buildTestEventBus(initialHandlers)
+      const eventConsumer = buildEventBroker(initialHandlers)
 
       eventConsumer.registerHandler(fakeHandler)
 
@@ -18,7 +18,7 @@ describe("eventConsumer", () => {
       const fakeEvents = mockChangeEvents(2)
       const fakeHandler = jest.fn((e) => Promise.resolve())
       const fakeHandler2 = jest.fn((e) => Promise.resolve())
-      const eventConsumer = buildTestEventBus()
+      const eventConsumer = buildEventBroker()
 
       eventConsumer.registerHandler(fakeHandler)
       eventConsumer.registerHandler(fakeHandler2)

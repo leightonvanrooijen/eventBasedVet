@@ -5,11 +5,11 @@ import { buildInvoiceActions, Invoice } from "../domain/invoice"
 import { buildInvoiceRepo } from "../repo/invoiceRepo"
 import { buildInvoiceCommands, invoiceAdapters } from "../commmands/invoiceCommands"
 import { buildInvoiceExternalEventHandler } from "../externalEvents/invoiceExternalEventHandler"
-import { EventBus } from "../../packages/events/eventBus.types"
+import { EventBroker } from "../../packages/events/eventBroker.types"
 import { v4 } from "uuid"
 import { buildInvoiceServiceHelpers } from "./buildInvoiceServiceHelpers"
 
-export const buildInvoiceService = ({ externalEventBus }: { externalEventBus: EventBus }) => {
+export const buildInvoiceService = ({ externaleventBroker }: { externaleventBroker: EventBroker }) => {
   const invoiceProductDb = new TestDB<InvoiceProduct>([], "id")
   const invoiceProductRepo = buildInvoiceProductRepo({ db: invoiceProductDb })
 
@@ -23,9 +23,9 @@ export const buildInvoiceService = ({ externalEventBus }: { externalEventBus: Ev
     invoiceActions,
   })
   const invoiceExternalEventHandler = buildInvoiceExternalEventHandler({ invoiceProductRepo, invoiceCommands })
-  externalEventBus.registerHandler(invoiceExternalEventHandler)
+  externaleventBroker.registerHandler(invoiceExternalEventHandler)
 
-  const invoiceHelpers = buildInvoiceServiceHelpers({ invoiceCommands, externalEventBus })
+  const invoiceHelpers = buildInvoiceServiceHelpers({ invoiceCommands, externaleventBroker })
 
   return { invoiceCommands, invoiceRepo, invoiceProductRepo, invoiceHelpers, invoiceDb }
 }

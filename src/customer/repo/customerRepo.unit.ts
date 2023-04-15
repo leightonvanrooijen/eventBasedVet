@@ -3,15 +3,15 @@ import { TestDB } from "../../packages/db/testDB"
 import { Customer } from "../domain/customer"
 import { customerMock } from "../domain/customerMock"
 import { assertThat } from "mismatched"
-import { buildTestEventBus } from "../../packages/events/eventBus"
+import { buildEventBroker } from "../../packages/events/eventBroker"
 import { ExternalCustomerCreatedEventType, externalCustomerEvents } from "../externalEvents/externalEvents"
 
 const setUp = (dataStore = []) => {
   const db = new TestDB<Customer>(dataStore, "id")
   const handler = jest.fn()
-  const externalEventBus = buildTestEventBus()
-  externalEventBus.registerHandler(handler)
-  const repo = buildCustomerRepo({ db, externalCustomerEvents, externalEventBus })
+  const externaleventBroker = buildEventBroker()
+  externaleventBroker.registerHandler(handler)
+  const repo = buildCustomerRepo({ db, externalCustomerEvents, externaleventBroker })
 
   return { repo, handler }
 }

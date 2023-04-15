@@ -1,12 +1,12 @@
-import { EventBus, EventHandler } from "./eventBus.types"
+import { BrokerEvent, EventBroker, EventHandler } from "./eventBroker.types"
 
-export const buildTestEventBus = (initialHandlers: EventHandler[] = []): EventBus => {
+export const buildEventBroker = (initialHandlers: EventHandler[] = []): EventBroker => {
   const handlers: EventHandler[] = initialHandlers
   return {
     registerHandler: (handler: EventHandler) => {
       handlers.push(handler)
     },
-    processEvents: async (events) => {
+    processEvents: async (events: BrokerEvent[]) => {
       for (const handler of handlers) {
         await handler(events)
       }

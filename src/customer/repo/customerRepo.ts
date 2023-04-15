@@ -1,23 +1,23 @@
 import { DataStore } from "../../packages/db/testDB"
 import { Customer } from "../domain/customer"
-import { EventBus } from "../../packages/events/eventBus.types"
+import { EventBroker } from "../../packages/events/eventBroker.types"
 import { ExternalCustomerEvents } from "../externalEvents/externalEvents"
 
 export type CustomerRepo = ReturnType<typeof buildCustomerRepo>
 export const buildCustomerRepo = ({
   db,
-  externalEventBus,
+  externaleventBroker,
   externalCustomerEvents,
 }: {
   db: DataStore<Customer>
-  externalEventBus: EventBus
+  externaleventBroker: EventBroker
   externalCustomerEvents: ExternalCustomerEvents
 }) => {
   return {
     create: async (customer: Customer) => {
       const createdCustomer = await db.create(customer)
       const createdEvent = externalCustomerEvents.created(createdCustomer, 1)
-      await externalEventBus.processEvents([createdEvent])
+      await externaleventBroker.processEvents([createdEvent])
 
       return createdCustomer
     },

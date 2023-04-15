@@ -3,7 +3,7 @@ import { EventDb } from "../../packages/eventSourcing/testEventDb"
 import { ConsumedGood, Procedure } from "../domain/procedure"
 import { ProcedureEventsMaker } from "../internalEvents/procedureEvents"
 import { HydratedProcedure, ProcedureHydrator } from "../internalEvents/procedureHydrator"
-import { EventBus } from "../../packages/events/eventBus.types"
+import { EventBroker } from "../../packages/events/eventBroker.types"
 
 export type ProcedureRepo = ReturnType<typeof buildProcedureRepo>
 
@@ -12,12 +12,12 @@ export const buildProcedureRepo = ({
   db,
   procedureEvents,
   procedureHydrator,
-  externalEventBus,
+  externaleventBroker,
 }: {
   db: EventDb<ProcedureEvent>
   procedureEvents: ProcedureEventsMaker
   procedureHydrator: ProcedureHydrator
-  externalEventBus: EventBus
+  externaleventBroker: EventBroker
 }) => {
   return {
     get: async (aggregateId: string): Promise<HydratedProcedure> => {
@@ -43,7 +43,7 @@ export const buildProcedureRepo = ({
       await db.saveEvents([completedEvent])
 
       const externalCompletedEvent = procedureEvents.externalCompleted(procedure, version)
-      await externalEventBus.processEvents([externalCompletedEvent])
+      await externaleventBroker.processEvents([externalCompletedEvent])
     },
   }
 }

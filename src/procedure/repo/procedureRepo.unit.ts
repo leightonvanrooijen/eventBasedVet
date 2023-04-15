@@ -15,22 +15,22 @@ import { Thespian } from "thespian"
 import { pipe } from "ramda"
 import { internalProcedureMockEvents } from "../internalEvents/procedureEventMocks"
 import { hydrationMock } from "../internalEvents/hydrationMock"
-import { EventBus } from "../../packages/events/eventBus.types"
+import { EventBroker } from "../../packages/events/eventBroker.types"
 
 const setUp = (store = {}) => {
   const thespian = new Thespian()
   const db = buildTestEventDb({ store })
   const procedureEvents = buildProcedureEvents()
-  const externalEventBus = thespian.mock<EventBus>()
+  const externaleventBroker = thespian.mock<EventBroker>()
   const procedureHydrator = thespian.mock<ProcedureHydrator>()
   const repo = buildProcedureRepo({
     db,
     procedureEvents,
     procedureHydrator: procedureHydrator.object,
-    externalEventBus: externalEventBus.object,
+    externaleventBroker: externaleventBroker.object,
   })
 
-  return { repo, procedureHydrator, externalEventBus }
+  return { repo, procedureHydrator, externaleventBroker }
 }
 describe("buildProcedureRepo", () => {
   describe("get", () => {
@@ -82,9 +82,9 @@ describe("buildProcedureRepo", () => {
       const store = {}
       const procedure = procedureMock()
       const mockHydratedProcedure = hydrationMock(procedure, { eventId: 0 })
-      const { repo, externalEventBus } = setUp(store)
+      const { repo, externaleventBroker } = setUp(store)
 
-      externalEventBus.setup((f) => f.processEvents(match.any()))
+      externaleventBroker.setup((f) => f.processEvents(match.any()))
 
       await repo.saveProcedureCompleted(procedure, mockHydratedProcedure)
       const savedEventType = store[procedure.id][0].type
@@ -95,9 +95,9 @@ describe("buildProcedureRepo", () => {
       const store = {}
       const procedure = procedureMock()
       const mockHydratedProcedure = hydrationMock(procedure, { eventId: 0 })
-      const { repo, externalEventBus } = setUp(store)
+      const { repo, externaleventBroker } = setUp(store)
 
-      externalEventBus.setup((f) => f.processEvents([match.obj.has({ type: ExternalProcedureCompletedEventType })]))
+      externaleventBroker.setup((f) => f.processEvents([match.obj.has({ type: ExternalProcedureCompletedEventType })]))
 
       await repo.saveProcedureCompleted(procedure, mockHydratedProcedure)
     })
