@@ -67,7 +67,7 @@ describe("buildProcedureRepo", () => {
     it("saves a good consumed event", async () => {
       const store = {}
       const procedure = procedureMock()
-      const mockHydratedProcedure = hydrationMock(procedure, { version: 0 })
+      const mockHydratedProcedure = hydrationMock(procedure, { eventId: 0 })
       const consumedGood = consumedGoodMock()
       const { repo } = setUp(store)
 
@@ -81,7 +81,7 @@ describe("buildProcedureRepo", () => {
     it("saves a procedure completed event", async () => {
       const store = {}
       const procedure = procedureMock()
-      const mockHydratedProcedure = hydrationMock(procedure, { version: 0 })
+      const mockHydratedProcedure = hydrationMock(procedure, { eventId: 0 })
       const { repo, externalEventBus } = setUp(store)
 
       externalEventBus.setup((f) => f.processEvents(match.any()))
@@ -94,7 +94,7 @@ describe("buildProcedureRepo", () => {
     it("fires a external procedure completed event", async () => {
       const store = {}
       const procedure = procedureMock()
-      const mockHydratedProcedure = hydrationMock(procedure, { version: 0 })
+      const mockHydratedProcedure = hydrationMock(procedure, { eventId: 0 })
       const { repo, externalEventBus } = setUp(store)
 
       externalEventBus.setup((f) => f.processEvents([match.obj.has({ type: ExternalProcedureCompletedEventType })]))

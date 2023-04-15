@@ -34,7 +34,7 @@ describe("buildProcedureHydrator", () => {
 
       const projection = procedureProjection.hydrate([mockEvent])
 
-      assertThat(projection).is({ version: mockEvent.version, aggregate: result })
+      assertThat(projection).is({ eventId: mockEvent.eventId, aggregate: result })
     })
     it("calls the create action if one is received", () => {
       const { procedureProjection, procedureActions } = setUp()
@@ -45,7 +45,7 @@ describe("buildProcedureHydrator", () => {
 
       const projection = procedureProjection.hydrate([mockEvent])
 
-      assertThat(projection).is({ version: mockEvent.version, aggregate: result })
+      assertThat(projection).is({ eventId: mockEvent.eventId, aggregate: result })
     })
     it("calls the consume good  action if one is received", () => {
       const { procedureProjection, procedureActions } = setUp()

@@ -1,6 +1,7 @@
 import { buildTestEventDb } from "./testEventDb"
 import { mockChangeEvents } from "./changeEvent.mock"
 import { buildTestEventBus } from "../events/eventBus"
+import { ChangeEvent } from "./changeEvent.types"
 
 const setUp = (defaultStore, eventBus = buildTestEventBus()) => {
   const testEventDb = buildTestEventDb({ eventBus, store: defaultStore })
@@ -9,9 +10,9 @@ const setUp = (defaultStore, eventBus = buildTestEventBus()) => {
 }
 
 const aggregateId = "123"
-const overwrites = [
-  { version: 1, aggregateId },
-  { version: 2, aggregateId },
+const overwrites: Partial<ChangeEvent<any>>[] = [
+  { eventId: 1, aggregateId },
+  { eventId: 2, aggregateId },
 ]
 
 describe("buildTestEventDb", () => {
@@ -27,12 +28,12 @@ describe("buildTestEventDb", () => {
     })
     it("appends events to the DB matching the id provided if one exists", async () => {
       const changeEvents = mockChangeEvents(2, [
-        { version: 1, aggregateId },
-        { version: 2, aggregateId },
+        { eventId: 1, aggregateId },
+        { eventId: 2, aggregateId },
       ])
       const changeEventsToAdd = mockChangeEvents(2, [
-        { version: 3, aggregateId },
-        { version: 4, aggregateId },
+        { eventId: 3, aggregateId },
+        { eventId: 4, aggregateId },
       ])
       const Db = { [aggregateId]: changeEvents }
       const { testEventDb } = setUp(Db)
@@ -50,10 +51,10 @@ describe("buildTestEventDb", () => {
 
       expect(processEvents).toHaveBeenCalledWith(changeEvents)
     })
-    it("throws if the version not incremental", async () => {
+    it("throws if the eventId not incremental", async () => {
       const changeEventsToAdd = mockChangeEvents(2, [
-        { version: 3, aggregateId },
-        { version: 4, aggregateId },
+        { eventId: 3, aggregateId },
+        { eventId: 4, aggregateId },
       ])
       const Db = {}
       const { testEventDb } = setUp(Db)

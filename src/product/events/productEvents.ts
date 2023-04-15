@@ -10,7 +10,7 @@ export const buildProductEvents = () => {
   return {
     created: (product: Product): ProductCreatedEvent => {
       return {
-        version: 1,
+        eventId: 1,
         type: ProductCreatedEventType,
         aggregateId: product.id,
         date: Date.now().toString(),

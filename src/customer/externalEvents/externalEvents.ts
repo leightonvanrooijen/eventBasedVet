@@ -7,7 +7,7 @@ export type ExternalCustomerEvents = typeof externalCustomerEvents
 export const externalCustomerEvents = {
   created: (customer: Customer, version: number): ExternalCustomerCreatedEvent => {
     return {
-      version,
+      eventId: version,
       type: ExternalCustomerCreatedEventType,
       aggregateId: customer.id,
       date: Date.now().toString(),

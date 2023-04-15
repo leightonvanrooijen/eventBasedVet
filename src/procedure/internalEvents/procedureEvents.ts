@@ -19,7 +19,7 @@ export const buildProcedureEvents = () => {
   return {
     began: (procedure: Procedure): ProcedureBeganEvent => {
       return {
-        version: 1,
+        eventId: 1,
         type: ProcedureBeganEventType,
         aggregateId: procedure.id,
         date: Date.now().toString(),
@@ -30,7 +30,7 @@ export const buildProcedureEvents = () => {
     },
     goodConsumed: (procedureId: string, consumedGood: ConsumedGood, version: number): GoodsConsumedOnProcedureEvent => {
       return {
-        version,
+        eventId: version,
         type: GoodsConsumedOnProcedureEventType,
         aggregateId: procedureId,
         date: Date.now().toString(),
@@ -41,7 +41,7 @@ export const buildProcedureEvents = () => {
     },
     completed: (procedureId: string, version: number): ProcedureCompletedEvent => {
       return {
-        version,
+        eventId: version,
         type: ProcedureCompletedEventType,
         aggregateId: procedureId,
         date: Date.now().toString(),
@@ -52,7 +52,7 @@ export const buildProcedureEvents = () => {
     },
     externalCompleted: (procedure: Procedure, version: number): ExternalProcedureCompletedEvent => {
       return {
-        version,
+        eventId: version,
         type: ExternalProcedureCompletedEventType,
         aggregateId: procedure.id,
         date: Date.now().toString(),

@@ -32,12 +32,12 @@ export const buildProcedureRepo = ({
       const consumedGoodEvent = procedureEvents.goodConsumed(
         hydration.aggregate.id,
         consumedGood,
-        hydration.version + 1,
+        hydration.eventId + 1,
       )
       await db.saveEvents([consumedGoodEvent])
     },
     saveProcedureCompleted: async (procedure: Procedure, hydration: HydratedProcedure) => {
-      const version = hydration.version + 1
+      const version = hydration.eventId + 1
       const completedEvent = procedureEvents.completed(procedure.id, version)
 
       await db.saveEvents([completedEvent])

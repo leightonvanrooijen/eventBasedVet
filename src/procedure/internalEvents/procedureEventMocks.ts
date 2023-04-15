@@ -11,12 +11,12 @@ import {
   ProcedureEvents,
 } from "./procedureEvents"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
-import { getCurrentVersion } from "../../packages/eventSourcing/getCurrentVersion"
+import { getCurrentEventId } from "../../packages/eventSourcing/getCurrentEventId"
 
 export const procedureBeganEventMock = (overrides?: Partial<ProcedureBeganEvent>): ProcedureBeganEvent => {
   const id = overrides?.aggregateId ? overrides.aggregateId : faker.datatype.uuid()
   return {
-    version: 1,
+    eventId: 1,
     type: ProcedureBeganEventType,
     aggregateId: id,
     date: Date.now().toString(),
@@ -29,7 +29,7 @@ export const goodsConsumedOnProcedureEventMock = (
   overrides?: Partial<GoodsConsumedOnProcedureEvent>,
 ): GoodsConsumedOnProcedureEvent => {
   return {
-    version: faker.datatype.number(),
+    eventId: faker.datatype.number(),
     type: GoodsConsumedOnProcedureEventType,
     aggregateId: faker.datatype.uuid(),
     date: Date.now().toString(),
@@ -40,7 +40,7 @@ export const goodsConsumedOnProcedureEventMock = (
 
 export const procedureCompletedEventMock = (overrides?: Partial<ProcedureCompletedEvent>): ProcedureCompletedEvent => {
   return {
-    version: faker.datatype.number(),
+    eventId: faker.datatype.number(),
     type: ProcedureCompletedEventType,
     aggregateId: faker.datatype.uuid(),
     date: Date.now().toString(),
@@ -55,7 +55,7 @@ export const externalProcedureCompletedEventMock = (
   const id = overrides?.aggregateId ? overrides.aggregateId : faker.datatype.uuid()
 
   return {
-    version: faker.datatype.number(),
+    eventId: faker.datatype.number(),
     type: ProcedureCompletedEventType,
     aggregateId: id,
     date: Date.now().toString(),
@@ -70,13 +70,15 @@ export const internalProcedureMockEvents = {
     return events
   },
   addGoodsConsumed: (events: ProcedureEvents[], overrides?: Partial<GoodsConsumedOnProcedureEvent>) => {
-    const version = getCurrentVersion(events)
-    events.push(goodsConsumedOnProcedureEventMock({ ...overrides, aggregateId: events[0].aggregateId, version }))
+    const version = getCurrentEventId(events)
+    events.push(
+      goodsConsumedOnProcedureEventMock({ ...overrides, aggregateId: events[0].aggregateId, eventId: version }),
+    )
     return events
   },
   addCompleted: (events: ProcedureEvents[], overrides?: Partial<ProcedureCompletedEvent>) => {
-    const version = getCurrentVersion(events)
-    events.push(procedureCompletedEventMock({ ...overrides, aggregateId: events[0].aggregateId, version }))
+    const version = getCurrentEventId(events)
+    events.push(procedureCompletedEventMock({ ...overrides, aggregateId: events[0].aggregateId, eventId: version }))
     return events
   },
   adaptToEventStore: (events: ProcedureEvents[]) => {

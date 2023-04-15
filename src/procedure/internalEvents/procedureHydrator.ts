@@ -4,11 +4,11 @@ import { ProcedureEventChecker, ProcedureEvents } from "./procedureEvents"
 export type ProcedureHydrator = ReturnType<typeof buildProcedureHydrator>
 export type HydratedProcedure = Hydration<Procedure>
 export type Hydration<T extends Record<string, any>> = {
-  version: number
+  eventId: number
   aggregate: T
 }
 
-// TODO change version to event ID
+// TODO change eventId to event ID
 // TODO explore event ordering
 // TODO idempotency
 export const buildProcedureHydrator = ({
@@ -22,21 +22,21 @@ export const buildProcedureHydrator = ({
     if (procedureEventsChecker.isProcedureBeganEvent(event)) {
       const procedure = procedureActions.begin(event.data)
       return {
-        version: event.version,
+        eventId: event.eventId,
         aggregate: procedure,
       }
     }
     if (procedureEventsChecker.isGoodsConsumedOnProcedureEvent(event)) {
       const procedure = procedureActions.consumeGood({ procedure: state.aggregate, consumedGood: event.data })
       return {
-        version: event.version,
+        eventId: event.eventId,
         aggregate: procedure,
       }
     }
     if (procedureEventsChecker.isProcedureCompletedEventType(event)) {
       const procedure = procedureActions.complete({ procedure: state.aggregate })
       return {
-        version: event.version,
+        eventId: event.eventId,
         aggregate: procedure,
       }
     }

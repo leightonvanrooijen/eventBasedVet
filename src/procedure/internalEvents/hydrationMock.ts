@@ -5,7 +5,7 @@ export const hydrationMock = <T extends Record<string, any>>(
   overrides?: Partial<Hydration<T>>,
 ): Hydration<T> => {
   return {
-    version: 0,
+    eventId: 0,
     aggregate,
     ...overrides,
   }

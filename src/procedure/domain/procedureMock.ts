@@ -1,7 +1,7 @@
-import { Procedure } from "./procedure"
 import { faker } from "@faker-js/faker"
 import { consumedGoodMocks } from "./consumedGoodMock"
 import { makeMocks } from "../../packages/test/makeMocks"
+import { Procedure } from "./procedure"
 
 export const procedureMock = (overrides?: Partial<Procedure>): Procedure => {
   return {

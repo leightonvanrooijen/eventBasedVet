@@ -1,12 +1,12 @@
 import { mockChangeEvents } from "./changeEvent.mock"
-import { getCurrentVersion } from "./getCurrentVersion"
+import { getCurrentEventId } from "./getCurrentEventId"
 import { assertThat } from "mismatched"
 
 describe("getCurrentVersion", () => {
-  it("returns the version of the last event in the array", () => {
-    const events = mockChangeEvents(2, [{ version: 1 }, { version: 2 }])
+  it("returns the eventId of the last event in the array", () => {
+    const events = mockChangeEvents(2, [{ eventId: 1 }, { eventId: 2 }])
 
-    const version = getCurrentVersion(events)
+    const version = getCurrentEventId(events)
 
     assertThat(version).is(2)
   })
