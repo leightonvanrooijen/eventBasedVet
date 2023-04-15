@@ -15,7 +15,7 @@ export const makeCustomer = ({ id, name, type, customerId }: Customer): Customer
   if (!id) throw new Error("A Customer must have an id")
   if (!name) throw new Error("A Customer must have an name")
   if (!type) throw new Error("A Customer must have an type")
-  if (!customerId) throw new Error("A Customer must have an customerId")
+  if (!customerId) throw new Error("A Customer must have an aggregateId")
 
   return {
     id,

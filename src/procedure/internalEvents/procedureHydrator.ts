@@ -8,7 +8,6 @@ export type Hydration<T extends Record<string, any>> = {
   aggregate: T
 }
 
-// TODO change to Hydrator
 // TODO change version to event ID
 // TODO explore event ordering
 // TODO idempotency
