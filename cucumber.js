@@ -1,6 +1,6 @@
 module.exports = {
   default: {
-    paths: ["./src/**/acceptanceTests/**/?(*.)+feature.ts"],
+    paths: ["./src/**/acceptanceTests/**/?(*.)+feature"],
     requireModule: ["ts-node/register"],
     parallel: 1,
     // format: ["json:reports/report.cucumber.json", "summary"],

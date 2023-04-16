@@ -6,7 +6,7 @@ import { consumedGoodMock } from "../domain/consumedGoodMock"
 import { assertThat } from "mismatched"
 import { GoodsConsumedOnProcedureEventType } from "../repo/events/procedureEvents"
 
-When(/^a user consumes a good during a procedure$/, async function (this: CustomWorld) {
+When("a user consumes a good during a procedure", async function (this: CustomWorld) {
   this.procedureService.internalEventBroker.registerHandler(buildEventCatcher(this))
 
   const procedureId = faker.datatype.uuid()
@@ -17,6 +17,6 @@ When(/^a user consumes a good during a procedure$/, async function (this: Custom
 
   await this.procedureService.commands.consumeGood(procedureId, mockConsumedGood)
 })
-Then(/^the good is consumed$/, function () {
+Then("the good is consumed", function () {
   assertThat(this["events"][1].type).is(GoodsConsumedOnProcedureEventType)
 })

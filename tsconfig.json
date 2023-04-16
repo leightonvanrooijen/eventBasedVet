@@ -13,6 +13,8 @@
     "target": "ESNext",
     "declaration": true,
     "declarationDir": "./declarations",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   },
   "include": ["*"],
   "exclude": [

@@ -1,5 +1,5 @@
 import { IdempotencyEventFilter } from "./eventIdempotencyFilter"
-import { InvoiceExternalEvents } from "../../invoice/externalEvents/invoiceExternalEventHandler"
+import { InvoiceExternalEvents } from "../../invoice/externalInEvents/invoiceExternalEventHandler"
 
 export const buildExternalEventHandler = ({
   eventHandler,

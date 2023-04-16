@@ -22,8 +22,8 @@ export const buildCustomerUseCases = ({
       if (customerAdapters.isPerson(type)) {
         const person = await personRepo.get(aggregateId)
         if (!person) throw new Error("Person does not exist")
-
         const customerInput = customerAdapters.personToCustomerInput(person)
+
         const customer = customerActions.create(customerInput)
         return await customerRepo.create(customer)
       }
@@ -31,8 +31,8 @@ export const buildCustomerUseCases = ({
       if (customerAdapters.isOrganisation(type)) {
         const organisation = await organisationRepo.get(aggregateId)
         if (!organisation) throw new Error("Organisation does not exist")
-
         const customerInput = customerAdapters.organisationToCustomerInput(organisation)
+
         const customer = customerActions.create(customerInput)
         return await customerRepo.create(customer)
       }

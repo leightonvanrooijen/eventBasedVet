@@ -7,7 +7,7 @@ import { buildInvoiceCommands, invoiceAdapters } from "../commmands/invoiceComma
 import {
   buildInvoiceExternalEventHandler,
   buildInvoiceExternalEventHandlers,
-} from "../externalEvents/invoiceExternalEventHandler"
+} from "../externalInEvents/invoiceExternalEventHandler"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { v4 } from "uuid"
 import { buildInvoiceServiceHelpers } from "./buildInvoiceServiceHelpers"
