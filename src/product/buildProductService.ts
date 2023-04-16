@@ -6,12 +6,12 @@ import { buildProductActions } from "./domain/product"
 import { v4 } from "uuid"
 import { buildProductCommands } from "./commands/productCommands"
 
-export const setupProductService = (externalEventBroker: EventBroker) => {
+export const buildProductService = (externalEventBroker: EventBroker) => {
   const defaultProductStore = {}
-  const productDb = buildTestEventDb<ProductEvents>({ defaultStore: defaultProductStore })
-  const productRepo = buildProductRepo({ db: productDb })
-  const productActions = buildProductActions({ uuid: v4 })
+  const productDb = buildTestEventDb<ProductEvents>({ store: defaultProductStore })
   const productEvents = buildProductEvents()
+  const productRepo = buildProductRepo({ db: productDb, externalEventBroker, productEvents })
+  const productActions = buildProductActions({ uuid: v4 })
   const productCommands = buildProductCommands({
     productRepo,
     productActions,

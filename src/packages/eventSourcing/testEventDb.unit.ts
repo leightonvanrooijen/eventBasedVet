@@ -18,7 +18,7 @@ const overwrites: Partial<ChangeEvent<any>>[] = [
 
 describe("buildTestEventDb", () => {
   describe("saveEvents", () => {
-    it("creates and save events to the DB matching using eventId provided if one does not exist", async () => {
+    it("creates and saveCreated events to the DB matching using eventId provided if one does not exist", async () => {
       const Db = {}
       const changeEvents = mockChangeEvents(2, overwrites)
       const { testEventDb } = setUp(Db)
