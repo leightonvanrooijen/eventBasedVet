@@ -4,7 +4,7 @@ import { ProcedureEventChecker, ProcedureEvents } from "./procedureEvents"
 export type ProcedureHydrator = ReturnType<typeof buildProcedureHydrator>
 export type HydratedProcedure = Hydration<Procedure>
 export type Hydration<T extends Record<string, any>> = {
-  eventId: number
+  eventId: number | string
   aggregate: T
 }
 
@@ -18,35 +18,22 @@ export const buildProcedureHydrator = ({
   procedureActions: ProcedureActions
   procedureEventsChecker: ProcedureEventChecker
 }) => {
-  const apply = (state: HydratedProcedure, event: ProcedureEvents): HydratedProcedure => {
+  const apply = (state: Procedure, event: ProcedureEvents) => {
     if (procedureEventsChecker.isProcedureBeganEvent(event)) {
-      const procedure = procedureActions.begin(event.data)
-      return {
-        eventId: event.eventId,
-        aggregate: procedure,
-      }
+      return procedureActions.begin(event.data)
     }
     if (procedureEventsChecker.isGoodsConsumedOnProcedureEvent(event)) {
-      const procedure = procedureActions.consumeGood({ procedure: state.aggregate, consumedGood: event.data })
-      return {
-        eventId: event.eventId,
-        aggregate: procedure,
-      }
+      return procedureActions.consumeGood({ procedure: state, consumedGood: event.data })
     }
     if (procedureEventsChecker.isProcedureCompletedEventType(event)) {
-      const procedure = procedureActions.complete({ procedure: state.aggregate })
-      return {
-        eventId: event.eventId,
-        aggregate: procedure,
-      }
+      return procedureActions.complete({ procedure: state })
     }
   }
   return {
-    hydrate: (events: ProcedureEvents[]): HydratedProcedure => {
+    hydrate: (events: ProcedureEvents[]): Procedure => {
       return events.reduce((currentState, eventToApply: ProcedureEvents) => {
         return apply(currentState, eventToApply)
-      }, {} as HydratedProcedure)
-      // TODO add isProcedure check before returning
+      }, {} as Procedure)
     },
   }
 }

@@ -1,8 +1,6 @@
 import { ChangeEvent } from "./changeEvent.types"
 import { EventBroker } from "../events/eventBroker.types"
 import { buildEventBroker } from "../events/eventBroker"
-import { isVersioningIncremental } from "./isVersioningIncremental"
-import { getCurrentEventId } from "./getCurrentEventId"
 
 export type EventDb<Event extends Record<string, any>> = {
   saveEvents(events: Event[]): Promise<void>
@@ -22,19 +20,15 @@ export const buildTestEventDb = <Event extends ChangeEvent<any>>({
 } = {}): EventDb<Event> => {
   return {
     saveEvents: async (events) => {
-      const id = events[0].aggregateId
+      const aggregateId = events[0].aggregateId
 
-      const currentVersion = getCurrentEventId(store[id])
-      if (!isVersioningIncremental(currentVersion, events))
-        throw new Error(`Event versions must be incremental ${currentVersion} ${events[0].eventId}`)
-
-      if (!aggregateExistsInStore(store, id)) {
-        store[id] = events
+      if (!aggregateExistsInStore(store, aggregateId)) {
+        store[aggregateId] = events
         await eventBroker.processEvents(events)
         return
       }
 
-      store[id] = [...store[id], ...events]
+      store[aggregateId] = [...store[aggregateId], ...events]
       await eventBroker.processEvents(events)
 
       return

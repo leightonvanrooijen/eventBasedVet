@@ -1,5 +1,5 @@
 import { buildProcedureHydrator } from "./procedureHydrator"
-import { ProcedureActions } from "../domain/procedure"
+import { Procedure, ProcedureActions } from "../domain/procedure"
 import {
   goodsConsumedOnProcedureEventMock,
   procedureBeganEventMock,
@@ -32,9 +32,9 @@ describe("buildProcedureHydrator", () => {
 
       procedureActions.setup((f) => f.begin(mockEvent.data)).returns(() => result)
 
-      const projection = procedureProjection.hydrate([mockEvent])
+      const hydration = procedureProjection.hydrate([mockEvent])
 
-      assertThat(projection).is({ eventId: mockEvent.eventId, aggregate: result })
+      assertThat(hydration).is(result)
     })
     it("calls the create action if one is received", () => {
       const { procedureProjection, procedureActions } = setUp()
@@ -43,15 +43,15 @@ describe("buildProcedureHydrator", () => {
 
       procedureActions.setup((f) => f.begin(mockEvent.data)).returns(() => result)
 
-      const projection = procedureProjection.hydrate([mockEvent])
+      const hydration = procedureProjection.hydrate([mockEvent])
 
-      assertThat(projection).is({ eventId: mockEvent.eventId, aggregate: result })
+      assertThat(hydration).is(result)
     })
     it("calls the consume good  action if one is received", () => {
       const { procedureProjection, procedureActions } = setUp()
       const mockEvent = goodsConsumedOnProcedureEventMock()
 
-      procedureActions.setup((f) => f.consumeGood({ procedure: undefined, consumedGood: mockEvent.data }))
+      procedureActions.setup((f) => f.consumeGood({ procedure: {} as Procedure, consumedGood: mockEvent.data }))
 
       procedureProjection.hydrate([mockEvent])
     })
@@ -59,7 +59,7 @@ describe("buildProcedureHydrator", () => {
       const { procedureProjection, procedureActions } = setUp()
       const mockEvent = procedureCompletedEventMock()
 
-      procedureActions.setup((f) => f.complete({ procedure: undefined }))
+      procedureActions.setup((f) => f.complete({ procedure: {} as Procedure }))
 
       procedureProjection.hydrate([mockEvent])
     })

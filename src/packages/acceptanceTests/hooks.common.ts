@@ -18,30 +18,32 @@ Before({ tags: "@manual" }, async function () {
 })
 
 Before({ tags: "@procedure" }, async function (this: CustomWorld) {
-  const externaleventBroker = buildEventBroker()
-  const { procedureCommands, internaleventBroker, procedureDb, procedureProductDb } = buildProcedureService({
-    externaleventBroker,
+  const externalEventBroker = buildEventBroker()
+  const { procedureCommands, internalEventBroker, procedureDb, procedureProductDb } = buildProcedureService({
+    externalEventBroker,
   })
   const procedureMockGenerator = buildProcedureMockGenerator({ procedureDb, procedureProductDb })
 
   this.procedureService = {
     commands: procedureCommands,
-    externaleventBroker,
-    internaleventBroker,
+    externalEventBroker,
+    internalEventBroker: internalEventBroker,
     mocks: procedureMockGenerator,
   }
 })
 
 Before({ tags: "@invoice" }, async function (this: CustomWorld) {
-  const externaleventBroker = buildEventBroker()
+  const externalEventBroker = buildEventBroker()
 
-  const { invoiceCommands, invoiceHelpers, invoiceDb } = buildInvoiceService({ externaleventBroker })
+  const { invoiceCommands, invoiceHelpers, invoiceDb } = buildInvoiceService({
+    externalEventBroker: externalEventBroker,
+  })
 
   this.invoiceService = {
     commands: invoiceCommands,
     helpers: invoiceHelpers,
     db: invoiceDb,
-    externaleventBroker,
+    externalEventBroker: externalEventBroker,
   }
 })
 After({ tags: "@acceptance" }, async function () {})

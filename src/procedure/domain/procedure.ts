@@ -32,7 +32,7 @@ const addQuantityToExistingItem = (consumedGood: ConsumedGood, matching: Consume
 
 export type MakeProcedure = typeof makeProcedure
 export const makeProcedure = ({ id, name, goodsConsumed, status }: ProcedureProps): Procedure => {
-  if (!id) throw new Error("A Procedure must have an id")
+  if (!id) throw new Error("A Procedure must have an eventId")
   if (!name) throw new Error("A Procedure must have an name")
 
   return {

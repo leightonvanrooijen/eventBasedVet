@@ -6,7 +6,7 @@ import { buildEventCatcher } from "./buildEventCatcher"
 import { ProcedureBeganEventType } from "../internalEvents/procedureEvents"
 
 When("a user begins a procedure", async function (this: CustomWorld) {
-  this.procedureService.internaleventBroker.registerHandler(buildEventCatcher(this))
+  this.procedureService.internalEventBroker.registerHandler(buildEventCatcher(this))
   const input = procedureMock()
   await this.procedureService.commands.begin({ name: input.name })
 })

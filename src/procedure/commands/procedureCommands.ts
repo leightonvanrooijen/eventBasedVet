@@ -24,14 +24,14 @@ export const buildProcedureCommands = ({
 
       const hydration = await procedureRepo.get(procedureId)
 
-      procedureActions.consumeGood({ procedure: hydration.aggregate, consumedGood })
+      procedureActions.consumeGood({ procedure: hydration, consumedGood })
       await procedureRepo.saveGoodConsumed(hydration, consumedGood)
     },
     complete: async (procedureId: string) => {
       const hydration = await procedureRepo.get(procedureId)
 
-      const procedure = procedureActions.complete({ procedure: hydration.aggregate })
-      await procedureRepo.saveProcedureCompleted(procedure, hydration)
+      const procedure = procedureActions.complete({ procedure: hydration })
+      await procedureRepo.saveProcedureCompleted(procedure)
     },
   }
 }

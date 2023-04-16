@@ -1,5 +1,6 @@
 import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
 import { ConsumedGood, Procedure } from "../domain/procedure"
+import { Uuid } from "../../packages/uuid/uuid.types"
 
 export const ProcedureBeganEventType = "procedureBeganEvent"
 export type ProcedureBeganEvent = ChangeEvent<{ name: string }>
@@ -15,11 +16,11 @@ export type ProcedureEvents = ProcedureBeganEvent | GoodsConsumedOnProcedureEven
 
 export type ProcedureEventsMaker = ReturnType<typeof buildProcedureEvents>
 
-export const buildProcedureEvents = () => {
+export const buildProcedureEvents = ({ uuid }: { uuid: Uuid }) => {
   return {
     began: (procedure: Procedure): ProcedureBeganEvent => {
       return {
-        eventId: 1,
+        eventId: uuid(),
         type: ProcedureBeganEventType,
         aggregateId: procedure.id,
         date: Date.now().toString(),
@@ -28,9 +29,9 @@ export const buildProcedureEvents = () => {
         },
       }
     },
-    goodConsumed: (procedureId: string, consumedGood: ConsumedGood, version: number): GoodsConsumedOnProcedureEvent => {
+    goodConsumed: (procedureId: string, consumedGood: ConsumedGood): GoodsConsumedOnProcedureEvent => {
       return {
-        eventId: version,
+        eventId: uuid(),
         type: GoodsConsumedOnProcedureEventType,
         aggregateId: procedureId,
         date: Date.now().toString(),
@@ -39,9 +40,9 @@ export const buildProcedureEvents = () => {
         },
       }
     },
-    completed: (procedureId: string, version: number): ProcedureCompletedEvent => {
+    completed: (procedureId: string): ProcedureCompletedEvent => {
       return {
-        eventId: version,
+        eventId: uuid(),
         type: ProcedureCompletedEventType,
         aggregateId: procedureId,
         date: Date.now().toString(),
@@ -50,9 +51,9 @@ export const buildProcedureEvents = () => {
         },
       }
     },
-    externalCompleted: (procedure: Procedure, version: number): ExternalProcedureCompletedEvent => {
+    externalCompleted: (procedure: Procedure): ExternalProcedureCompletedEvent => {
       return {
-        eventId: version,
+        eventId: uuid(),
         type: ExternalProcedureCompletedEventType,
         aggregateId: procedure.id,
         date: Date.now().toString(),

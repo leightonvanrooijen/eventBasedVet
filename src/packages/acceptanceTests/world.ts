@@ -8,14 +8,14 @@ import { DataStore } from "../db/testDB"
 import { Invoice } from "../../invoice/domain/invoice"
 
 export type ProcedureService = {
-  externaleventBroker: EventBroker
-  internaleventBroker: EventBroker
+  externalEventBroker: EventBroker
+  internalEventBroker: EventBroker
   commands: ProcedureCommands
   mocks: ProcedureMockGenerator
 }
 
 export type InvoiceService = {
-  externaleventBroker: EventBroker
+  externalEventBroker: EventBroker
   commands: InvoiceCommands
   helpers: InvoiceServiceHelpers
   db: DataStore<Invoice>

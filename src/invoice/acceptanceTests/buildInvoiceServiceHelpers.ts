@@ -11,14 +11,14 @@ export type InvoiceServiceHelpers = ReturnType<typeof buildInvoiceServiceHelpers
 
 export const buildInvoiceServiceHelpers = ({
   invoiceCommands,
-  externaleventBroker,
+  externalEventBroker,
 }: {
   invoiceCommands: InvoiceCommands
-  externaleventBroker: EventBroker
+  externalEventBroker: EventBroker
 }) => {
   const createProduct = async (overrides?: Partial<ProductCreatedEvent>) => {
     const productCreatedEvent = productCreatedEventMock(overrides)
-    await externaleventBroker.processEvents([productCreatedEvent])
+    await externalEventBroker.processEvents([productCreatedEvent])
     return productCreatedEvent
   }
 
@@ -36,7 +36,7 @@ export const buildInvoiceServiceHelpers = ({
       })
 
       const procedureCompletedEvent = externalProcedureCompletedEventMock({ data: mockProcedure, ...overrides })
-      await externaleventBroker.processEvents([procedureCompletedEvent])
+      await externalEventBroker.processEvents([procedureCompletedEvent])
 
       return { product1, product2, procedureCompletedEvent }
     },

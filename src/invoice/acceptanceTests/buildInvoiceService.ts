@@ -9,7 +9,7 @@ import { EventBroker } from "../../packages/events/eventBroker.types"
 import { v4 } from "uuid"
 import { buildInvoiceServiceHelpers } from "./buildInvoiceServiceHelpers"
 
-export const buildInvoiceService = ({ externaleventBroker }: { externaleventBroker: EventBroker }) => {
+export const buildInvoiceService = ({ externalEventBroker }: { externalEventBroker: EventBroker }) => {
   const invoiceProductDb = new TestDB<InvoiceProduct>([], "id")
   const invoiceProductRepo = buildInvoiceProductRepo({ db: invoiceProductDb })
 
@@ -23,9 +23,9 @@ export const buildInvoiceService = ({ externaleventBroker }: { externaleventBrok
     invoiceActions,
   })
   const invoiceExternalEventHandler = buildInvoiceExternalEventHandler({ invoiceProductRepo, invoiceCommands })
-  externaleventBroker.registerHandler(invoiceExternalEventHandler)
+  externalEventBroker.registerHandler(invoiceExternalEventHandler)
 
-  const invoiceHelpers = buildInvoiceServiceHelpers({ invoiceCommands, externaleventBroker })
+  const invoiceHelpers = buildInvoiceServiceHelpers({ invoiceCommands, externalEventBroker: externalEventBroker })
 
   return { invoiceCommands, invoiceRepo, invoiceProductRepo, invoiceHelpers, invoiceDb }
 }

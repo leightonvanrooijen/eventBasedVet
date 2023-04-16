@@ -7,7 +7,6 @@ import { Thespian } from "thespian"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
 import { invoiceProductMock } from "../../invoice/domain/invoiceMock"
 import { assertException } from "mismatched"
-import { hydrationMock } from "../internalEvents/hydrationMock"
 
 const setUp = () => {
   const thespian = new Thespian()
@@ -40,13 +39,12 @@ describe("buildProcedureCommands", () => {
       const procedure = procedureMock()
       const consumedGood = consumedGoodMock()
       const good = invoiceProductMock()
-      const hydration = hydrationMock(procedure, { eventId: 1 })
       const { commands, procedureRepo, procedureActions, procedureProductRepo } = setUp()
 
       procedureProductRepo.setup((f) => f.get(consumedGood.goodId)).returns(() => Promise.resolve(good))
-      procedureRepo.setup((f) => f.get(procedure.id)).returns(() => Promise.resolve(hydration))
+      procedureRepo.setup((f) => f.get(procedure.id)).returns(() => Promise.resolve(procedure))
       procedureActions.setup((f) => f.consumeGood({ procedure, consumedGood })).returns(() => procedure)
-      procedureRepo.setup((f) => f.saveGoodConsumed(hydration, consumedGood))
+      procedureRepo.setup((f) => f.saveGoodConsumed(procedure, consumedGood))
 
       await commands.consumeGood(procedure.id, consumedGood)
     })
@@ -65,12 +63,11 @@ describe("buildProcedureCommands", () => {
   describe("complete", () => {
     it("completes the procedure", async () => {
       const procedure = procedureMock()
-      const projection = hydrationMock(procedure, { eventId: 1 })
       const { commands, procedureRepo, procedureActions } = setUp()
 
-      procedureRepo.setup((f) => f.get(procedure.id)).returns(() => Promise.resolve(projection))
+      procedureRepo.setup((f) => f.get(procedure.id)).returns(() => Promise.resolve(procedure))
       procedureActions.setup((f) => f.complete({ procedure })).returns(() => procedure)
-      procedureRepo.setup((f) => f.saveProcedureCompleted(procedure, projection))
+      procedureRepo.setup((f) => f.saveProcedureCompleted(procedure))
 
       await commands.complete(procedure.id)
     })

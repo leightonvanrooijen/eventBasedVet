@@ -2,7 +2,7 @@ import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
 import { EventDb } from "../../packages/eventSourcing/testEventDb"
 import { ConsumedGood, Procedure } from "../domain/procedure"
 import { ProcedureEventsMaker } from "../internalEvents/procedureEvents"
-import { HydratedProcedure, ProcedureHydrator } from "../internalEvents/procedureHydrator"
+import { ProcedureHydrator } from "../internalEvents/procedureHydrator"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 
 export type ProcedureRepo = ReturnType<typeof buildProcedureRepo>
@@ -12,15 +12,15 @@ export const buildProcedureRepo = ({
   db,
   procedureEvents,
   procedureHydrator,
-  externaleventBroker,
+  externalEventBroker,
 }: {
   db: EventDb<ProcedureEvent>
   procedureEvents: ProcedureEventsMaker
   procedureHydrator: ProcedureHydrator
-  externaleventBroker: EventBroker
+  externalEventBroker: EventBroker
 }) => {
   return {
-    get: async (aggregateId: string): Promise<HydratedProcedure> => {
+    get: async (aggregateId: string): Promise<Procedure> => {
       const events = await db.getEvents(aggregateId)
       return procedureHydrator.hydrate(events)
     },
@@ -28,22 +28,17 @@ export const buildProcedureRepo = ({
       const beganEvent = procedureEvents.began(procedure)
       return db.saveEvents([beganEvent])
     },
-    saveGoodConsumed: async (hydration: HydratedProcedure, consumedGood: ConsumedGood) => {
-      const consumedGoodEvent = procedureEvents.goodConsumed(
-        hydration.aggregate.id,
-        consumedGood,
-        hydration.eventId + 1,
-      )
+    saveGoodConsumed: async (procedure: Procedure, consumedGood: ConsumedGood) => {
+      const consumedGoodEvent = procedureEvents.goodConsumed(procedure.id, consumedGood)
       await db.saveEvents([consumedGoodEvent])
     },
-    saveProcedureCompleted: async (procedure: Procedure, hydration: HydratedProcedure) => {
-      const version = hydration.eventId + 1
-      const completedEvent = procedureEvents.completed(procedure.id, version)
+    saveProcedureCompleted: async (procedure: Procedure) => {
+      const completedEvent = procedureEvents.completed(procedure.id)
 
       await db.saveEvents([completedEvent])
 
-      const externalCompletedEvent = procedureEvents.externalCompleted(procedure, version)
-      await externaleventBroker.processEvents([externalCompletedEvent])
+      const externalCompletedEvent = procedureEvents.externalCompleted(procedure)
+      await externalEventBroker.processEvents([externalCompletedEvent])
     },
   }
 }

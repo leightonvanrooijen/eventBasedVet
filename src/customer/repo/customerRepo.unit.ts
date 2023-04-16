@@ -4,14 +4,19 @@ import { Customer } from "../domain/customer"
 import { customerMock } from "../domain/customerMock"
 import { assertThat } from "mismatched"
 import { buildEventBroker } from "../../packages/events/eventBroker"
-import { ExternalCustomerCreatedEventType, externalCustomerEvents } from "../externalEvents/externalEvents"
+import { ExternalCustomerCreatedEventType, buildExternalCustomerEvents } from "../externalEvents/externalCustomerEvents"
+import { faker } from "@faker-js/faker"
 
 const setUp = (dataStore = []) => {
   const db = new TestDB<Customer>(dataStore, "id")
   const handler = jest.fn()
-  const externaleventBroker = buildEventBroker()
-  externaleventBroker.registerHandler(handler)
-  const repo = buildCustomerRepo({ db, externalCustomerEvents, externaleventBroker })
+  const externalEventBroker = buildEventBroker()
+  externalEventBroker.registerHandler(handler)
+  const repo = buildCustomerRepo({
+    db,
+    externalCustomerEvents: buildExternalCustomerEvents({ uuid: faker.datatype.uuid }),
+    externalEventBroker,
+  })
 
   return { repo, handler }
 }

@@ -8,19 +8,19 @@ export const buildProductCommands = ({
   productActions,
   productRepo,
   productEvents,
-  externaleventBroker,
+  externalEventBroker,
 }: {
   productActions: ProductActions
   productRepo: ProductRepo
   productEvents: ProductEventsMaker
-  externaleventBroker: EventBroker
+  externalEventBroker: EventBroker
 }) => {
   return {
     create: async (input: { name: string; price: number }) => {
       const product = productActions.create(input)
       const event = productEvents.created(product)
       await productRepo.save([event])
-      await externaleventBroker.processEvents([event])
+      await externalEventBroker.processEvents([event])
     },
   }
 }

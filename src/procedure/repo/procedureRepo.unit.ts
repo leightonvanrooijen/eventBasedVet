@@ -14,23 +14,22 @@ import { consumedGoodMock } from "../domain/consumedGoodMock"
 import { Thespian } from "thespian"
 import { pipe } from "ramda"
 import { internalProcedureMockEvents } from "../internalEvents/procedureEventMocks"
-import { hydrationMock } from "../internalEvents/hydrationMock"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 
 const setUp = (store = {}) => {
   const thespian = new Thespian()
   const db = buildTestEventDb({ store })
-  const procedureEvents = buildProcedureEvents()
-  const externaleventBroker = thespian.mock<EventBroker>()
+  const procedureEvents = buildProcedureEvents({ uuid: () => "123" })
+  const externalEventBroker = thespian.mock<EventBroker>()
   const procedureHydrator = thespian.mock<ProcedureHydrator>()
   const repo = buildProcedureRepo({
     db,
     procedureEvents,
     procedureHydrator: procedureHydrator.object,
-    externaleventBroker: externaleventBroker.object,
+    externalEventBroker: externalEventBroker.object,
   })
 
-  return { repo, procedureHydrator, externaleventBroker }
+  return { repo, procedureHydrator, externalEventBroker }
 }
 describe("buildProcedureRepo", () => {
   describe("get", () => {
@@ -40,7 +39,7 @@ describe("buildProcedureRepo", () => {
         internalProcedureMockEvents.addGoodsConsumed,
         internalProcedureMockEvents.addCompleted,
       )([])
-      const mockHydratedProcedure = hydrationMock(procedureMock())
+      const mockHydratedProcedure = procedureMock()
 
       const { repo, procedureHydrator } = setUp(internalProcedureMockEvents.adaptToEventStore(events))
 
@@ -67,11 +66,10 @@ describe("buildProcedureRepo", () => {
     it("saves a good consumed event", async () => {
       const store = {}
       const procedure = procedureMock()
-      const mockHydratedProcedure = hydrationMock(procedure, { eventId: 0 })
       const consumedGood = consumedGoodMock()
       const { repo } = setUp(store)
 
-      await repo.saveGoodConsumed(mockHydratedProcedure, consumedGood)
+      await repo.saveGoodConsumed(procedure, consumedGood)
       const savedEventType = store[procedure.id][0].type
 
       assertThat(savedEventType).is(GoodsConsumedOnProcedureEventType)
@@ -81,12 +79,11 @@ describe("buildProcedureRepo", () => {
     it("saves a procedure completed event", async () => {
       const store = {}
       const procedure = procedureMock()
-      const mockHydratedProcedure = hydrationMock(procedure, { eventId: 0 })
-      const { repo, externaleventBroker } = setUp(store)
+      const { repo, externalEventBroker } = setUp(store)
 
-      externaleventBroker.setup((f) => f.processEvents(match.any()))
+      externalEventBroker.setup((f) => f.processEvents(match.any()))
 
-      await repo.saveProcedureCompleted(procedure, mockHydratedProcedure)
+      await repo.saveProcedureCompleted(procedure)
       const savedEventType = store[procedure.id][0].type
 
       assertThat(savedEventType).is(ProcedureCompletedEventType)
@@ -94,12 +91,11 @@ describe("buildProcedureRepo", () => {
     it("fires a external procedure completed event", async () => {
       const store = {}
       const procedure = procedureMock()
-      const mockHydratedProcedure = hydrationMock(procedure, { eventId: 0 })
-      const { repo, externaleventBroker } = setUp(store)
+      const { repo, externalEventBroker } = setUp(store)
 
-      externaleventBroker.setup((f) => f.processEvents([match.obj.has({ type: ExternalProcedureCompletedEventType })]))
+      externalEventBroker.setup((f) => f.processEvents([match.obj.has({ type: ExternalProcedureCompletedEventType })]))
 
-      await repo.saveProcedureCompleted(procedure, mockHydratedProcedure)
+      await repo.saveProcedureCompleted(procedure)
     })
   })
 })

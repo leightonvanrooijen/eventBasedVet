@@ -14,6 +14,8 @@ export type InvoiceProcedureCompletedEvent = ExternalProcedureCompletedEvent
 
 export type InvoiceExternalEvents = InvoiceProductCreatedEvent | InvoiceProcedureCompletedEvent
 
+export const eventUniquenessChecker = (events: ChangeEvent<any>) => {}
+
 export const buildInvoiceExternalEventHandler = ({
   invoiceProductRepo,
   invoiceCommands,

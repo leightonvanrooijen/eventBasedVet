@@ -7,7 +7,7 @@ import { assertThat } from "mismatched"
 import { GoodsConsumedOnProcedureEventType } from "../internalEvents/procedureEvents"
 
 When(/^a user consumes a good during a procedure$/, async function (this: CustomWorld) {
-  this.procedureService.internaleventBroker.registerHandler(buildEventCatcher(this))
+  this.procedureService.internalEventBroker.registerHandler(buildEventCatcher(this))
 
   const procedureId = faker.datatype.uuid()
   await this.procedureService.mocks.beginProcedure({ aggregateId: procedureId })

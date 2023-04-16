@@ -11,7 +11,7 @@ const mockEventData = () => {
 export const mockChangeEvent = (overwrites?: Partial<ChangeEvent<any>>): ChangeEvent<any> => {
   return {
     type: "mock",
-    eventId: 1,
+    eventId: faker.datatype.uuid(),
     aggregateId: faker.datatype.uuid(),
     date: Date(),
     data: mockEventData(),
@@ -25,7 +25,7 @@ const changeEventMockForTyping = <T extends Record<string, any>>(
 ): ChangeEvent<ReturnType<typeof dataFn>> => {
   return {
     // Metadata
-    eventId: 1,
+    eventId: faker.datatype.uuid(),
     type: faker.name.jobType(),
     aggregateId: faker.datatype.uuid(),
     date: Date(),

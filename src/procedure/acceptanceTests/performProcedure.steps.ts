@@ -11,7 +11,7 @@ Given(/^a vet is preforming a procedure$/, async function (this: CustomWorld) {
   await this.procedureService.mocks.beginProcedure({ aggregateId: this["procedureId"] })
 
   this["productId"] = faker.datatype.uuid()
-  this.procedureService.internaleventBroker.registerHandler(buildEventCatcher(this))
+  this.procedureService.internalEventBroker.registerHandler(buildEventCatcher(this))
 })
 
 When(/^the vet consumes a good$/, async function (this: CustomWorld) {

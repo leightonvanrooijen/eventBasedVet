@@ -22,7 +22,7 @@ describe("customer", () => {
 
       assertThat(customer).throws()
     })
-    it("must have a id", () => {
+    it("must have a eventId", () => {
       const input = customerMock()
       const customer = () => makeCustomer({ ...input, id: "" })
 
