@@ -5,6 +5,7 @@ import {
   ExternalProcedureCompletedEventType,
 } from "../../procedure/repo/events/procedureEvents"
 import { InvoiceCommands } from "../commmands/invoiceCommands"
+import { buildExternalEventHandler } from "../../packages/events/buildExternalEventHandler"
 import { IdempotencyEventFilter } from "../../packages/events/eventIdempotencyFilter"
 
 export const InvoiceProductCreatedEventType = "productCreatedEvent"
@@ -15,23 +16,27 @@ export type InvoiceProcedureCompletedEvent = ExternalProcedureCompletedEvent
 
 export type InvoiceExternalEvents = InvoiceProductCreatedEvent | InvoiceProcedureCompletedEvent
 
+export type InvoiceExternalEventHandlers = ReturnType<typeof buildInvoiceExternalEventHandlers>
+export const buildInvoiceExternalEventHandlers =
+  ({
+    invoiceProductRepo,
+    invoiceCommands,
+  }: {
+    invoiceProductRepo: InvoiceProductRepo
+    invoiceCommands: InvoiceCommands
+  }) =>
+  async (event: InvoiceExternalEvents) => {
+    if (isInvoiceProductCreatedEvent(event)) await productCreated(event, invoiceProductRepo)
+    if (isInvoiceProcedureCompletedEvent(event)) await procedureCompleted(event, invoiceCommands)
+  }
+
 export const buildInvoiceExternalEventHandler = ({
-  invoiceProductRepo,
-  invoiceCommands,
+  eventHandler,
   idempotencyEventFilter,
 }: {
-  invoiceProductRepo: InvoiceProductRepo
-  invoiceCommands: InvoiceCommands
+  eventHandler: InvoiceExternalEventHandlers
   idempotencyEventFilter: IdempotencyEventFilter
-}) => {
-  return async function process(events: InvoiceExternalEvents[]) {
-    const filteredEvents = await idempotencyEventFilter(events)
-    for await (const event of filteredEvents) {
-      if (isInvoiceProductCreatedEvent(event)) await productCreated(event, invoiceProductRepo)
-      if (isInvoiceProcedureCompletedEvent(event)) await procedureCompleted(event, invoiceCommands)
-    }
-  }
-}
+}) => buildExternalEventHandler({ eventHandler, idempotencyEventFilter })
 
 const productCreated = async (event: InvoiceProductCreatedEvent, repo: InvoiceProductRepo) => {
   await repo.create({ ...event.data })

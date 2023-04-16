@@ -1,20 +1,27 @@
 import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"
 import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
-import { buildInvoiceExternalEventHandler } from "./invoiceExternalEventHandler"
+import { buildInvoiceExternalEventHandler, buildInvoiceExternalEventHandlers } from "./invoiceExternalEventHandler"
 import { Thespian } from "thespian"
 import { InvoiceCommands } from "../commmands/invoiceCommands"
 import { externalProcedureCompletedEventMock } from "../../procedure/repo/events/procedureEventMocks"
+import { buildEventIdempotencyFilter } from "../../packages/events/eventIdempotencyFilter"
+import { TestDB } from "../../packages/db/testDB"
 
 const setUp = () => {
   const thespian = new Thespian()
   const invoiceCommandsMock = thespian.mock<InvoiceCommands>()
 
   const invoiceProductRepoMock = thespian.mock<InvoiceProductRepo>("create")
+  const db = new TestDB<{ eventId: string }>([], "eventId")
 
-  const handler = buildInvoiceExternalEventHandler({
+  const externalEventHandler = buildInvoiceExternalEventHandlers({
     invoiceProductRepo: invoiceProductRepoMock.object,
     invoiceCommands: invoiceCommandsMock.object,
-    idempotencyEventFilter: (events) => Promise.resolve(events),
+  })
+
+  const handler = buildInvoiceExternalEventHandler({
+    eventHandler: externalEventHandler,
+    idempotencyEventFilter: buildEventIdempotencyFilter(db),
   })
   return { handler, invoiceProductRepoMock, invoiceCommandsMock }
 }

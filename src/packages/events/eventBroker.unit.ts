@@ -3,7 +3,7 @@ import { mockChangeEvents } from "../eventSourcing/changeEvent.mock"
 
 describe("buildEventBroker", () => {
   describe("registerHandler", () => {
-    it("should add the handler onto the array", () => {
+    it("should add the eventHandler onto the array", () => {
       const fakeHandler = (e) => Promise.resolve()
       const initialHandlers = []
       const eventConsumer = buildEventBroker(initialHandlers)
@@ -14,7 +14,7 @@ describe("buildEventBroker", () => {
     })
   })
   describe("process", () => {
-    it("call each handler with the events", async () => {
+    it("call each eventHandler with the events", async () => {
       const fakeEvents = mockChangeEvents(2)
       const fakeHandler = jest.fn((e) => Promise.resolve())
       const fakeHandler2 = jest.fn((e) => Promise.resolve())

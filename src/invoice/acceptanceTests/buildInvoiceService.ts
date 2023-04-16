@@ -4,7 +4,10 @@ import { buildInvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { buildInvoiceActions, Invoice } from "../domain/invoice"
 import { buildInvoiceRepo } from "../repo/invoiceRepo"
 import { buildInvoiceCommands, invoiceAdapters } from "../commmands/invoiceCommands"
-import { buildInvoiceExternalEventHandler } from "../externalEvents/invoiceExternalEventHandler"
+import {
+  buildInvoiceExternalEventHandler,
+  buildInvoiceExternalEventHandlers,
+} from "../externalEvents/invoiceExternalEventHandler"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { v4 } from "uuid"
 import { buildInvoiceServiceHelpers } from "./buildInvoiceServiceHelpers"
@@ -22,9 +25,14 @@ export const buildInvoiceService = ({ externalEventBroker }: { externalEventBrok
     productRepo: invoiceProductRepo,
     invoiceActions,
   })
-  const invoiceExternalEventHandler = buildInvoiceExternalEventHandler({
+
+  const eventHandler = buildInvoiceExternalEventHandlers({
     invoiceProductRepo,
     invoiceCommands,
+  })
+
+  const invoiceExternalEventHandler = buildInvoiceExternalEventHandler({
+    eventHandler: eventHandler,
     idempotencyEventFilter: (events) => Promise.resolve(events), // TODO add this in when we test idempotency
   })
   externalEventBroker.registerHandler(invoiceExternalEventHandler)
