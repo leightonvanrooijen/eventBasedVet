@@ -18,7 +18,7 @@ export const buildInvoiceServiceHelpers = ({
 }) => {
   const createProduct = async (overrides?: Partial<ProductCreatedEvent>) => {
     const productCreatedEvent = productCreatedEventMock(overrides)
-    await externalEventBroker.processEvents([productCreatedEvent])
+    await externalEventBroker.process([productCreatedEvent])
     return productCreatedEvent
   }
 
@@ -36,7 +36,7 @@ export const buildInvoiceServiceHelpers = ({
       })
 
       const procedureCompletedEvent = externalProcedureCompletedEventMock({ data: mockProcedure, ...overrides })
-      await externalEventBroker.processEvents([procedureCompletedEvent])
+      await externalEventBroker.process([procedureCompletedEvent])
 
       return { product1, product2, procedureCompletedEvent }
     },

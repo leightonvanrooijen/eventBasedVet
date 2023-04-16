@@ -6,7 +6,7 @@ export const buildEventBroker = (initialHandlers: EventHandler[] = []): EventBro
     registerHandler: (handler: EventHandler) => {
       handlers.push(handler)
     },
-    processEvents: async (events: BrokerEvent[]) => {
+    process: async (events: BrokerEvent[]) => {
       for (const handler of handlers) {
         await handler(events)
       }

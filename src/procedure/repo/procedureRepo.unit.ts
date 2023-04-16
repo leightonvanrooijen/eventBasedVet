@@ -81,7 +81,7 @@ describe("buildProcedureRepo", () => {
       const procedure = procedureMock()
       const { repo, externalEventBroker } = setUp(store)
 
-      externalEventBroker.setup((f) => f.processEvents(match.any()))
+      externalEventBroker.setup((f) => f.process(match.any()))
 
       await repo.saveProcedureCompleted(procedure)
       const savedEventType = store[procedure.id][0].type
@@ -93,7 +93,7 @@ describe("buildProcedureRepo", () => {
       const procedure = procedureMock()
       const { repo, externalEventBroker } = setUp(store)
 
-      externalEventBroker.setup((f) => f.processEvents([match.obj.has({ type: ExternalProcedureCompletedEventType })]))
+      externalEventBroker.setup((f) => f.process([match.obj.has({ type: ExternalProcedureCompletedEventType })]))
 
       await repo.saveProcedureCompleted(procedure)
     })

@@ -20,7 +20,7 @@ export const buildProductCommands = ({
       const product = productActions.create(input)
       const event = productEvents.created(product)
       await productRepo.save([event])
-      await externalEventBroker.processEvents([event])
+      await externalEventBroker.process([event])
     },
   }
 }

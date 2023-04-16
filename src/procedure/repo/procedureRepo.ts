@@ -38,7 +38,7 @@ export const buildProcedureRepo = ({
       await db.saveEvents([completedEvent])
 
       const externalCompletedEvent = procedureEvents.externalCompleted(procedure)
-      await externalEventBroker.processEvents([externalCompletedEvent])
+      await externalEventBroker.process([externalCompletedEvent])
     },
   }
 }

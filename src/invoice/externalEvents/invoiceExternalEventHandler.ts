@@ -5,6 +5,7 @@ import {
   ExternalProcedureCompletedEventType,
 } from "../../procedure/internalEvents/procedureEvents"
 import { InvoiceCommands } from "../commmands/invoiceCommands"
+import { IdempotencyEventFilter } from "../../packages/events/eventIdempotencyFilter"
 
 export const InvoiceProductCreatedEventType = "productCreatedEvent"
 export type InvoiceProductCreatedEvent = ChangeEvent<{ name: string; price: number; id: string }>
@@ -14,17 +15,18 @@ export type InvoiceProcedureCompletedEvent = ExternalProcedureCompletedEvent
 
 export type InvoiceExternalEvents = InvoiceProductCreatedEvent | InvoiceProcedureCompletedEvent
 
-export const eventUniquenessChecker = (events: ChangeEvent<any>) => {}
-
 export const buildInvoiceExternalEventHandler = ({
   invoiceProductRepo,
   invoiceCommands,
+  idempotencyEventFilter,
 }: {
   invoiceProductRepo: InvoiceProductRepo
   invoiceCommands: InvoiceCommands
+  idempotencyEventFilter: IdempotencyEventFilter
 }) => {
   return async function process(events: InvoiceExternalEvents[]) {
-    for await (const event of events) {
+    const filteredEvents = await idempotencyEventFilter(events)
+    for await (const event of filteredEvents) {
       if (isInvoiceProductCreatedEvent(event)) await productCreated(event, invoiceProductRepo)
       if (isInvoiceProcedureCompletedEvent(event)) await procedureCompleted(event, invoiceCommands)
     }

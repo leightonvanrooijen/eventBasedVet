@@ -8,7 +8,10 @@ describe("buildProcedureExternalEventHandler", () => {
   it("creates a product if the ProductCreatedEventType is received", async () => {
     const db = new TestDB<ProcedureProduct>([], "id")
     const procedureProductRepo = buildProcedureProductRepo({ db })
-    const handler = buildProcedureExternalEventHandler({ procedureProductRepo })
+    const handler = buildProcedureExternalEventHandler({
+      procedureProductRepo,
+      idempotencyEventFilter: (events) => Promise.resolve(events),
+    })
 
     const eventMock = productCreatedEventMock()
 

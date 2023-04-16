@@ -20,7 +20,6 @@ export class TestDB<T extends Record<string, any>> implements DataStore<T> {
 
   async get(keyValue: string): Promise<T | undefined> {
     const item = this.store.find((item) => item[this.key] === keyValue)
-    if (!item) throw new Error("Record does not exist")
     return Promise.resolve(item)
   }
 

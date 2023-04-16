@@ -7,7 +7,9 @@ export const buildCrudRepo = <T extends Record<string, any>>({ db }: { db: DataS
       return db.create(item)
     },
     get: async (id: string) => {
-      return db.get(id)
+      const item = db.get(id)
+      if (!item) throw new Error("Record does not exist")
+      return item
     },
     getByIds: async (ids: string[]) => {
       return db.getByIds(ids)

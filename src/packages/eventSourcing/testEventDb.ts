@@ -24,12 +24,12 @@ export const buildTestEventDb = <Event extends ChangeEvent<any>>({
 
       if (!aggregateExistsInStore(store, aggregateId)) {
         store[aggregateId] = events
-        await eventBroker.processEvents(events)
+        await eventBroker.process(events)
         return
       }
 
       store[aggregateId] = [...store[aggregateId], ...events]
-      await eventBroker.processEvents(events)
+      await eventBroker.process(events)
 
       return
     },

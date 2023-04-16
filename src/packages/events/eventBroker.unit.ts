@@ -22,7 +22,7 @@ describe("buildEventBroker", () => {
 
       eventConsumer.registerHandler(fakeHandler)
       eventConsumer.registerHandler(fakeHandler2)
-      await eventConsumer.processEvents(fakeEvents)
+      await eventConsumer.process(fakeEvents)
 
       expect(fakeHandler).toHaveBeenCalledWith(fakeEvents)
       expect(fakeHandler2).toHaveBeenCalledWith(fakeEvents)

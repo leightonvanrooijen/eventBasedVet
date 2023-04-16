@@ -17,7 +17,10 @@ export const buildProcedureService = ({ externalEventBroker }: { externalEventBr
 
   const procedureProductDb = new TestDB<ProcedureProduct>([], "id")
   const procedureProductRepo = buildProcedureProductRepo({ db: procedureProductDb })
-  const procedureExternalEventHandler = buildProcedureExternalEventHandler({ procedureProductRepo })
+  const procedureExternalEventHandler = buildProcedureExternalEventHandler({
+    procedureProductRepo,
+    idempotencyEventFilter: (events) => Promise.resolve(events),
+  })
 
   const procedureEvents = buildProcedureEvents({ uuid: v4 })
   const procedureEventsChecker = buildProcedureEventChecker()

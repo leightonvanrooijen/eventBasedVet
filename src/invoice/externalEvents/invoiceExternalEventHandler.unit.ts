@@ -14,6 +14,7 @@ const setUp = () => {
   const handler = buildInvoiceExternalEventHandler({
     invoiceProductRepo: invoiceProductRepoMock.object,
     invoiceCommands: invoiceCommandsMock.object,
+    idempotencyEventFilter: (events) => Promise.resolve(events),
   })
   return { handler, invoiceProductRepoMock, invoiceCommandsMock }
 }

@@ -22,7 +22,11 @@ export const buildInvoiceService = ({ externalEventBroker }: { externalEventBrok
     productRepo: invoiceProductRepo,
     invoiceActions,
   })
-  const invoiceExternalEventHandler = buildInvoiceExternalEventHandler({ invoiceProductRepo, invoiceCommands })
+  const invoiceExternalEventHandler = buildInvoiceExternalEventHandler({
+    invoiceProductRepo,
+    invoiceCommands,
+    idempotencyEventFilter: (events) => Promise.resolve(events), // TODO add this in when we test idempotency
+  })
   externalEventBroker.registerHandler(invoiceExternalEventHandler)
 
   const invoiceHelpers = buildInvoiceServiceHelpers({ invoiceCommands, externalEventBroker: externalEventBroker })

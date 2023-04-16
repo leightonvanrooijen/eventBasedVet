@@ -43,10 +43,10 @@ describe("buildTestEventDb", () => {
 
       expect(Db[aggregateId]).toEqual([...changeEvents, ...changeEventsToAdd])
     })
-    it("calls the event bus processEvents with the saved events", async () => {
+    it("calls the event bus process with the saved events", async () => {
       const processEvents = jest.fn()
       const changeEvents = mockChangeEvents(2, overwrites)
-      const { testEventDb } = setUp({}, { registerHandler: jest.fn(), processEvents })
+      const { testEventDb } = setUp({}, { registerHandler: jest.fn(), process: processEvents })
 
       await testEventDb.saveEvents(changeEvents)
 

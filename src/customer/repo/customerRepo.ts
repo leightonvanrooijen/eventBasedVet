@@ -17,7 +17,7 @@ export const buildCustomerRepo = ({
     create: async (customer: Customer) => {
       const createdCustomer = await db.create(customer)
       const createdEvent = externalCustomerEvents.created(createdCustomer)
-      await externalEventBroker.processEvents([createdEvent])
+      await externalEventBroker.process([createdEvent])
 
       return createdCustomer
     },

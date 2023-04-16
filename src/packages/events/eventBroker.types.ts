@@ -6,5 +6,5 @@ export type EventHandler = (events: BrokerEvent[]) => Promise<void>
 
 export type EventBroker = {
   registerHandler: (handler: EventHandler) => void
-  processEvents: (events: BrokerEvent[]) => Promise<void>
+  process: (events: BrokerEvent[]) => Promise<void>
 }
