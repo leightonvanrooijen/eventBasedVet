@@ -4,7 +4,7 @@ import { buildEventCatcher } from "./buildEventCatcher"
 import { faker } from "@faker-js/faker"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
 import { assertThat } from "mismatched"
-import { GoodsConsumedOnProcedureEventType, ProcedureCompletedEventType } from "../internalEvents/procedureEvents"
+import { GoodsConsumedOnProcedureEventType, ProcedureCompletedEventType } from "../repo/events/procedureEvents"
 
 Given(/^a vet is preforming a procedure$/, async function (this: CustomWorld) {
   this["procedureId"] = faker.datatype.uuid()

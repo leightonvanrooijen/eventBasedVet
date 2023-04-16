@@ -4,7 +4,7 @@ import { buildEventCatcher } from "./buildEventCatcher"
 import { faker } from "@faker-js/faker"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
 import { assertThat } from "mismatched"
-import { GoodsConsumedOnProcedureEventType } from "../internalEvents/procedureEvents"
+import { GoodsConsumedOnProcedureEventType } from "../repo/events/procedureEvents"
 
 When(/^a user consumes a good during a procedure$/, async function (this: CustomWorld) {
   this.procedureService.internalEventBroker.registerHandler(buildEventCatcher(this))

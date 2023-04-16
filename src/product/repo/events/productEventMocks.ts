@@ -1,5 +1,5 @@
 import { ProductCreatedEvent, ProductCreatedEventType } from "./productEvents"
-import { productMock } from "../domain/productMock"
+import { productMock } from "../../domain/productMock"
 import { faker } from "@faker-js/faker"
 
 export const productCreatedEventMock = (overrides?: Partial<ProductCreatedEvent>): ProductCreatedEvent => {

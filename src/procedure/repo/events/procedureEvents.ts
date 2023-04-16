@@ -1,6 +1,6 @@
-import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
-import { ConsumedGood, Procedure } from "../domain/procedure"
-import { Uuid } from "../../packages/uuid/uuid.types"
+import { ChangeEvent } from "../../../packages/eventSourcing/changeEvent.types"
+import { ConsumedGood, Procedure } from "../../domain/procedure"
+import { Uuid } from "../../../packages/uuid/uuid.types"
 
 export const ProcedureBeganEventType = "procedureBeganEvent"
 export type ProcedureBeganEvent = ChangeEvent<{ name: string }>

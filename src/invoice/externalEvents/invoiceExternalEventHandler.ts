@@ -3,7 +3,7 @@ import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import {
   ExternalProcedureCompletedEvent,
   ExternalProcedureCompletedEventType,
-} from "../../procedure/internalEvents/procedureEvents"
+} from "../../procedure/repo/events/procedureEvents"
 import { InvoiceCommands } from "../commmands/invoiceCommands"
 import { IdempotencyEventFilter } from "../../packages/events/eventIdempotencyFilter"
 

@@ -2,7 +2,7 @@ import { buildProcedureExternalEventHandler } from "./procedureExternalEventHand
 import { buildProcedureProductRepo } from "../repo/procedureProductRepo"
 import { TestDB } from "../../packages/db/testDB"
 import { ProcedureProduct } from "../domain/product/procedureProduct"
-import { productCreatedEventMock } from "../../product/events/productEventMocks"
+import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"
 
 describe("buildProcedureExternalEventHandler", () => {
   it("creates a product if the ProductCreatedEventType is received", async () => {

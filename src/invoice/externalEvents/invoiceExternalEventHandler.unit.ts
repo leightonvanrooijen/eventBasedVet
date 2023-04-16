@@ -1,9 +1,9 @@
-import { productCreatedEventMock } from "../../product/events/productEventMocks"
+import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"
 import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { buildInvoiceExternalEventHandler } from "./invoiceExternalEventHandler"
 import { Thespian } from "thespian"
 import { InvoiceCommands } from "../commmands/invoiceCommands"
-import { externalProcedureCompletedEventMock } from "../../procedure/internalEvents/procedureEventMocks"
+import { externalProcedureCompletedEventMock } from "../../procedure/repo/events/procedureEventMocks"
 
 const setUp = () => {
   const thespian = new Thespian()

@@ -6,14 +6,14 @@ import {
   GoodsConsumedOnProcedureEventType,
   ProcedureBeganEventType,
   ProcedureCompletedEventType,
-} from "../internalEvents/procedureEvents"
-import { ProcedureHydrator } from "../internalEvents/procedureHydrator"
+} from "./events/procedureEvents"
+import { ProcedureHydrator } from "./events/procedureHydrator"
 import { assertThat, match } from "mismatched"
 import { procedureMock } from "../domain/procedureMock"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
 import { Thespian } from "thespian"
 import { pipe } from "ramda"
-import { internalProcedureMockEvents } from "../internalEvents/procedureEventMocks"
+import { internalProcedureMockEvents } from "./events/procedureEventMocks"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 
 const setUp = (store = {}) => {

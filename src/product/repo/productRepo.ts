@@ -1,6 +1,6 @@
 import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
 import { EventDb } from "../../packages/eventSourcing/testEventDb"
-import { ProductEventsMaker } from "../events/productEvents"
+import { ProductEventsMaker } from "./events/productEvents"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { Product } from "../domain/product"
 

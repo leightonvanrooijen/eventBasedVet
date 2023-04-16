@@ -1,11 +1,11 @@
 import { buildProcedureHydrator } from "./procedureHydrator"
-import { Procedure, ProcedureActions } from "../domain/procedure"
+import { Procedure, ProcedureActions } from "../../domain/procedure"
 import {
   goodsConsumedOnProcedureEventMock,
   procedureBeganEventMock,
   procedureCompletedEventMock,
 } from "./procedureEventMocks"
-import { procedureMock } from "../domain/procedureMock"
+import { procedureMock } from "../../domain/procedureMock"
 import { buildProcedureEventChecker } from "./procedureEvents"
 import { Thespian } from "thespian"
 import { assertThat } from "mismatched"

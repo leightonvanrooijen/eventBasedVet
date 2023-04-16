@@ -1,6 +1,6 @@
 import { EventBroker } from "../packages/events/eventBroker.types"
 import { buildTestEventDb } from "../packages/eventSourcing/testEventDb"
-import { buildProductEvents, ProductEvents } from "./events/productEvents"
+import { buildProductEvents, ProductEvents } from "./repo/events/productEvents"
 import { buildProductRepo } from "./repo/productRepo"
 import { buildProductActions } from "./domain/product"
 import { v4 } from "uuid"

@@ -1,9 +1,9 @@
-import { ExternalProcedureCompletedEvent } from "../../procedure/internalEvents/procedureEvents"
-import { externalProcedureCompletedEventMock } from "../../procedure/internalEvents/procedureEventMocks"
+import { ExternalProcedureCompletedEvent } from "../../procedure/repo/events/procedureEvents"
+import { externalProcedureCompletedEventMock } from "../../procedure/repo/events/procedureEventMocks"
 import { InvoiceCommands } from "../commmands/invoiceCommands"
 import { EventBroker } from "../../packages/events/eventBroker.types"
-import { productCreatedEventMock } from "../../product/events/productEventMocks"
-import { ProductCreatedEvent } from "../../product/events/productEvents"
+import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"
+import { ProductCreatedEvent } from "../../product/repo/events/productEvents"
 import { procedureMock } from "../../procedure/domain/procedureMock"
 import { consumedGoodMocks } from "../../procedure/domain/consumedGoodMock"
 

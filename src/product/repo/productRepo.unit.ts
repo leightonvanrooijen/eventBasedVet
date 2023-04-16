@@ -1,4 +1,4 @@
-import { buildProductEvents, ProductCreatedEventType, ProductEvents } from "../events/productEvents"
+import { buildProductEvents, ProductCreatedEventType, ProductEvents } from "./events/productEvents"
 import { buildProductRepo } from "./productRepo"
 import { buildTestEventDb } from "../../packages/eventSourcing/testEventDb"
 import { buildEventBroker } from "../../packages/events/eventBroker"

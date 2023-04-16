@@ -1,5 +1,5 @@
-import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
-import { Product } from "../domain/product"
+import { ChangeEvent } from "../../../packages/eventSourcing/changeEvent.types"
+import { Product } from "../../domain/product"
 import { faker } from "@faker-js/faker"
 
 export const ProductCreatedEventType = "productCreatedEvent"
