@@ -11,8 +11,11 @@ export const buildProcedureHydrator = ({
   procedureEventsChecker: ProcedureEventChecker
 }) => {
   const apply = (state: Procedure, event: ProcedureEvents) => {
+    if (procedureEventsChecker.isProcedureCreateEvent(event)) {
+      return procedureActions.create({ ...event.data, id: event.aggregateId })
+    }
     if (procedureEventsChecker.isProcedureBeganEvent(event)) {
-      return procedureActions.begin(event.data)
+      return procedureActions.begin({ procedure: state })
     }
     if (procedureEventsChecker.isGoodsConsumedOnProcedureEvent(event)) {
       return procedureActions.consumeGood({ procedure: state, consumedGood: event.data })

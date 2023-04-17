@@ -22,7 +22,12 @@ export const buildProcedureRepo = ({
   return {
     get: async (aggregateId: string): Promise<Procedure> => {
       const events = await db.getEvents(aggregateId)
+      // TODO throw if it does not exist
       return procedureHydrator.hydrate(events)
+    },
+    saveProcedureCreated: async (procedure: Procedure) => {
+      const createdEvent = procedureEvents.created(procedure)
+      return db.saveEvents([createdEvent])
     },
     saveProcedureBegan: async (procedure: Procedure) => {
       const beganEvent = procedureEvents.began(procedure)

@@ -8,19 +8,25 @@ export type ConsumedGood = {
   businessFunction: "sell"
 }
 
+export type ProcedureStatuses = "active" | "complete" | "pending"
+
 export type Procedure = {
   id: string
   name: string
   goodsConsumed: ConsumedGood[]
   type: "procedure"
-  status: "active" | "complete"
+  status: ProcedureStatuses
+  animalId: string
+  appointmentId: string
 }
 
 export type ProcedureInput = {
-  id?: string
+  id: string
   name: string
   goodsConsumed: ConsumedGood[]
-  status?: "active" | "complete"
+  status: ProcedureStatuses
+  animalId: string
+  appointmentId: string
 }
 
 const addQuantityToExistingItem = (consumedGood: ConsumedGood, matching: ConsumedGood): ConsumedGood => {
@@ -31,24 +37,47 @@ const addQuantityToExistingItem = (consumedGood: ConsumedGood, matching: Consume
 }
 
 export type MakeProcedure = typeof makeProcedure
-export const makeProcedure = ({ id, name, goodsConsumed, status }: ProcedureInput): Procedure => {
-  if (!id) throw new Error("A Procedure must have an eventId")
+export const makeProcedure = ({
+  id,
+  name,
+  goodsConsumed,
+  status,
+  appointmentId,
+  animalId,
+}: ProcedureInput): Procedure => {
+  if (!id) throw new Error("A Procedure must have an id")
   if (!name) throw new Error("A Procedure must have an name")
+  if (!status) throw new Error("A Procedure must have an status")
+  if (!appointmentId) throw new Error("A Procedure must have an appointmentId")
+  if (!animalId) throw new Error("A Procedure must have an animalId")
 
   return {
     id,
     name,
     goodsConsumed: goodsConsumed ? goodsConsumed : [],
     type: "procedure",
-    status: status ? status : "active",
+    status: status,
+    animalId,
+    appointmentId,
   }
 }
 
 export type ProcedureActions = ReturnType<typeof buildProcedureActions>
 export const buildProcedureActions = ({ uuid, makeProcedure }: { uuid: Uuid; makeProcedure: MakeProcedure }) => {
   return {
-    begin: ({ name, id }: { name: string; id?: string }) => {
-      return makeProcedure({ name, goodsConsumed: [], id: id ? id : uuid() })
+    create: ({ name, id, appointmentId, animalId }: { name: string; id?: string; appointmentId: string; animalId }) => {
+      return makeProcedure({
+        name,
+        goodsConsumed: [],
+        id: id ? id : uuid(),
+        status: "pending",
+        animalId,
+        appointmentId,
+      })
+    },
+    begin: ({ procedure }: { procedure: Procedure }) => {
+      if (procedure.status === "active") throw new Error("Procedure has already begun")
+      return makeProcedure({ ...procedure, status: "active" })
     },
     consumeGood: ({ procedure, consumedGood }: { procedure: Procedure; consumedGood: ConsumedGood }) => {
       const foundIndex = procedure.goodsConsumed.findIndex((contained) => contained.goodId === consumedGood.goodId)

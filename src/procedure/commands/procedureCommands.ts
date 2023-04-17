@@ -14,8 +14,14 @@ export const buildProcedureCommands = ({
   procedureActions: ProcedureActions
 }) => {
   return {
-    begin: async ({ name }: { name: string }) => {
-      const procedure = procedureActions.begin({ name })
+    create: async (input: { name: string; id?: string; appointmentId: string; animalId }) => {
+      const procedure = procedureActions.create(input)
+      await procedureRepo.saveProcedureCreated(procedure)
+    },
+    begin: async ({ procedureId }: { procedureId: string }) => {
+      const hydration = await procedureRepo.get(procedureId)
+
+      const procedure = procedureActions.begin({ procedure: hydration })
       await procedureRepo.saveProcedureBegan(procedure)
     },
     consumeGood: async (procedureId: string, consumedGood: ConsumedGood) => {

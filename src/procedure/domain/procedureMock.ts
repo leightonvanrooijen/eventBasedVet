@@ -10,6 +10,8 @@ export const procedureMock = (overrides?: Partial<Procedure>): Procedure => {
     goodsConsumed: consumedGoodMocks(2),
     type: "procedure",
     status: faker.helpers.arrayElement(["active", "complete"]),
+    appointmentId: faker.datatype.uuid(),
+    animalId: faker.datatype.uuid(),
     ...overrides,
   }
 }

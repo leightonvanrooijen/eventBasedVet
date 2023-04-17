@@ -1,15 +1,24 @@
-import { Then, When } from "@cucumber/cucumber"
+import { Given, Then, When } from "@cucumber/cucumber"
 import { CustomWorld } from "../../packages/acceptanceTests/world"
 import { procedureMock } from "../domain/procedureMock"
 import { assertThat } from "mismatched"
 import { buildEventCatcher } from "./buildEventCatcher"
 import { ProcedureBeganEventType } from "../repo/events/procedureEvents"
 
-When("a user begins a procedure", async function (this: CustomWorld) {
-  this.procedureService.internalEventBroker.registerHandler(buildEventCatcher(this))
-  const input = procedureMock()
-  await this.procedureService.commands.begin({ name: input.name })
+Given("the procedure has been created", async function (this: CustomWorld) {
+  this["procedure"] = procedureMock()
+  await this.procedureService.commands.create({
+    id: this["procedure"].id,
+    animalId: this["procedure"].animalId,
+    name: this["procedure"].name,
+    appointmentId: this["procedure"].appointmentId,
+  })
 })
-Then("a procedure is began", function () {
+
+When("a user begins the procedure", async function (this: CustomWorld) {
+  this.procedureService.internalEventBroker.registerHandler(buildEventCatcher(this))
+  await this.procedureService.commands.begin({ procedureId: this["procedure"].id })
+})
+Then("the procedure is began", function () {
   assertThat(this["events"][0].type).is(ProcedureBeganEventType)
 })

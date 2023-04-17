@@ -1,6 +1,10 @@
 import { TestDB } from "../../packages/db/testDB"
 import { buildProcedureGoodRepo } from "../repo/procedureGoodRepo"
-import { buildProcedureExternalEventHandler, ProcedureGood } from "../externalInEvents/procedureExternalEventHandler"
+import {
+  buildProcedureExternalEventHandler,
+  ProcedureAnimal,
+  ProcedureGood,
+} from "../externalInEvents/procedureExternalEventHandler"
 import { buildProcedureEventChecker, buildProcedureEvents, ProcedureEvents } from "../repo/events/procedureEvents"
 import { buildProcedureActions, makeProcedure } from "../domain/procedure"
 import { buildProcedureHydrator } from "../repo/events/procedureHydrator"
@@ -10,14 +14,20 @@ import { buildProcedureCommands } from "../commands/procedureCommands"
 import { v4 } from "uuid"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { buildEventBroker } from "../../packages/events/eventBroker"
+import { buildProcedureAnimalRepo } from "../repo/procedureAnimalRepo"
 
 export const buildProcedureService = ({ externalEventBroker }: { externalEventBroker: EventBroker }) => {
   const internalEventBroker = buildEventBroker()
 
-  const procedureProductDb = new TestDB<ProcedureGood>([], "id")
-  const procedureProductRepo = buildProcedureGoodRepo({ db: procedureProductDb })
+  const procedureGoodDb = new TestDB<ProcedureGood>([], "id")
+  const procedureGoodRepo = buildProcedureGoodRepo({ db: procedureGoodDb })
+
+  const procedureAnimalDb = new TestDB<ProcedureAnimal>([], "id")
+  const procedureAnimalRepo = buildProcedureAnimalRepo({ db: procedureAnimalDb })
+
   const procedureExternalEventHandler = buildProcedureExternalEventHandler({
-    procedureGoodRepo: procedureProductRepo,
+    procedureGoodRepo,
+    procedureAnimalRepo,
     idempotencyEventFilter: (events) => Promise.resolve(events),
   })
 
@@ -26,6 +36,7 @@ export const buildProcedureService = ({ externalEventBroker }: { externalEventBr
   const procedureActions = buildProcedureActions({ uuid: v4, makeProcedure })
   const procedureProjector = buildProcedureHydrator({ procedureActions, procedureEventsChecker })
   const procedureDb = buildTestEventDb<ProcedureEvents>({ eventBroker: internalEventBroker })
+
   const procedureRepo = buildProcedureRepo({
     db: procedureDb,
     procedureHydrator: procedureProjector,
@@ -34,12 +45,12 @@ export const buildProcedureService = ({ externalEventBroker }: { externalEventBr
   })
 
   const procedureCommands = buildProcedureCommands({
-    procedureGoodRepo: procedureProductRepo,
+    procedureGoodRepo,
     procedureRepo,
     procedureActions,
   })
 
   externalEventBroker.registerHandler(procedureExternalEventHandler)
 
-  return { procedureCommands, internalEventBroker, procedureProductDb, procedureDb }
+  return { procedureCommands, internalEventBroker, procedureGoodDb, procedureDb }
 }

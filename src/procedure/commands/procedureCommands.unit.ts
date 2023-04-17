@@ -23,15 +23,33 @@ const setUp = () => {
   return { commands, procedureRepo, procedureActions, procedureGoodRepo: procedureProductRepo }
 }
 describe("buildProcedureCommands", () => {
+  describe("create", () => {
+    it("creates a procedure", async () => {
+      const procedure = procedureMock()
+      const input = {
+        name: procedure.name,
+        id: procedure.id,
+        appointmentId: procedure.appointmentId,
+        animalId: procedure.animalId,
+      }
+      const { commands, procedureRepo, procedureActions } = setUp()
+
+      procedureActions.setup((f) => f.create(input)).returns(() => procedure)
+      procedureRepo.setup((f) => f.saveProcedureCreated(procedure))
+
+      await commands.create(input)
+    })
+  })
   describe("begin", () => {
     it("begins a procedure", async () => {
       const procedure = procedureMock()
       const { commands, procedureRepo, procedureActions } = setUp()
 
-      procedureActions.setup((f) => f.begin({ name: procedure.name })).returns(() => procedure)
+      procedureActions.setup((f) => f.begin({ procedure })).returns(() => procedure)
+      procedureRepo.setup((f) => f.get(procedure.id)).returns(() => Promise.resolve(procedure))
       procedureRepo.setup((f) => f.saveProcedureBegan(procedure))
 
-      await commands.begin({ name: procedure.name })
+      await commands.begin({ procedureId: procedure.id })
     })
   })
   describe("consumeGood", () => {

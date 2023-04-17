@@ -19,10 +19,10 @@ Before({ tags: "@manual" }, async function () {
 
 Before({ tags: "@procedure" }, async function (this: CustomWorld) {
   const externalEventBroker = buildEventBroker()
-  const { procedureCommands, internalEventBroker, procedureDb, procedureProductDb } = buildProcedureService({
+  const { procedureCommands, internalEventBroker, procedureDb, procedureGoodDb } = buildProcedureService({
     externalEventBroker,
   })
-  const procedureMockGenerator = buildProcedureMockGenerator({ procedureDb, procedureGoodDb: procedureProductDb })
+  const procedureMockGenerator = buildProcedureMockGenerator({ procedureDb, procedureGoodDb: procedureGoodDb })
 
   this.procedureService = {
     commands: procedureCommands,

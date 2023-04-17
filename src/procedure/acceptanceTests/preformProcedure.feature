@@ -9,11 +9,13 @@ Feature: Vets can preform procedures
 
   @procedure
   Scenario: Create a new Procedure
-    When a user begins a procedure
-    Then a procedure is began
+    Given the procedure has been created
+    When a user begins the procedure
+    Then the procedure is began
 
   @procedure
   Scenario: Consuming goods during procedure
+    Given a vet is preforming a procedure
     When a user consumes a good during a procedure
     Then the good is consumed
 

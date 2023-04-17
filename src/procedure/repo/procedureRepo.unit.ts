@@ -6,6 +6,7 @@ import {
   GoodsConsumedOnProcedureEventType,
   ProcedureBeganEventType,
   ProcedureCompletedEventType,
+  ProcedureCreatedEventType,
 } from "./events/procedureEvents"
 import { ProcedureHydrator } from "./events/procedureHydrator"
 import { assertThat, match } from "mismatched"
@@ -48,6 +49,18 @@ describe("buildProcedureRepo", () => {
       const hydratedProcedure = await repo.get(events[0].aggregateId)
 
       assertThat(hydratedProcedure).is(mockHydratedProcedure)
+    })
+  })
+  describe("saveProcedureCreated", () => {
+    it("saves a procedure created event", async () => {
+      const store = {}
+      const procedure = procedureMock()
+      const { repo } = setUp(store)
+
+      await repo.saveProcedureCreated(procedure)
+      const savedEventType = store[procedure.id][0].type
+
+      assertThat(savedEventType).is(ProcedureCreatedEventType)
     })
   })
   describe("saveProcedureBegan", () => {

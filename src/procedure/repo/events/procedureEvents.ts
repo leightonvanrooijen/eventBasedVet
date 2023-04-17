@@ -2,8 +2,10 @@ import { ChangeEvent } from "../../../packages/eventSourcing/changeEvent.types"
 import { ConsumedGood, Procedure } from "../../domain/procedure"
 import { Uuid } from "../../../packages/uuid/uuid.types"
 
+export const ProcedureCreatedEventType = "procedureCreatedEvent"
+export type ProcedureCreatedEvent = ChangeEvent<{ name: string; appointmentId: string; animalId: string }>
 export const ProcedureBeganEventType = "procedureBeganEvent"
-export type ProcedureBeganEvent = ChangeEvent<{ name: string }>
+export type ProcedureBeganEvent = ChangeEvent<{ status: "active" }>
 export const GoodsConsumedOnProcedureEventType = "goodsConsumedOnProcedureEvent"
 export type GoodsConsumedOnProcedureEvent = ChangeEvent<ConsumedGood>
 export const ProcedureCompletedEventType = "procedureCompletedEvent"
@@ -12,12 +14,29 @@ export type ProcedureCompletedEvent = ChangeEvent<{ status: "complete" }>
 export const ExternalProcedureCompletedEventType = "procedureCompletedEvent"
 export type ExternalProcedureCompletedEvent = ChangeEvent<Procedure>
 
-export type ProcedureEvents = ProcedureBeganEvent | GoodsConsumedOnProcedureEvent | ProcedureCompletedEvent
+export type ProcedureEvents =
+  | ProcedureBeganEvent
+  | GoodsConsumedOnProcedureEvent
+  | ProcedureCompletedEvent
+  | ProcedureCreatedEvent
 
 export type ProcedureEventsMaker = ReturnType<typeof buildProcedureEvents>
 
 export const buildProcedureEvents = ({ uuid }: { uuid: Uuid }) => {
   return {
+    created: (procedure: Procedure): ProcedureCreatedEvent => {
+      return {
+        eventId: uuid(),
+        type: ProcedureCreatedEventType,
+        aggregateId: procedure.id,
+        date: Date.now().toString(),
+        data: {
+          name: procedure.name,
+          appointmentId: procedure.appointmentId,
+          animalId: procedure.animalId,
+        },
+      }
+    },
     began: (procedure: Procedure): ProcedureBeganEvent => {
       return {
         eventId: uuid(),
@@ -25,7 +44,7 @@ export const buildProcedureEvents = ({ uuid }: { uuid: Uuid }) => {
         aggregateId: procedure.id,
         date: Date.now().toString(),
         data: {
-          name: procedure.name,
+          status: "active",
         },
       }
     },
@@ -68,6 +87,8 @@ export const buildProcedureEvents = ({ uuid }: { uuid: Uuid }) => {
 export type ProcedureEventChecker = ReturnType<typeof buildProcedureEventChecker>
 export const buildProcedureEventChecker = () => {
   return {
+    isProcedureCreateEvent: (event: ProcedureEvents): event is ProcedureCreatedEvent =>
+      event.type === ProcedureCreatedEventType,
     isProcedureBeganEvent: (event: ProcedureEvents): event is ProcedureBeganEvent =>
       event.type === ProcedureBeganEventType,
     isGoodsConsumedOnProcedureEvent: (event: ProcedureEvents): event is GoodsConsumedOnProcedureEvent =>

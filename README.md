@@ -62,7 +62,6 @@ will be useful outside its own domain. A  product name is likely to be useful to
 because the name may be updated >yearly we can save a lot of network calls by just storing the useful product information
 within the procedure domain.
 
-Now consider 
 
 
 

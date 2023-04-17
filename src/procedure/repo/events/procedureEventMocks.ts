@@ -8,9 +8,28 @@ import {
   ProcedureBeganEventType,
   ProcedureCompletedEvent,
   ProcedureCompletedEventType,
+  ProcedureCreatedEvent,
+  ProcedureCreatedEventType,
   ProcedureEvents,
 } from "./procedureEvents"
 import { consumedGoodMock } from "../../domain/consumedGoodMock"
+
+export const procedureCreatedEventMock = (overrides?: Partial<ProcedureCreatedEvent>): ProcedureCreatedEvent => {
+  const id = overrides?.aggregateId ? overrides.aggregateId : faker.datatype.uuid()
+  const procedure = procedureMock()
+  return {
+    eventId: faker.datatype.uuid(),
+    type: ProcedureCreatedEventType,
+    aggregateId: id,
+    date: Date.now().toString(),
+    data: {
+      animalId: procedure.animalId,
+      appointmentId: procedure.appointmentId,
+      name: procedure.name,
+    },
+    ...overrides,
+  }
+}
 
 export const procedureBeganEventMock = (overrides?: Partial<ProcedureBeganEvent>): ProcedureBeganEvent => {
   const id = overrides?.aggregateId ? overrides.aggregateId : faker.datatype.uuid()
@@ -19,7 +38,7 @@ export const procedureBeganEventMock = (overrides?: Partial<ProcedureBeganEvent>
     type: ProcedureBeganEventType,
     aggregateId: id,
     date: Date.now().toString(),
-    data: procedureMock({ status: "active", id }),
+    data: { status: "active" },
     ...overrides,
   }
 }
