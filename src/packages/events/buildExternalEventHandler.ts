@@ -1,5 +1,5 @@
 import { IdempotencyEventFilter } from "./eventIdempotencyFilter"
-import { InvoiceExternalEvents } from "../../invoice/externalInEvents/invoiceExternalEventHandler"
+import { BrokerEvent } from "./eventBroker.types"
 
 export const buildExternalEventHandler = ({
   eventHandler,
@@ -8,7 +8,7 @@ export const buildExternalEventHandler = ({
   eventHandler: (event) => Promise<void>
   idempotencyEventFilter: IdempotencyEventFilter
 }) => {
-  return async function process(events: InvoiceExternalEvents[]) {
+  return async function process(events: BrokerEvent[]) {
     const filteredEvents = await idempotencyEventFilter(events)
     for await (const event of filteredEvents) {
       await eventHandler(event)

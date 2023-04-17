@@ -4,8 +4,8 @@ import { ProcedureEvents } from "../repo/events/procedureEvents"
 import { ProcedureBeganEvent } from "../repo/events/procedureEvents"
 import { procedureBeganEventMock } from "../repo/events/procedureEventMocks"
 
-import { ProcedureGood } from "../externalInEvents/procedureGood"
 import { procedureGoodMock } from "../externalInEvents/procedureGoodMock"
+import { ProcedureGood } from "../externalInEvents/procedureExternalEventHandler"
 
 export type ProcedureMockGenerator = ReturnType<typeof buildProcedureMockGenerator>
 export const buildProcedureMockGenerator = ({

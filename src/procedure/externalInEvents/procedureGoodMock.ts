@@ -1,5 +1,5 @@
-import { ProcedureGood } from "./procedureGood"
 import { faker } from "@faker-js/faker"
+import { ProcedureGood } from "./procedureExternalEventHandler"
 
 export const procedureGoodMock = (overrides?: Partial<ProcedureGood>): ProcedureGood => {
   return {

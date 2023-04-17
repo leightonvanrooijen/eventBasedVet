@@ -1,6 +1,6 @@
 import { TestDB } from "../../packages/db/testDB"
 import { buildProcedureGoodRepo } from "../repo/procedureGoodRepo"
-import { buildProcedureExternalEventHandler } from "../externalInEvents/procedureExternalEventHandler"
+import { buildProcedureExternalEventHandler, ProcedureGood } from "../externalInEvents/procedureExternalEventHandler"
 import { buildProcedureEventChecker, buildProcedureEvents, ProcedureEvents } from "../repo/events/procedureEvents"
 import { buildProcedureActions, makeProcedure } from "../domain/procedure"
 import { buildProcedureHydrator } from "../repo/events/procedureHydrator"
@@ -10,7 +10,6 @@ import { buildProcedureCommands } from "../commands/procedureCommands"
 import { v4 } from "uuid"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { buildEventBroker } from "../../packages/events/eventBroker"
-import { ProcedureGood } from "../externalInEvents/procedureGood"
 
 export const buildProcedureService = ({ externalEventBroker }: { externalEventBroker: EventBroker }) => {
   const internalEventBroker = buildEventBroker()
