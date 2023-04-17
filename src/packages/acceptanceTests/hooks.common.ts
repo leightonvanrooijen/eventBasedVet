@@ -22,7 +22,7 @@ Before({ tags: "@procedure" }, async function (this: CustomWorld) {
   const { procedureCommands, internalEventBroker, procedureDb, procedureProductDb } = buildProcedureService({
     externalEventBroker,
   })
-  const procedureMockGenerator = buildProcedureMockGenerator({ procedureDb, procedureProductDb })
+  const procedureMockGenerator = buildProcedureMockGenerator({ procedureDb, procedureGoodDb: procedureProductDb })
 
   this.procedureService = {
     commands: procedureCommands,

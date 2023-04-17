@@ -1,6 +1,5 @@
 import { TestDB } from "../../packages/db/testDB"
-import { ProcedureProduct } from "../externalInEvents/procedureProduct"
-import { buildProcedureProductRepo } from "../repo/procedureProductRepo"
+import { buildProcedureGoodRepo } from "../repo/procedureGoodRepo"
 import { buildProcedureExternalEventHandler } from "../externalInEvents/procedureExternalEventHandler"
 import { buildProcedureEventChecker, buildProcedureEvents, ProcedureEvents } from "../repo/events/procedureEvents"
 import { buildProcedureActions, makeProcedure } from "../domain/procedure"
@@ -11,14 +10,15 @@ import { buildProcedureCommands } from "../commands/procedureCommands"
 import { v4 } from "uuid"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { buildEventBroker } from "../../packages/events/eventBroker"
+import { ProcedureGood } from "../externalInEvents/procedureGood"
 
 export const buildProcedureService = ({ externalEventBroker }: { externalEventBroker: EventBroker }) => {
   const internalEventBroker = buildEventBroker()
 
-  const procedureProductDb = new TestDB<ProcedureProduct>([], "id")
-  const procedureProductRepo = buildProcedureProductRepo({ db: procedureProductDb })
+  const procedureProductDb = new TestDB<ProcedureGood>([], "id")
+  const procedureProductRepo = buildProcedureGoodRepo({ db: procedureProductDb })
   const procedureExternalEventHandler = buildProcedureExternalEventHandler({
-    procedureProductRepo,
+    procedureGoodRepo: procedureProductRepo,
     idempotencyEventFilter: (events) => Promise.resolve(events),
   })
 
@@ -35,7 +35,7 @@ export const buildProcedureService = ({ externalEventBroker }: { externalEventBr
   })
 
   const procedureCommands = buildProcedureCommands({
-    procedureProductRepo,
+    procedureGoodRepo: procedureProductRepo,
     procedureRepo,
     procedureActions,
   })

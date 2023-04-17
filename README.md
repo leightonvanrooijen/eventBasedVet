@@ -53,6 +53,20 @@ Currently the db handles the internal events on save
 
 ## Testing Boundaries
 
+## Storing domain representations vs fetching on use
+The choice between storing a representation of a domain object within another domain vs fetching the data on use largely
+depends on the rate in which the data changes in comparison to the consumer of the information.
+
+Consider product information used on a procedure. It's very unlikely that updates are made to the product information often that
+will be useful outside its own domain. A  product name is likely to be useful to other services such as procedures but
+because the name may be updated >yearly we can save a lot of network calls by just storing the useful product information
+within the procedure domain.
+
+Now consider 
+
+
+
+
 
 
 

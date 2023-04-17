@@ -1,16 +1,16 @@
 import { ProcedureRepo } from "../repo/procedureRepo"
 import { ConsumedGood, ProcedureActions } from "../domain/procedure"
-import { ProcedureProductRepo } from "../repo/procedureProductRepo"
+import { ProcedureGoodRepo } from "../repo/procedureGoodRepo"
 
 export type ProcedureCommands = ReturnType<typeof buildProcedureCommands>
 
 export const buildProcedureCommands = ({
   procedureRepo,
-  procedureProductRepo,
+  procedureGoodRepo,
   procedureActions,
 }: {
   procedureRepo: ProcedureRepo
-  procedureProductRepo: ProcedureProductRepo
+  procedureGoodRepo: ProcedureGoodRepo
   procedureActions: ProcedureActions
 }) => {
   return {
@@ -19,8 +19,8 @@ export const buildProcedureCommands = ({
       await procedureRepo.saveProcedureBegan(procedure)
     },
     consumeGood: async (procedureId: string, consumedGood: ConsumedGood) => {
-      const existingProduct = procedureProductRepo.get(consumedGood.goodId)
-      if (!existingProduct) throw new Error("The product being added does not exist")
+      const existingGood = procedureGoodRepo.get(consumedGood.goodId)
+      if (!existingGood) throw new Error("The product being added does not exist")
 
       const hydration = await procedureRepo.get(procedureId)
 

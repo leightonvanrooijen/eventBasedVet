@@ -2,25 +2,25 @@ import { buildProcedureCommands } from "./procedureCommands"
 import { ProcedureRepo } from "../repo/procedureRepo"
 import { ProcedureActions } from "../domain/procedure"
 import { procedureMock } from "../domain/procedureMock"
-import { ProcedureProductRepo } from "../repo/procedureProductRepo"
+import { ProcedureGoodRepo } from "../repo/procedureGoodRepo"
 import { Thespian } from "thespian"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
-import { invoiceProductMock } from "../../invoice/domain/invoiceMock"
 import { assertException } from "mismatched"
+import { procedureGoodMock } from "../externalInEvents/procedureGoodMock"
 
 const setUp = () => {
   const thespian = new Thespian()
   const procedureRepo = thespian.mock<ProcedureRepo>()
-  const procedureProductRepo = thespian.mock<ProcedureProductRepo>()
+  const procedureProductRepo = thespian.mock<ProcedureGoodRepo>()
   const procedureActions = thespian.mock<ProcedureActions>()
 
   const commands = buildProcedureCommands({
     procedureRepo: procedureRepo.object,
     procedureActions: procedureActions.object,
-    procedureProductRepo: procedureProductRepo.object,
+    procedureGoodRepo: procedureProductRepo.object,
   })
 
-  return { commands, procedureRepo, procedureActions, procedureProductRepo }
+  return { commands, procedureRepo, procedureActions, procedureGoodRepo: procedureProductRepo }
 }
 describe("buildProcedureCommands", () => {
   describe("begin", () => {
@@ -38,10 +38,10 @@ describe("buildProcedureCommands", () => {
     it("consumes a good", async () => {
       const procedure = procedureMock()
       const consumedGood = consumedGoodMock()
-      const good = invoiceProductMock()
-      const { commands, procedureRepo, procedureActions, procedureProductRepo } = setUp()
+      const good = procedureGoodMock()
+      const { commands, procedureRepo, procedureActions, procedureGoodRepo } = setUp()
 
-      procedureProductRepo.setup((f) => f.get(consumedGood.goodId)).returns(() => Promise.resolve(good))
+      procedureGoodRepo.setup((f) => f.get(consumedGood.goodId)).returns(() => Promise.resolve(good))
       procedureRepo.setup((f) => f.get(procedure.id)).returns(() => Promise.resolve(procedure))
       procedureActions.setup((f) => f.consumeGood({ procedure, consumedGood })).returns(() => procedure)
       procedureRepo.setup((f) => f.saveGoodConsumed(procedure, consumedGood))
@@ -51,9 +51,9 @@ describe("buildProcedureCommands", () => {
     it("throws if the good does not exist in the datastore", async () => {
       const procedure = procedureMock()
       const consumedGood = consumedGoodMock()
-      const { commands, procedureProductRepo } = setUp()
+      const { commands, procedureGoodRepo } = setUp()
 
-      procedureProductRepo.setup((f) => f.get(consumedGood.goodId)).returns(() => Promise.resolve(undefined))
+      procedureGoodRepo.setup((f) => f.get(consumedGood.goodId)).returns(() => Promise.resolve(undefined))
 
       const consumeGood = async () => commands.consumeGood(procedure.id, consumedGood)
 
