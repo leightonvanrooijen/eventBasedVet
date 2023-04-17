@@ -25,7 +25,7 @@ export const buildInvoiceServiceHelpers = ({
   return {
     createProduct,
     /**
-     * Creates products in data store then fires a procedure created event containing previously created products
+     * Creates products in data store then fires a procedure externalCreated event containing previously externalCreated products
      */
     completeProcedure: async (overrides?: Partial<ExternalProcedureCompletedEvent>) => {
       const { data: product1 } = await createProduct()

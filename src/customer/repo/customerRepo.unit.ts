@@ -4,7 +4,7 @@ import { Customer } from "../domain/customer"
 import { customerMock } from "../domain/customerMock"
 import { assertThat } from "mismatched"
 import { buildEventBroker } from "../../packages/events/eventBroker"
-import { ExternalCustomerCreatedEventType, buildExternalCustomerEvents } from "../externalEvents/externalCustomerEvents"
+import { ExternalCustomerCreatedEventType, buildCustomerEvents } from "./events/customerEvents"
 import { faker } from "@faker-js/faker"
 
 const setUp = (dataStore = []) => {
@@ -14,7 +14,7 @@ const setUp = (dataStore = []) => {
   externalEventBroker.registerHandler(handler)
   const repo = buildCustomerRepo({
     db,
-    externalCustomerEvents: buildExternalCustomerEvents({ uuid: faker.datatype.uuid }),
+    externalCustomerEvents: buildCustomerEvents({ uuid: faker.datatype.uuid }),
     externalEventBroker,
   })
 
@@ -40,7 +40,7 @@ describe("buildCustomerRepo", () => {
     })
   })
   describe("create", () => {
-    it("fires an external customer created event", async () => {
+    it("fires an external customer externalCreated event", async () => {
       const mock = customerMock()
 
       const { repo, handler } = setUp([])

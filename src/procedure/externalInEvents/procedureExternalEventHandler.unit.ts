@@ -1,7 +1,7 @@
 import { buildProcedureExternalEventHandler } from "./procedureExternalEventHandler"
 import { buildProcedureProductRepo } from "../repo/procedureProductRepo"
 import { TestDB } from "../../packages/db/testDB"
-import { ProcedureProduct } from "../domain/product/procedureProduct"
+import { ProcedureProduct } from "./procedureProduct"
 import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"
 
 describe("buildProcedureExternalEventHandler", () => {

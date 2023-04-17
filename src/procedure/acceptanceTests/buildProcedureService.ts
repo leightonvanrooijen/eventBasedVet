@@ -1,5 +1,5 @@
 import { TestDB } from "../../packages/db/testDB"
-import { ProcedureProduct } from "../domain/product/procedureProduct"
+import { ProcedureProduct } from "../externalInEvents/procedureProduct"
 import { buildProcedureProductRepo } from "../repo/procedureProductRepo"
 import { buildProcedureExternalEventHandler } from "../externalInEvents/procedureExternalEventHandler"
 import { buildProcedureEventChecker, buildProcedureEvents, ProcedureEvents } from "../repo/events/procedureEvents"

@@ -1,16 +1,16 @@
-import { buildExternalCustomerEvents, ExternalCustomerCreatedEventType } from "./externalCustomerEvents"
+import { buildCustomerEvents, ExternalCustomerCreatedEventType } from "./customerEvents"
 import { faker } from "@faker-js/faker"
-import { customerMock } from "../domain/customerMock"
+import { customerMock } from "../../domain/customerMock"
 import { assertThat, match } from "mismatched"
 
 describe("buildExternalCustomerEvents", () => {
   describe("created", () => {
-    it("returns a external customer created event", () => {
+    it("returns a external customer externalCreated event", () => {
       const id = faker.datatype.uuid()
-      const externalEvents = buildExternalCustomerEvents({ uuid: () => id })
+      const externalEvents = buildCustomerEvents({ uuid: () => id })
       const data = customerMock()
 
-      const event = externalEvents.created(data)
+      const event = externalEvents.externalCreated(data)
 
       assertThat(event).is({
         eventId: id,

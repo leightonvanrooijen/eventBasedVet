@@ -16,7 +16,7 @@ const setUp = () => {
 }
 describe("buildProductRepo", () => {
   describe("saveCreated", () => {
-    it("saves a product created event", async () => {
+    it("saves a product externalCreated event", async () => {
       const { repo, store } = setUp()
       const product = productMock()
 
@@ -24,7 +24,7 @@ describe("buildProductRepo", () => {
 
       assertThat(store[product.id][0].type).is(ProductCreatedEventType)
     })
-    it("calls the event broker with the product created event", async () => {
+    it("calls the event broker with the product externalCreated event", async () => {
       const { repo, externalEventBroker } = setUp()
       const handler = jest.fn()
       externalEventBroker.registerHandler(handler)

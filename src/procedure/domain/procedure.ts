@@ -16,7 +16,7 @@ export type Procedure = {
   status: "active" | "complete"
 }
 
-export type ProcedureProps = {
+export type ProcedureInput = {
   id?: string
   name: string
   goodsConsumed: ConsumedGood[]
@@ -31,7 +31,7 @@ const addQuantityToExistingItem = (consumedGood: ConsumedGood, matching: Consume
 }
 
 export type MakeProcedure = typeof makeProcedure
-export const makeProcedure = ({ id, name, goodsConsumed, status }: ProcedureProps): Procedure => {
+export const makeProcedure = ({ id, name, goodsConsumed, status }: ProcedureInput): Procedure => {
   if (!id) throw new Error("A Procedure must have an eventId")
   if (!name) throw new Error("A Procedure must have an name")
 

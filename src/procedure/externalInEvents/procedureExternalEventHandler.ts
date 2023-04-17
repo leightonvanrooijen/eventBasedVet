@@ -7,7 +7,7 @@ export type ProcedureProductCreatedEvent = ChangeEvent<{ name: string }>
 
 export type ProcedureExternalEvents = ProcedureProductCreatedEvent
 
-// TODO abstract out the filtering and looping
+// TODO replace with buildExternalEventHandler
 export const buildProcedureExternalEventHandler = ({
   procedureProductRepo,
   idempotencyEventFilter,
