@@ -1,17 +1,17 @@
 import { IWorldOptions, setWorldConstructor, World } from "@cucumber/cucumber"
 import { ProcedureCommands } from "../../procedure/commands/procedureCommands"
 import { EventBroker } from "../events/eventBroker.types"
-import { ProcedureMockGenerator } from "../../procedure/acceptanceTests/buildProcedureMockGenerator"
 import { InvoiceCommands } from "../../invoice/commmands/invoiceCommands"
 import { InvoiceServiceHelpers } from "../../invoice/acceptanceTests/buildInvoiceServiceHelpers"
 import { DataStore } from "../db/testDB"
 import { Invoice } from "../../invoice/domain/invoice"
+import { ProcedureServiceHelpers } from "../../procedure/acceptanceTests/buildProcedureServiceHelpers"
 
 export type ProcedureService = {
   externalEventBroker: EventBroker
   internalEventBroker: EventBroker
   commands: ProcedureCommands
-  mocks: ProcedureMockGenerator
+  helpers: ProcedureServiceHelpers
 }
 
 export type InvoiceService = {
@@ -24,7 +24,6 @@ export type InvoiceService = {
 export class CustomWorld extends World {
   procedureService: ProcedureService
   invoiceService: InvoiceService
-  // productService: ProductCommands
 
   constructor(options: IWorldOptions, procedureService: ProcedureService) {
     super(options)

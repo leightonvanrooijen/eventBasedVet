@@ -1,9 +1,9 @@
 import { After, Before, BeforeAll } from "@cucumber/cucumber"
 import { buildProcedureService } from "../../procedure/acceptanceTests/buildProcedureService"
 import { buildEventBroker } from "../events/eventBroker"
-import { buildProcedureMockGenerator } from "../../procedure/acceptanceTests/buildProcedureMockGenerator"
 import { CustomWorld } from "./world"
 import { buildInvoiceService } from "../../invoice/acceptanceTests/buildInvoiceService"
+import { buildProcedureServiceHelpers } from "../../procedure/acceptanceTests/buildProcedureServiceHelpers"
 
 Before({ tags: "@ignore" }, async function () {
   return "skipped"
@@ -22,13 +22,13 @@ Before({ tags: "@procedure" }, async function (this: CustomWorld) {
   const { procedureCommands, internalEventBroker, procedureDb, procedureGoodDb } = buildProcedureService({
     externalEventBroker,
   })
-  const procedureMockGenerator = buildProcedureMockGenerator({ procedureDb, procedureGoodDb: procedureGoodDb })
+  const procedureServiceHelpers = buildProcedureServiceHelpers({ procedureCommands, externalEventBroker })
 
   this.procedureService = {
     commands: procedureCommands,
     externalEventBroker,
     internalEventBroker: internalEventBroker,
-    mocks: procedureMockGenerator,
+    helpers: procedureServiceHelpers,
   }
 })
 
