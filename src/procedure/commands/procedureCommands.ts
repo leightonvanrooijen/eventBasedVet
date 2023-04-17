@@ -15,6 +15,9 @@ export const buildProcedureCommands = ({
 }) => {
   return {
     create: async (input: { name: string; id?: string; appointmentId: string; animalId }) => {
+      // check appointment exists - assuming this will actually come from an event
+      // check animal exists
+
       const procedure = procedureActions.create(input)
       await procedureRepo.saveProcedureCreated(procedure)
     },

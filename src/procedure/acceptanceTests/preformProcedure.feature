@@ -8,7 +8,12 @@ Feature: Vets can preform procedures
     Then the procedure is completed with the consumed goods on it
 
   @procedure
-  Scenario: Create a new Procedure
+  Scenario: Create a Procedure
+    When a user creates a procedure
+    Then the procedure is created
+
+  @procedure
+  Scenario: Begin a Procedure
     Given the procedure has been created
     When a user begins the procedure
     Then the procedure is began
