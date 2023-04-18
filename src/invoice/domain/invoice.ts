@@ -1,5 +1,6 @@
-import { InvoiceProduct } from "./product"
 import { Uuid } from "../../packages/uuid/uuid.types"
+import { InvoiceProduct } from "../externalInEvents/invoiceExternalEventHandler"
+import { append, lensProp, over } from "ramda"
 
 export type InvoiceOffer = {
   goodOffered: InvoiceProduct
@@ -18,14 +19,17 @@ export type InvoiceOrder = {
 
 export type Invoice = {
   id: string
+  customerId: string
   orders: InvoiceOrder[]
 }
-export const makeInvoice = ({ id, orders }: Invoice): Invoice => {
+export const makeInvoice = ({ id, orders, customerId }: Invoice): Invoice => {
   if (!id) throw new Error("An Invoice must contain an ID")
+  if (!customerId) throw new Error("An Invoice must contain an customerId")
   if (!Array.isArray(orders)) throw new Error("An Invoice order must be an array")
 
   return {
     id,
+    customerId,
     orders,
   }
 }
@@ -33,8 +37,15 @@ export const makeInvoice = ({ id, orders }: Invoice): Invoice => {
 export type InvoiceActions = ReturnType<typeof buildInvoiceActions>
 export const buildInvoiceActions = ({ uuid }: { uuid: Uuid }) => {
   return {
-    create: (order: InvoiceOrder) => {
-      return makeInvoice({ id: uuid(), orders: [order] })
+    create: (order: InvoiceOrder, customerId: string) => {
+      return makeInvoice({ id: uuid(), customerId, orders: [order] })
+    },
+    addOrder: (invoice: Invoice, order: InvoiceOrder) => {
+      const foundIndex = invoice.orders.findIndex((contained) => contained.aggregateId === order.aggregateId)
+
+      if (foundIndex >= 0) throw new Error("Order is already on the invoice")
+
+      return over(lensProp("orders"), append(order), invoice)
     },
   }
 }

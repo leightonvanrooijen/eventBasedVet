@@ -15,7 +15,7 @@ Feature: Vets can preform procedures
   @procedure
   Scenario: Begin a Procedure
     Given the procedure has been created
-    When a user begins the procedure
+    When a vet begins the procedure
     Then the procedure is began
 
   @procedure

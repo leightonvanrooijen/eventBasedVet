@@ -6,21 +6,24 @@ import { ProcedureGoodRepo } from "../repo/procedureGoodRepo"
 import { Thespian } from "thespian"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
 import { assertException } from "mismatched"
-import { procedureGoodMock } from "../externalInEvents/procedureGoodMock"
+import { procedureAnimalMock, procedureGoodMock } from "../externalInEvents/procedureExternalInMocks"
+import { ProcedureAnimalRepo } from "../repo/procedureAnimalRepo"
 
 const setUp = () => {
   const thespian = new Thespian()
   const procedureRepo = thespian.mock<ProcedureRepo>()
-  const procedureProductRepo = thespian.mock<ProcedureGoodRepo>()
+  const procedureGoodRepo = thespian.mock<ProcedureGoodRepo>()
+  const procedureAnimalRepo = thespian.mock<ProcedureAnimalRepo>()
   const procedureActions = thespian.mock<ProcedureActions>()
 
   const commands = buildProcedureCommands({
     procedureRepo: procedureRepo.object,
     procedureActions: procedureActions.object,
-    procedureGoodRepo: procedureProductRepo.object,
+    procedureGoodRepo: procedureGoodRepo.object,
+    procedureAnimalRepo: procedureAnimalRepo.object,
   })
 
-  return { commands, procedureRepo, procedureActions, procedureGoodRepo: procedureProductRepo }
+  return { commands, procedureRepo, procedureActions, procedureGoodRepo, procedureAnimalRepo }
 }
 describe("buildProcedureCommands", () => {
   describe("create", () => {
@@ -32,12 +35,29 @@ describe("buildProcedureCommands", () => {
         appointmentId: procedure.appointmentId,
         animalId: procedure.animalId,
       }
-      const { commands, procedureRepo, procedureActions } = setUp()
+      const { commands, procedureRepo, procedureActions, procedureAnimalRepo } = setUp()
 
+      procedureAnimalRepo.setup((f) => f.get(procedure.animalId)).returns(() => Promise.resolve(procedureAnimalMock()))
       procedureActions.setup((f) => f.create(input)).returns(() => procedure)
       procedureRepo.setup((f) => f.saveProcedureCreated(procedure))
 
       await commands.create(input)
+    })
+    it("throws if the animal does not exist", async () => {
+      const procedure = procedureMock()
+      const input = {
+        name: procedure.name,
+        id: procedure.id,
+        appointmentId: procedure.appointmentId,
+        animalId: procedure.animalId,
+      }
+      const { commands, procedureAnimalRepo } = setUp()
+
+      procedureAnimalRepo.setup((f) => f.get(procedure.animalId)).returns(() => undefined)
+
+      const create = async () => commands.create(input)
+
+      assertException(create)
     })
   })
   describe("begin", () => {

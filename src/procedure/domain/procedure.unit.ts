@@ -67,7 +67,6 @@ describe("procedure", () => {
           ...input,
           status: "pending",
           goodsConsumed: [],
-          type: "procedure",
         })
       })
     })

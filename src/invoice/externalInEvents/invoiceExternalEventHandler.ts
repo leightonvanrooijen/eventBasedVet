@@ -1,18 +1,28 @@
 import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
 import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
-import {
-  ExternalProcedureCompletedEvent,
-  ExternalProcedureCompletedEventType,
-} from "../../procedure/repo/events/procedureEvents"
+import { ExternalProcedureCompletedEventType } from "../../procedure/repo/events/procedureEvents"
 import { InvoiceCommands } from "../commmands/invoiceCommands"
 import { buildExternalEventHandler } from "../../packages/events/buildExternalEventHandler"
 import { IdempotencyEventFilter } from "../../packages/events/eventIdempotencyFilter"
+import { ConsumedGood, ProcedureStatuses } from "../../procedure/domain/procedure"
 
+export type InvoiceProduct = { id: string; name: string; price: number }
+export type InvoiceAnimal = { id: string; name: string }
+export type InvoiceCustomer = { id: string; name: string; animals: InvoiceAnimal[] }
+
+export type InvoiceProcedure = {
+  id: string
+  name: string
+  goodsConsumed: ConsumedGood[]
+  status: ProcedureStatuses
+  animalId: string
+  appointmentId: string
+}
 export const InvoiceProductCreatedEventType = "productCreatedEvent"
 export type InvoiceProductCreatedEvent = ChangeEvent<{ name: string; price: number; id: string }>
 
 export const InvoiceProcedureCompletedEventType = ExternalProcedureCompletedEventType
-export type InvoiceProcedureCompletedEvent = ExternalProcedureCompletedEvent
+export type InvoiceProcedureCompletedEvent = ChangeEvent<InvoiceProcedure>
 
 export type InvoiceExternalEvents = InvoiceProductCreatedEvent | InvoiceProcedureCompletedEvent
 

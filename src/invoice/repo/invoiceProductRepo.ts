@@ -1,6 +1,6 @@
 import { DataStore } from "../../packages/db/testDB"
-import { InvoiceProduct } from "../domain/product"
 import { buildCrudRepo } from "../../packages/repo/buildCrudRepo"
+import { InvoiceProduct } from "../externalInEvents/invoiceExternalEventHandler"
 
 export type InvoiceProductRepo = ReturnType<typeof buildInvoiceProductRepo>
 

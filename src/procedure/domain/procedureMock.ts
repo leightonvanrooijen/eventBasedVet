@@ -8,7 +8,6 @@ export const procedureMock = (overrides?: Partial<Procedure>): Procedure => {
     id: faker.datatype.uuid(),
     name: faker.animal.cat(),
     goodsConsumed: consumedGoodMocks(2),
-    type: "procedure",
     status: faker.helpers.arrayElement(["active", "complete"]),
     appointmentId: faker.datatype.uuid(),
     animalId: faker.datatype.uuid(),

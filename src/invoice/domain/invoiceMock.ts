@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker"
 import { Invoice, InvoiceOffer, InvoiceOrder } from "./invoice"
-import { InvoiceProduct } from "./product"
 import { makeMocks } from "../../packages/test/makeMocks"
+import { InvoiceProduct } from "../externalInEvents/invoiceExternalEventHandler"
 
 export const invoiceProductMock = (overrides?: Partial<InvoiceProduct>): InvoiceProduct => {
   return {
@@ -43,6 +43,7 @@ export const invoiceOrdersMocks = makeMocks(invoiceOrdersMock)
 export const invoiceMock = (overrides?: Partial<Invoice>): Invoice => {
   return {
     id: faker.datatype.uuid(),
+    customerId: faker.datatype.uuid(),
     orders: invoiceOrdersMocks(2),
     ...overrides,
   }

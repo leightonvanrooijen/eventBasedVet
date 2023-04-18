@@ -14,7 +14,6 @@ export type Procedure = {
   id: string
   name: string
   goodsConsumed: ConsumedGood[]
-  type: "procedure"
   status: ProcedureStatuses
   animalId: string
   appointmentId: string
@@ -55,7 +54,6 @@ export const makeProcedure = ({
     id,
     name,
     goodsConsumed: goodsConsumed ? goodsConsumed : [],
-    type: "procedure",
     status: status,
     animalId,
     appointmentId,

@@ -1,22 +1,25 @@
 import { ProcedureRepo } from "../repo/procedureRepo"
 import { ConsumedGood, ProcedureActions } from "../domain/procedure"
 import { ProcedureGoodRepo } from "../repo/procedureGoodRepo"
+import { ProcedureAnimalRepo } from "../repo/procedureAnimalRepo"
 
 export type ProcedureCommands = ReturnType<typeof buildProcedureCommands>
 
 export const buildProcedureCommands = ({
   procedureRepo,
   procedureGoodRepo,
+  procedureAnimalRepo,
   procedureActions,
 }: {
   procedureRepo: ProcedureRepo
   procedureGoodRepo: ProcedureGoodRepo
+  procedureAnimalRepo: ProcedureAnimalRepo
   procedureActions: ProcedureActions
 }) => {
   return {
-    create: async (input: { name: string; id?: string; appointmentId: string; animalId }) => {
-      // check appointment exists - assuming this will actually come from an event
-      // check animal exists
+    create: async (input: { name: string; id?: string; appointmentId: string; animalId: string }) => {
+      const existingAnimal = procedureAnimalRepo.get(input.animalId)
+      if (!existingAnimal) throw new Error("The animal does not exist")
 
       const procedure = procedureActions.create(input)
       await procedureRepo.saveProcedureCreated(procedure)

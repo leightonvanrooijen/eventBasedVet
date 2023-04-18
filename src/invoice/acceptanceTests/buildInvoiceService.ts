@@ -1,5 +1,4 @@
 import { TestDB } from "../../packages/db/testDB"
-import { InvoiceProduct } from "../domain/product"
 import { buildInvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { buildInvoiceActions, Invoice } from "../domain/invoice"
 import { buildInvoiceRepo } from "../repo/invoiceRepo"
@@ -7,6 +6,7 @@ import { buildInvoiceCommands, invoiceAdapters } from "../commmands/invoiceComma
 import {
   buildInvoiceExternalEventHandler,
   buildInvoiceExternalEventHandlers,
+  InvoiceProduct,
 } from "../externalInEvents/invoiceExternalEventHandler"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { v4 } from "uuid"
