@@ -48,6 +48,7 @@ export const buildProcedureService = ({ externalEventBroker }: { externalEventBr
     procedureGoodRepo,
     procedureRepo,
     procedureActions,
+    procedureAnimalRepo,
   })
 
   externalEventBroker.registerHandler(procedureExternalEventHandler)

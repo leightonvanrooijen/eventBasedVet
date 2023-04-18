@@ -17,8 +17,9 @@ import { pipe } from "ramda"
 import { internalProcedureMockEvents } from "./events/procedureEventMocks"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 
+let thespian: Thespian
 const setUp = (store = {}) => {
-  const thespian = new Thespian()
+  thespian = new Thespian()
   const db = buildTestEventDb({ store })
   const procedureEvents = buildProcedureEvents({ uuid: () => "123" })
   const externalEventBroker = thespian.mock<EventBroker>()
@@ -32,6 +33,8 @@ const setUp = (store = {}) => {
 
   return { repo, procedureHydrator, externalEventBroker }
 }
+afterEach(() => thespian.verify())
+
 describe("buildProcedureRepo", () => {
   describe("get", () => {
     it("returns a hydrated procedure", async () => {

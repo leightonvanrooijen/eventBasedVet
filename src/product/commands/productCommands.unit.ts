@@ -18,6 +18,7 @@ describe("buildProductCommands", () => {
       productRepo.setup((f) => f.saveCreated(product))
 
       await commands.create(product)
+      thespian.verify()
     })
   })
 })

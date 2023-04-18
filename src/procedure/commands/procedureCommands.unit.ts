@@ -5,12 +5,12 @@ import { procedureMock } from "../domain/procedureMock"
 import { ProcedureGoodRepo } from "../repo/procedureGoodRepo"
 import { Thespian } from "thespian"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
-import { assertException } from "mismatched"
 import { procedureAnimalMock, procedureGoodMock } from "../externalInEvents/procedureExternalInMocks"
 import { ProcedureAnimalRepo } from "../repo/procedureAnimalRepo"
 
+let thespian: Thespian
 const setUp = () => {
-  const thespian = new Thespian()
+  thespian = new Thespian()
   const procedureRepo = thespian.mock<ProcedureRepo>()
   const procedureGoodRepo = thespian.mock<ProcedureGoodRepo>()
   const procedureAnimalRepo = thespian.mock<ProcedureAnimalRepo>()
@@ -25,6 +25,8 @@ const setUp = () => {
 
   return { commands, procedureRepo, procedureActions, procedureGoodRepo, procedureAnimalRepo }
 }
+afterEach(() => thespian.verify())
+
 describe("buildProcedureCommands", () => {
   describe("create", () => {
     it("creates a procedure", async () => {
@@ -57,7 +59,7 @@ describe("buildProcedureCommands", () => {
 
       const create = async () => commands.create(input)
 
-      assertException(create)
+      await expect(create).rejects.toThrow()
     })
   })
   describe("begin", () => {
@@ -95,7 +97,7 @@ describe("buildProcedureCommands", () => {
 
       const consumeGood = async () => commands.consumeGood(procedure.id, consumedGood)
 
-      assertException(consumeGood)
+      await expect(consumeGood).rejects.toThrow()
     })
   })
   describe("complete", () => {

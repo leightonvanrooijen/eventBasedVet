@@ -5,6 +5,8 @@ import { ProcedureAnimalRepo } from "../repo/procedureAnimalRepo"
 
 export type ProcedureCommands = ReturnType<typeof buildProcedureCommands>
 
+// TODO change repos to factory
+// TODO change naming of commands
 export const buildProcedureCommands = ({
   procedureRepo,
   procedureGoodRepo,

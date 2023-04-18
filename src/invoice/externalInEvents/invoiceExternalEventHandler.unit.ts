@@ -7,8 +7,9 @@ import { externalProcedureCompletedEventMock } from "../../procedure/repo/events
 import { buildEventIdempotencyFilter } from "../../packages/events/eventIdempotencyFilter"
 import { TestDB } from "../../packages/db/testDB"
 
+let thespian: Thespian
 const setUp = () => {
-  const thespian = new Thespian()
+  thespian = new Thespian()
   const invoiceCommandsMock = thespian.mock<InvoiceCommands>()
 
   const invoiceProductRepoMock = thespian.mock<InvoiceProductRepo>("create")
@@ -25,6 +26,7 @@ const setUp = () => {
   })
   return { handler, invoiceProductRepoMock, invoiceCommandsMock }
 }
+afterEach(() => thespian.verify())
 
 describe("buildInvoiceExternalEventHandler", () => {
   it("creates a product if the ProductCreatedEventType is received", async () => {

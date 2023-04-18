@@ -3,12 +3,15 @@ import { DataStore } from "../db/testDB"
 import { buildCrudRepo } from "./buildCrudRepo"
 import { assertThat } from "mismatched"
 
+let thespian: Thespian
 const setUp = () => {
-  const thespian = new Thespian()
+  thespian = new Thespian()
   const dbMock = thespian.mock<DataStore<{ id: string }>>()
 
   return { dbMock }
 }
+
+afterEach(() => thespian.verify())
 
 describe("buildCrudRepo", () => {
   describe("create", () => {

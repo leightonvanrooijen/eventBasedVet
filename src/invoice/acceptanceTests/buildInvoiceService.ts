@@ -6,11 +6,13 @@ import { buildInvoiceCommands, invoiceAdapters } from "../commmands/invoiceComma
 import {
   buildInvoiceExternalEventHandler,
   buildInvoiceExternalEventHandlers,
+  InvoiceCustomer,
   InvoiceProduct,
 } from "../externalInEvents/invoiceExternalEventHandler"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { v4 } from "uuid"
 import { buildInvoiceServiceHelpers } from "./buildInvoiceServiceHelpers"
+import { buildInvoiceCustomerRepo } from "../repo/invoiceCustomerRepo"
 
 export const buildInvoiceService = ({ externalEventBroker }: { externalEventBroker: EventBroker }) => {
   const invoiceProductDb = new TestDB<InvoiceProduct>([], "id")
@@ -18,12 +20,17 @@ export const buildInvoiceService = ({ externalEventBroker }: { externalEventBrok
 
   const invoiceDb = new TestDB<Invoice>([], "id")
   const invoiceRepo = buildInvoiceRepo({ db: invoiceDb })
+
+  const customerDb = new TestDB<InvoiceCustomer>([], "id")
+  const customerRepo = buildInvoiceCustomerRepo({ db: customerDb })
+
   const invoiceActions = buildInvoiceActions({ uuid: v4 })
   const invoiceCommands = buildInvoiceCommands({
     invoiceAdapters,
     invoiceRepo,
     productRepo: invoiceProductRepo,
     invoiceActions,
+    customerRepo,
   })
 
   const eventHandler = buildInvoiceExternalEventHandlers({

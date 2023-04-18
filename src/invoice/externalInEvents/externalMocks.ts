@@ -1,6 +1,8 @@
 import { InvoiceAnimal, InvoiceCustomer } from "./invoiceExternalEventHandler"
 import { faker } from "@faker-js/faker"
 import { makeMocks } from "../../packages/test/makeMocks"
+import { mockChangeEvent } from "../../packages/eventSourcing/changeEvent.mock"
+import { ExternalCustomerCreatedEvent } from "../../customer/repo/events/customerEvents"
 
 export const invoiceAnimalMock = (overrides?: Partial<InvoiceAnimal>): InvoiceAnimal => {
   return {
@@ -19,4 +21,10 @@ export const invoiceCustomerMock = (overrides?: Partial<InvoiceCustomer>): Invoi
     animals: invoiceAnimalMocks(2),
     ...overrides,
   }
+}
+
+export const invoiceCustomerCreatedEventMock = (
+  overrides?: Partial<ExternalCustomerCreatedEvent>,
+): ExternalCustomerCreatedEvent => {
+  return mockChangeEvent({ data: invoiceCustomerMock() })
 }

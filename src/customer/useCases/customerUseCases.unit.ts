@@ -7,10 +7,11 @@ import { customerPersonMock, CustomerPersonRepo } from "../repo/customerPersonRe
 import { customerOrganisationMock, CustomerOrganisationRepo } from "../repo/customerOrganisationRepo"
 import { faker } from "@faker-js/faker"
 import { customerMock } from "../domain/customerMock"
-import { assertException, assertThat, match } from "mismatched"
+import { assertThat, match } from "mismatched"
 
+let thespian: Thespian
 const setUp = () => {
-  const thespian = new Thespian()
+  thespian = new Thespian()
   const customerActions = thespian.mock<CustomerActions>()
   const customerRepo = thespian.mock<CustomerRepo>()
   const personRepo = thespian.mock<CustomerPersonRepo>()
@@ -31,6 +32,7 @@ const setUp = () => {
     customerUseCases,
   }
 }
+afterEach(() => thespian.verify())
 
 describe("buildCustomerUseCases", () => {
   describe("create", () => {
@@ -55,7 +57,7 @@ describe("buildCustomerUseCases", () => {
         personRepo.setup((f) => f.get(id)).returns(() => Promise.resolve(undefined))
         const customer = async () => customerUseCases.create({ type: "person", aggregateId: id })
 
-        assertException(customer)
+        await expect(customer).rejects.toThrow()
       })
     })
     describe("organisation type is supplied", () => {
@@ -79,7 +81,7 @@ describe("buildCustomerUseCases", () => {
         organisationRepo.setup((f) => f.get(id)).returns(() => Promise.resolve(undefined))
         const customer = async () => customerUseCases.create({ type: "organisation", aggregateId: id })
 
-        assertException(customer)
+        await expect(customer).rejects.toThrow()
       })
     })
   })

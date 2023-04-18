@@ -10,8 +10,9 @@ import { buildProcedureEventChecker } from "./procedureEvents"
 import { Thespian } from "thespian"
 import { assertThat, match } from "mismatched"
 
+let thespian: Thespian
 const setUp = () => {
-  const thespian = new Thespian()
+  thespian = new Thespian()
   const procedureActions = thespian.mock<ProcedureActions>()
   const procedureEventsChecker = buildProcedureEventChecker()
 
@@ -22,6 +23,7 @@ const setUp = () => {
 
   return { procedureProjection, procedureActions }
 }
+afterEach(() => thespian.verify())
 
 describe("buildProcedureHydrator", () => {
   describe("hydrate", () => {

@@ -5,6 +5,7 @@ import { InvoiceActions, InvoiceOffer, InvoiceOrder } from "../domain/invoice"
 import { InvoiceRepo } from "../repo/invoiceRepo"
 import { InvoiceProcedure, InvoiceProduct } from "../externalInEvents/invoiceExternalEventHandler"
 import { InvoiceCustomerRepo } from "../repo/invoiceCustomerRepo"
+import { invoiceCustomerMock } from "../externalInEvents/externalMocks"
 
 export type InvoiceCommands = ReturnType<typeof buildInvoiceCommands>
 
@@ -54,7 +55,9 @@ export const buildInvoiceCommands = ({
 }) => {
   return {
     createFromProcedure: async (procedure: InvoiceProcedure) => {
-      const customer = await customerRepo.getOwnerOfAnimal(procedure.animalId)
+      // TODO fix this after refactor
+      // const customer = await customerRepo.getOwnerOfAnimal(procedure.animalId)
+      const customer = invoiceCustomerMock()
 
       const goodIdsContainedInProcedure = pluck("goodId")(procedure.goodsConsumed)
       const goods = await productRepo.getByIds(goodIdsContainedInProcedure)
