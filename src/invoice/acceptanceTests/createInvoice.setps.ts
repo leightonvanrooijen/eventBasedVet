@@ -7,7 +7,7 @@ When("a procedure is completed", async function (this: CustomWorld) {
   this["product2"] = product2
 })
 Then("a invoice is generated containing the goods consumed on the procedure", async function (this: CustomWorld) {
-  const invoices = await this.invoiceService.db.getAll()
+  const invoices = await this.invoiceService.helpers.getAllInvoices()
 
   const offers = invoices[0].orders[0].offers
   const good = offers[1].goodOffered

@@ -1,7 +1,7 @@
 import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
 import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { ExternalProcedureCompletedEventType } from "../../procedure/repo/events/procedureEvents"
-import { InvoiceCommands } from "../commmands/invoiceCommands"
+import { InvoiceUseCases } from "../commmands/invoiceUseCases"
 import { buildExternalEventHandler } from "../../packages/events/buildExternalEventHandler"
 import { IdempotencyEventFilter } from "../../packages/events/eventIdempotencyFilter"
 import { ConsumedGood, ProcedureStatuses } from "../../procedure/domain/procedure"
@@ -33,7 +33,7 @@ export const buildInvoiceExternalEventHandlers =
     invoiceCommands,
   }: {
     invoiceProductRepo: InvoiceProductRepo
-    invoiceCommands: InvoiceCommands
+    invoiceCommands: InvoiceUseCases
   }) =>
   async (event: InvoiceExternalEvents) => {
     if (isInvoiceProductCreatedEvent(event)) await productCreated(event, invoiceProductRepo)
@@ -54,7 +54,7 @@ const productCreated = async (event: InvoiceProductCreatedEvent, repo: InvoicePr
 
 const isInvoiceProductCreatedEvent = (event: InvoiceExternalEvents): event is InvoiceProductCreatedEvent =>
   event.type === InvoiceProductCreatedEventType
-const procedureCompleted = async (event: InvoiceProcedureCompletedEvent, commands: InvoiceCommands) => {
+const procedureCompleted = async (event: InvoiceProcedureCompletedEvent, commands: InvoiceUseCases) => {
   await commands.createFromProcedure(event.data)
 }
 

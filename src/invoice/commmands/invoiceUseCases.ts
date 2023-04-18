@@ -1,13 +1,10 @@
 import { ConsumedGood, Procedure } from "../../procedure/domain/procedure"
 import { find, map, pluck, propEq } from "ramda"
-import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { InvoiceActions, InvoiceOffer, InvoiceOrder } from "../domain/invoice"
-import { InvoiceRepo } from "../repo/invoiceRepo"
 import { InvoiceProcedure, InvoiceProduct } from "../externalInEvents/invoiceExternalEventHandler"
-import { InvoiceCustomerRepo } from "../repo/invoiceCustomerRepo"
-import { invoiceCustomerMock } from "../externalInEvents/externalMocks"
+import { InvoiceRepos } from "../repo/invoiceRepoFactory"
 
-export type InvoiceCommands = ReturnType<typeof buildInvoiceCommands>
+export type InvoiceUseCases = ReturnType<typeof buildInvoiceUseCases>
 
 const adaptConsumedGoodToOffer = (consumedGood: ConsumedGood, good: InvoiceProduct): InvoiceOffer => {
   return {
@@ -40,36 +37,27 @@ export const invoiceAdapters = {
   procedureToOrder: adaptProcedureToOrder,
 }
 
-export const buildInvoiceCommands = ({
-  invoiceActions,
-  invoiceRepo,
-  customerRepo,
-  productRepo,
-  invoiceAdapters,
-}: {
-  invoiceActions: InvoiceActions
-  invoiceRepo: InvoiceRepo
-  customerRepo: InvoiceCustomerRepo
-  productRepo: InvoiceProductRepo
-  invoiceAdapters: InvoiceAdapters
-}) => {
+export const buildInvoiceUseCases = (
+  invoiceActions: InvoiceActions,
+  invoiceAdapters: InvoiceAdapters,
+  repos: InvoiceRepos,
+) => {
   return {
     createFromProcedure: async (procedure: InvoiceProcedure) => {
       // TODO fix this after refactor
-      // const customer = await customerRepo.getOwnerOfAnimal(procedure.animalId)
-      const customer = invoiceCustomerMock()
+      const customer = await repos.customer.getOwnerOfAnimal(procedure.animalId)
 
       const goodIdsContainedInProcedure = pluck("goodId")(procedure.goodsConsumed)
-      const goods = await productRepo.getByIds(goodIdsContainedInProcedure)
+      const goods = await repos.product.getByIds(goodIdsContainedInProcedure)
       const order = invoiceAdapters.procedureToOrder(procedure, goods)
 
       // if invoice exists add order to it
       // if not create a new one
-      const existingInvoice = await invoiceRepo.getInvoiceForCustomer(customer.id)
+      const existingInvoice = await repos.invoice.getInvoiceForCustomer(customer.id)
 
       if (!existingInvoice) {
         const invoice = invoiceActions.create(order, customer.id)
-        await invoiceRepo.create(invoice)
+        await repos.invoice.create(invoice)
         return
       }
     },

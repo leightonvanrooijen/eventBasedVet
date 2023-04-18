@@ -11,6 +11,9 @@ export const buildCrudRepo = <T extends Record<string, any>>({ db }: { db: DataS
       if (!item) throw new Error("Record does not exist")
       return item
     },
+    getAll: async () => {
+      return db.getAll()
+    },
     getByIds: async (ids: string[]) => {
       return db.getByIds(ids)
     },

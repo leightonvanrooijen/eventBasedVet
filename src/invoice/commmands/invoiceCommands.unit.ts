@@ -4,7 +4,7 @@ import { InvoiceRepo } from "../repo/invoiceRepo"
 import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { procedureMock } from "../../procedure/domain/procedureMock"
 import { invoiceMock, invoiceOrdersMock, invoiceProductMocks } from "../domain/invoiceMock"
-import { buildInvoiceCommands, InvoiceAdapters } from "./invoiceCommands"
+import { buildInvoiceUseCases, InvoiceAdapters } from "./invoiceUseCases"
 import { InvoiceCustomerRepo } from "../repo/invoiceCustomerRepo"
 import { invoiceCustomerMock } from "../externalInEvents/externalMocks"
 
@@ -15,15 +15,14 @@ const setUp = () => {
   const invoiceRepo = thespian.mock<InvoiceRepo>()
   const productRepo = thespian.mock<InvoiceProductRepo>()
   const customerRepo = thespian.mock<InvoiceCustomerRepo>()
+  const repos = {
+    invoice: invoiceRepo.object,
+    product: productRepo.object,
+    customer: customerRepo.object,
+  }
   const invoiceAdapters = thespian.mock<InvoiceAdapters>()
 
-  const invoiceCommands = buildInvoiceCommands({
-    invoiceActions: invoiceActions.object,
-    invoiceRepo: invoiceRepo.object,
-    productRepo: productRepo.object,
-    customerRepo: customerRepo.object,
-    invoiceAdapters: invoiceAdapters.object,
-  })
+  const invoiceCommands = buildInvoiceUseCases(invoiceActions.object, invoiceAdapters.object, repos)
 
   return { invoiceCommands, invoiceActions, invoiceRepo, productRepo, customerRepo, invoiceAdapters }
 }

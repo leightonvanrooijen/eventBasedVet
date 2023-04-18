@@ -1,21 +1,20 @@
 import { ExternalProcedureCompletedEvent } from "../../procedure/repo/events/procedureEvents"
 import { externalProcedureCompletedEventMock } from "../../procedure/repo/events/procedureEventMocks"
-import { InvoiceCommands } from "../commmands/invoiceCommands"
+import { InvoiceUseCases } from "../commmands/invoiceUseCases"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"
 import { ProductCreatedEvent } from "../../product/repo/events/productEvents"
 import { procedureMock } from "../../procedure/domain/procedureMock"
 import { consumedGoodMocks } from "../../procedure/domain/consumedGoodMock"
+import { InvoiceRepos } from "../repo/invoiceRepoFactory"
 
 export type InvoiceServiceHelpers = ReturnType<typeof buildInvoiceServiceHelpers>
 
-export const buildInvoiceServiceHelpers = ({
-  invoiceCommands,
-  externalEventBroker,
-}: {
-  invoiceCommands: InvoiceCommands
-  externalEventBroker: EventBroker
-}) => {
+export const buildInvoiceServiceHelpers = (
+  invoiceCommands: InvoiceUseCases,
+  externalEventBroker: EventBroker,
+  repos: InvoiceRepos,
+) => {
   const createProduct = async (overrides?: Partial<ProductCreatedEvent>) => {
     const productCreatedEvent = productCreatedEventMock(overrides)
     await externalEventBroker.process([productCreatedEvent])
@@ -39,6 +38,9 @@ export const buildInvoiceServiceHelpers = ({
       await externalEventBroker.process([procedureCompletedEvent])
 
       return { product1, product2, procedureCompletedEvent }
+    },
+    getAllInvoices: async () => {
+      return repos.invoice.getAll()
     },
   }
 }

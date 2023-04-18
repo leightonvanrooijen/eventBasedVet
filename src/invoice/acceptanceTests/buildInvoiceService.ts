@@ -2,7 +2,7 @@ import { TestDB } from "../../packages/db/testDB"
 import { buildInvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { buildInvoiceActions, Invoice } from "../domain/invoice"
 import { buildInvoiceRepo } from "../repo/invoiceRepo"
-import { buildInvoiceCommands, invoiceAdapters } from "../commmands/invoiceCommands"
+import { buildInvoiceUseCases, invoiceAdapters } from "../commmands/invoiceUseCases"
 import {
   buildInvoiceExternalEventHandler,
   buildInvoiceExternalEventHandlers,
@@ -13,6 +13,7 @@ import { EventBroker } from "../../packages/events/eventBroker.types"
 import { v4 } from "uuid"
 import { buildInvoiceServiceHelpers } from "./buildInvoiceServiceHelpers"
 import { buildInvoiceCustomerRepo } from "../repo/invoiceCustomerRepo"
+import { buildInvoiceRepoFactory } from "../repo/invoiceRepoFactory"
 
 export const buildInvoiceService = ({ externalEventBroker }: { externalEventBroker: EventBroker }) => {
   const invoiceProductDb = new TestDB<InvoiceProduct>([], "id")
@@ -24,14 +25,10 @@ export const buildInvoiceService = ({ externalEventBroker }: { externalEventBrok
   const customerDb = new TestDB<InvoiceCustomer>([], "id")
   const customerRepo = buildInvoiceCustomerRepo({ db: customerDb })
 
+  const repos = buildInvoiceRepoFactory()
+
   const invoiceActions = buildInvoiceActions({ uuid: v4 })
-  const invoiceCommands = buildInvoiceCommands({
-    invoiceAdapters,
-    invoiceRepo,
-    productRepo: invoiceProductRepo,
-    invoiceActions,
-    customerRepo,
-  })
+  const invoiceCommands = buildInvoiceUseCases(invoiceActions, invoiceAdapters, repos)
 
   const eventHandler = buildInvoiceExternalEventHandlers({
     invoiceProductRepo,
@@ -44,7 +41,7 @@ export const buildInvoiceService = ({ externalEventBroker }: { externalEventBrok
   })
   externalEventBroker.registerHandler(invoiceExternalEventHandler)
 
-  const invoiceHelpers = buildInvoiceServiceHelpers({ invoiceCommands, externalEventBroker: externalEventBroker })
+  const invoiceHelpers = buildInvoiceServiceHelpers(invoiceCommands, externalEventBroker, repos)
 
   return { invoiceCommands, invoiceRepo, invoiceProductRepo, invoiceHelpers, invoiceDb }
 }

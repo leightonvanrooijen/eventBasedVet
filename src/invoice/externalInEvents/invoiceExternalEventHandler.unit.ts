@@ -2,7 +2,7 @@ import { productCreatedEventMock } from "../../product/repo/events/productEventM
 import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { buildInvoiceExternalEventHandler, buildInvoiceExternalEventHandlers } from "./invoiceExternalEventHandler"
 import { Thespian } from "thespian"
-import { InvoiceCommands } from "../commmands/invoiceCommands"
+import { InvoiceUseCases } from "../commmands/invoiceUseCases"
 import { externalProcedureCompletedEventMock } from "../../procedure/repo/events/procedureEventMocks"
 import { buildEventIdempotencyFilter } from "../../packages/events/eventIdempotencyFilter"
 import { TestDB } from "../../packages/db/testDB"
@@ -10,7 +10,7 @@ import { TestDB } from "../../packages/db/testDB"
 let thespian: Thespian
 const setUp = () => {
   thespian = new Thespian()
-  const invoiceCommandsMock = thespian.mock<InvoiceCommands>()
+  const invoiceCommandsMock = thespian.mock<InvoiceUseCases>()
 
   const invoiceProductRepoMock = thespian.mock<InvoiceProductRepo>("create")
   const db = new TestDB<{ eventId: string }>([], "eventId")

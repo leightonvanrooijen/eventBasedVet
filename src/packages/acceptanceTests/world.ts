@@ -1,7 +1,7 @@
 import { IWorldOptions, setWorldConstructor, World } from "@cucumber/cucumber"
 import { ProcedureCommands } from "../../procedure/commands/procedureCommands"
 import { EventBroker } from "../events/eventBroker.types"
-import { InvoiceCommands } from "../../invoice/commmands/invoiceCommands"
+import { InvoiceUseCases } from "../../invoice/commmands/invoiceUseCases"
 import { InvoiceServiceHelpers } from "../../invoice/acceptanceTests/buildInvoiceServiceHelpers"
 import { DataStore } from "../db/testDB"
 import { Invoice } from "../../invoice/domain/invoice"
@@ -16,7 +16,7 @@ export type ProcedureService = {
 
 export type InvoiceService = {
   externalEventBroker: EventBroker
-  commands: InvoiceCommands
+  commands: InvoiceUseCases
   helpers: InvoiceServiceHelpers
   db: DataStore<Invoice>
 }
