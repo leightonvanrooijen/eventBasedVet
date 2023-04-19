@@ -35,7 +35,7 @@ export const makeInvoice = ({ id, orders, customerId }: Invoice): Invoice => {
 }
 
 export type InvoiceActions = ReturnType<typeof buildInvoiceActions>
-export const buildInvoiceActions = ({ uuid }: { uuid: Uuid }) => {
+export const buildInvoiceActions = (uuid: Uuid) => {
   return {
     create: (order: InvoiceOrder, customerId: string) => {
       return makeInvoice({ id: uuid(), customerId, orders: [order] })

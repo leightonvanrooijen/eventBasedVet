@@ -39,7 +39,7 @@ describe("invoice", () => {
       it("creates an invoice", () => {
         const id = "123"
         const customerId = "123"
-        const invoiceActions = buildInvoiceActions({ uuid: () => id })
+        const invoiceActions = buildInvoiceActions(() => id)
         const order = invoiceOrdersMock()
 
         const invoice = invoiceActions.create(order, customerId)
@@ -53,7 +53,7 @@ describe("invoice", () => {
     })
     describe("addOrder", () => {
       it("adds an order to the invoice", () => {
-        const invoiceActions = buildInvoiceActions({ uuid: faker.datatype.uuid })
+        const invoiceActions = buildInvoiceActions(faker.datatype.uuid)
         const order = invoiceOrdersMock()
         const mockInvoice = invoiceMock()
 
@@ -62,7 +62,7 @@ describe("invoice", () => {
         assertThat(invoice.orders).is(match.array.contains(order))
       })
       it("throws if the order is already on the invoice", () => {
-        const invoiceActions = buildInvoiceActions({ uuid: faker.datatype.uuid })
+        const invoiceActions = buildInvoiceActions(faker.datatype.uuid)
         const order = invoiceOrdersMock()
         const mockInvoice = invoiceMock({ orders: [order] })
 

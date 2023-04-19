@@ -10,15 +10,29 @@ export type InvoiceRepos = {
   customer: InvoiceCustomerRepo
   product: InvoiceProductRepo
 }
-export const buildInvoiceRepoFactory = () => {
-  const productDb = new TestDB<InvoiceProduct>([], "id")
-  const productRepo = buildInvoiceProductRepo({ db: productDb })
+export const buildInvoiceRepoFactory = ({
+  invoiceRepo,
+  productRepo,
+  customerRepo,
+}: {
+  invoiceRepo?: InvoiceRepo
+  productRepo?: InvoiceProductRepo
+  customerRepo?: InvoiceCustomerRepo
+} = {}) => {
+  if (!productRepo) {
+    const productDb = new TestDB<InvoiceProduct>([], "id")
+    productRepo = buildInvoiceProductRepo({ db: productDb })
+  }
 
-  const invoiceDb = new TestDB<Invoice>([], "id")
-  const invoiceRepo = buildInvoiceRepo({ db: invoiceDb })
+  if (!invoiceRepo) {
+    const invoiceDb = new TestDB<Invoice>([], "id")
+    invoiceRepo = buildInvoiceRepo({ db: invoiceDb })
+  }
 
-  const customerDb = new TestDB<InvoiceCustomer>([], "id")
-  const customerRepo = buildInvoiceCustomerRepo({ db: customerDb })
+  if (!customerRepo) {
+    const customerDb = new TestDB<InvoiceCustomer>([], "id")
+    customerRepo = buildInvoiceCustomerRepo({ db: customerDb })
+  }
 
   return {
     invoice: invoiceRepo,

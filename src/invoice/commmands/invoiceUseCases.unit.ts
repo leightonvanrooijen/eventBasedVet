@@ -4,9 +4,11 @@ import { InvoiceRepo } from "../repo/invoiceRepo"
 import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { procedureMock } from "../../procedure/domain/procedureMock"
 import { invoiceMock, invoiceOrdersMock, invoiceProductMocks } from "../domain/invoiceMock"
-import { buildInvoiceUseCases, InvoiceAdapters } from "./invoiceUseCases"
+import { buildInvoiceUseCases } from "./invoiceUseCases"
 import { InvoiceCustomerRepo } from "../repo/invoiceCustomerRepo"
 import { invoiceCustomerMock } from "../externalInEvents/externalMocks"
+import { InvoiceAdapters } from "./invoiceAdapters"
+import { buildInvoiceRepoFactory } from "../repo/invoiceRepoFactory"
 
 let thespian: Thespian
 const setUp = () => {
@@ -15,11 +17,11 @@ const setUp = () => {
   const invoiceRepo = thespian.mock<InvoiceRepo>()
   const productRepo = thespian.mock<InvoiceProductRepo>()
   const customerRepo = thespian.mock<InvoiceCustomerRepo>()
-  const repos = {
-    invoice: invoiceRepo.object,
-    product: productRepo.object,
-    customer: customerRepo.object,
-  }
+  const repos = buildInvoiceRepoFactory({
+    invoiceRepo: invoiceRepo.object,
+    productRepo: productRepo.object,
+    customerRepo: customerRepo.object,
+  })
   const invoiceAdapters = thespian.mock<InvoiceAdapters>()
 
   const invoiceCommands = buildInvoiceUseCases(invoiceActions.object, invoiceAdapters.object, repos)
@@ -29,7 +31,7 @@ const setUp = () => {
 
 afterEach(() => thespian.verify())
 
-describe("buildInvoiceCommands", () => {
+describe("buildInvoiceUseCases", () => {
   describe("createFromProcedure", () => {
     it("should  create an invoice from the provided procedure if an invoice does not exist for the owner of the pet", async () => {
       const mockProcedure = procedureMock()
@@ -43,8 +45,8 @@ describe("buildInvoiceCommands", () => {
       productRepo.setup((f) => f.getByIds(goodIds)).returns(() => Promise.resolve(mockProducts))
       customerRepo.setup((f) => f.getOwnerOfAnimal(mockProcedure.animalId)).returns(() => Promise.resolve(mockCustomer))
       invoiceAdapters.setup((f) => f.procedureToOrder(mockProcedure, mockProducts)).returns(() => mockOrder)
-      invoiceActions.setup((f) => f.create(mockOrder, mockCustomer.id)).returns(() => mockInvoice)
       invoiceRepo.setup((f) => f.getInvoiceForCustomer(mockCustomer.id)).returns(() => undefined)
+      invoiceActions.setup((f) => f.create(mockOrder, mockCustomer.id)).returns(() => mockInvoice)
       invoiceRepo.setup((f) => f.create(mockInvoice))
 
       await invoiceCommands.createFromProcedure(mockProcedure)

@@ -2,7 +2,7 @@ import { TestDB } from "../../packages/db/testDB"
 import { buildInvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { buildInvoiceActions, Invoice } from "../domain/invoice"
 import { buildInvoiceRepo } from "../repo/invoiceRepo"
-import { buildInvoiceUseCases, invoiceAdapters } from "../commmands/invoiceUseCases"
+import { buildInvoiceUseCases } from "../commmands/invoiceUseCases"
 import {
   buildInvoiceExternalEventHandler,
   buildInvoiceExternalEventHandlers,
@@ -14,6 +14,7 @@ import { v4 } from "uuid"
 import { buildInvoiceServiceHelpers } from "./buildInvoiceServiceHelpers"
 import { buildInvoiceCustomerRepo } from "../repo/invoiceCustomerRepo"
 import { buildInvoiceRepoFactory } from "../repo/invoiceRepoFactory"
+import { invoiceAdapters } from "../commmands/invoiceAdapters"
 
 export const buildInvoiceService = ({ externalEventBroker }: { externalEventBroker: EventBroker }) => {
   const invoiceProductDb = new TestDB<InvoiceProduct>([], "id")
@@ -27,7 +28,7 @@ export const buildInvoiceService = ({ externalEventBroker }: { externalEventBrok
 
   const repos = buildInvoiceRepoFactory()
 
-  const invoiceActions = buildInvoiceActions({ uuid: v4 })
+  const invoiceActions = buildInvoiceActions(v4)
   const invoiceCommands = buildInvoiceUseCases(invoiceActions, invoiceAdapters, repos)
 
   const eventHandler = buildInvoiceExternalEventHandlers({
