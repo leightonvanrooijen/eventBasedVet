@@ -1,5 +1,5 @@
-import { ExternalProcedureCompletedEvent } from "../../procedure/repo/events/procedureEvents"
-import { externalProcedureCompletedEventMock } from "../../procedure/repo/events/procedureEventMocks"
+import { ExternalProcedureCompletedEvent } from "../../procedure/infrastructure/repo/events/procedureEvents"
+import { externalProcedureCompletedEventMock } from "../../procedure/infrastructure/repo/events/procedureEventMocks"
 import { InvoiceUseCases } from "../commmands/invoiceUseCases"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"

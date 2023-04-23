@@ -3,7 +3,7 @@ import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
 import { buildInvoiceExternalEventHandler, buildInvoiceExternalEventHandlers } from "./invoiceExternalEventHandler"
 import { Thespian } from "thespian"
 import { InvoiceUseCases } from "../commmands/invoiceUseCases"
-import { externalProcedureCompletedEventMock } from "../../procedure/repo/events/procedureEventMocks"
+import { externalProcedureCompletedEventMock } from "../../procedure/infrastructure/repo/events/procedureEventMocks"
 import { buildEventIdempotencyFilter } from "../../packages/events/eventIdempotencyFilter"
 import { TestDB } from "../../packages/db/testDB"
 

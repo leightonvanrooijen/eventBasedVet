@@ -1,22 +1,26 @@
 import { TestDB } from "../../packages/db/testDB"
-import { buildProcedureGoodRepo } from "../repo/procedureGoodRepo"
+import { buildProcedureGoodRepo } from "../infrastructure/repo/procedureGoodRepo"
 import {
   buildProcedureExternalEventHandler,
   ProcedureAnimal,
   ProcedureGood,
 } from "../externalInEvents/procedureExternalEventHandler"
-import { buildProcedureEventChecker, buildProcedureEvents, ProcedureEvents } from "../repo/events/procedureEvents"
+import {
+  buildProcedureEventChecker,
+  buildProcedureEvents,
+  ProcedureEvents,
+} from "../infrastructure/repo/events/procedureEvents"
 import { buildProcedureActions, makeProcedure } from "../domain/procedure"
-import { buildProcedureHydrator } from "../repo/events/procedureHydrator"
+import { buildProcedureHydrator } from "../infrastructure/repo/events/procedureHydrator"
 import { buildTestEventDb } from "../../packages/eventSourcing/testEventDb"
-import { buildProcedureRepo } from "../repo/procedureRepo"
-import { buildProcedureCommands } from "../commands/procedureCommands"
+import { buildProcedureRepo } from "../infrastructure/repo/procedureRepo"
+import { buildProcedureCommands } from "../application/procedureService"
 import { v4 } from "uuid"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { buildEventBroker } from "../../packages/events/eventBroker"
-import { buildProcedureAnimalRepo } from "../repo/procedureAnimalRepo"
+import { buildProcedureAnimalRepo } from "../infrastructure/repo/procedureAnimalRepo"
 
-export const buildProcedureService = ({ externalEventBroker }: { externalEventBroker: EventBroker }) => {
+export const buildProcedureTestService = ({ externalEventBroker }: { externalEventBroker: EventBroker }) => {
   const internalEventBroker = buildEventBroker()
 
   const procedureGoodDb = new TestDB<ProcedureGood>([], "id")
@@ -33,7 +37,7 @@ export const buildProcedureService = ({ externalEventBroker }: { externalEventBr
 
   const procedureEvents = buildProcedureEvents({ uuid: v4 })
   const procedureEventsChecker = buildProcedureEventChecker()
-  const procedureActions = buildProcedureActions({ uuid: v4, makeProcedure })
+  const procedureActions = buildProcedureActions({ uuid: v4, makeProcedure, events: procedureEvents })
   const procedureProjector = buildProcedureHydrator({ procedureActions, procedureEventsChecker })
   const procedureDb = buildTestEventDb<ProcedureEvents>({ eventBroker: internalEventBroker })
 

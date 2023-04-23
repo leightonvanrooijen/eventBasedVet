@@ -1,5 +1,6 @@
 import { append, curry, lensPath, lensProp, over } from "ramda"
 import { Uuid } from "../../packages/uuid/uuid.types"
+import { ProcedureEventsMaker } from "../infrastructure/repo/events/procedureEvents"
 
 export type ConsumedGood = {
   quantity: number
@@ -61,10 +62,11 @@ export const makeProcedure = ({
 }
 
 export type ProcedureActions = ReturnType<typeof buildProcedureActions>
-export const buildProcedureActions = ({ uuid, makeProcedure }: { uuid: Uuid; makeProcedure: MakeProcedure }) => {
+type ProcedureActionsInput = { uuid: Uuid; makeProcedure: MakeProcedure; events: ProcedureEventsMaker }
+export const buildProcedureActions = ({ uuid, makeProcedure, events }: ProcedureActionsInput) => {
   return {
     create: ({ name, id, appointmentId, animalId }: { name: string; id?: string; appointmentId: string; animalId }) => {
-      return makeProcedure({
+      const procedure = makeProcedure({
         name,
         goodsConsumed: [],
         id: id ? id : uuid(),
@@ -72,25 +74,41 @@ export const buildProcedureActions = ({ uuid, makeProcedure }: { uuid: Uuid; mak
         animalId,
         appointmentId,
       })
+      const event = events.created(procedure)
+      return { procedure, event }
     },
     begin: ({ procedure }: { procedure: Procedure }) => {
       if (procedure.status === "active") throw new Error("Procedure has already begun")
-      return makeProcedure({ ...procedure, status: "active" })
+      const updated = makeProcedure({ ...procedure, status: "active" })
+      const event = events.began(procedure)
+
+      return { procedure: updated, event }
     },
     consumeGood: ({ procedure, consumedGood }: { procedure: Procedure; consumedGood: ConsumedGood }) => {
       const foundIndex = procedure.goodsConsumed.findIndex((contained) => contained.goodId === consumedGood.goodId)
 
       // item does not already exist
       if (foundIndex === -1) {
-        return over(lensProp("goodsConsumed"), append(consumedGood), procedure)
+        const updated = over(lensProp("goodsConsumed"), append(consumedGood), procedure)
+        const event = events.goodConsumed(updated.id, consumedGood)
+        return { procedure: updated, event }
       }
 
-      return over(lensPath(["goodsConsumed", foundIndex]), curry(addQuantityToExistingItem)(consumedGood), procedure)
+      const updated = over(
+        lensPath(["goodsConsumed", foundIndex]),
+        curry(addQuantityToExistingItem)(consumedGood),
+        procedure,
+      )
+      const event = events.goodConsumed(updated.id, consumedGood)
+      return { procedure: updated, event }
     },
     complete: ({ procedure }: { procedure: Procedure }) => {
       if (procedure.status === "complete") throw new Error("Procedure is already completed")
 
-      return makeProcedure({ ...procedure, status: "complete" })
+      const updated = makeProcedure({ ...procedure, status: "complete" })
+      const event = events.completed(updated.id)
+
+      return { procedure: updated, event }
     },
   }
 }

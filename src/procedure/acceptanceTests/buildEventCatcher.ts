@@ -1,5 +1,5 @@
 import { CustomWorld } from "../../packages/acceptanceTests/world"
-import { ProcedureEvents } from "../repo/events/procedureEvents"
+import { ProcedureEvents } from "../infrastructure/repo/events/procedureEvents"
 
 export const buildEventCatcher = (world: CustomWorld) => {
   return async (events: ProcedureEvents[]) => {

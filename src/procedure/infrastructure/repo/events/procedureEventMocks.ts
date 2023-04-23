@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker"
-import { procedureMock } from "../../domain/procedureMock"
+import { procedureMock } from "../../../domain/procedureMock"
 import {
   ExternalProcedureCompletedEvent,
   GoodsConsumedOnProcedureEvent,
@@ -12,7 +12,7 @@ import {
   ProcedureCreatedEventType,
   ProcedureEvents,
 } from "./procedureEvents"
-import { consumedGoodMock } from "../../domain/consumedGoodMock"
+import { consumedGoodMock } from "../../../domain/consumedGoodMock"
 
 export const procedureCreatedEventMock = (overrides?: Partial<ProcedureCreatedEvent>): ProcedureCreatedEvent => {
   const id = overrides?.aggregateId ? overrides.aggregateId : faker.datatype.uuid()

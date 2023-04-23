@@ -1,9 +1,9 @@
-import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
-import { EventDb } from "../../packages/eventSourcing/testEventDb"
-import { ConsumedGood, Procedure } from "../domain/procedure"
+import { ChangeEvent } from "../../../packages/eventSourcing/changeEvent.types"
+import { EventDb } from "../../../packages/eventSourcing/testEventDb"
+import { ConsumedGood, Procedure } from "../../domain/procedure"
 import { ProcedureEventsMaker } from "./events/procedureEvents"
 import { ProcedureHydrator } from "./events/procedureHydrator"
-import { EventBroker } from "../../packages/events/eventBroker.types"
+import { EventBroker } from "../../../packages/events/eventBroker.types"
 
 export type ProcedureRepo = ReturnType<typeof buildProcedureRepo>
 
@@ -22,7 +22,6 @@ export const buildProcedureRepo = ({
   return {
     get: async (aggregateId: string): Promise<Procedure> => {
       const events = await db.getEvents(aggregateId)
-      // TODO throw if it does not exist
       return procedureHydrator.hydrate(events)
     },
     saveProcedureCreated: async (procedure: Procedure) => {

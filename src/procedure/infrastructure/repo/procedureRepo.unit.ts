@@ -1,5 +1,5 @@
 import { buildProcedureRepo } from "./procedureRepo"
-import { buildTestEventDb } from "../../packages/eventSourcing/testEventDb"
+import { buildTestEventDb } from "../../../packages/eventSourcing/testEventDb"
 import {
   buildProcedureEvents,
   ExternalProcedureCompletedEventType,
@@ -10,12 +10,12 @@ import {
 } from "./events/procedureEvents"
 import { ProcedureHydrator } from "./events/procedureHydrator"
 import { assertThat, match } from "mismatched"
-import { procedureMock } from "../domain/procedureMock"
-import { consumedGoodMock } from "../domain/consumedGoodMock"
+import { procedureMock } from "../../domain/procedureMock"
+import { consumedGoodMock } from "../../domain/consumedGoodMock"
 import { Thespian } from "thespian"
 import { pipe } from "ramda"
 import { internalProcedureMockEvents } from "./events/procedureEventMocks"
-import { EventBroker } from "../../packages/events/eventBroker.types"
+import { EventBroker } from "../../../packages/events/eventBroker.types"
 
 let thespian: Thespian
 const setUp = (store = {}) => {

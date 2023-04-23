@@ -1,5 +1,5 @@
 import { After, Before, BeforeAll } from "@cucumber/cucumber"
-import { buildProcedureService } from "../../procedure/acceptanceTests/buildProcedureService"
+import { buildProcedureTestService } from "../../procedure/acceptanceTests/buildProcedureTestService"
 import { buildEventBroker } from "../events/eventBroker"
 import { CustomWorld } from "./world"
 import { buildInvoiceService } from "../../invoice/acceptanceTests/buildInvoiceService"
@@ -19,7 +19,7 @@ Before({ tags: "@manual" }, async function () {
 
 Before({ tags: "@procedure" }, async function (this: CustomWorld) {
   const externalEventBroker = buildEventBroker()
-  const { procedureCommands, internalEventBroker, procedureDb, procedureGoodDb } = buildProcedureService({
+  const { procedureCommands, internalEventBroker } = buildProcedureTestService({
     externalEventBroker,
   })
   const procedureServiceHelpers = buildProcedureServiceHelpers({ procedureCommands, externalEventBroker })

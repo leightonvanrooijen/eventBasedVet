@@ -1,9 +1,9 @@
-import { ProcedureRepo } from "../repo/procedureRepo"
+import { ProcedureRepo } from "../infrastructure/repo/procedureRepo"
 import { ConsumedGood, ProcedureActions } from "../domain/procedure"
-import { ProcedureGoodRepo } from "../repo/procedureGoodRepo"
-import { ProcedureAnimalRepo } from "../repo/procedureAnimalRepo"
+import { ProcedureGoodRepo } from "../infrastructure/repo/procedureGoodRepo"
+import { ProcedureAnimalRepo } from "../infrastructure/repo/procedureAnimalRepo"
 
-export type ProcedureCommands = ReturnType<typeof buildProcedureCommands>
+export type ProcedureService = ReturnType<typeof buildProcedureCommands>
 
 // TODO change repos to factory
 // TODO change naming of commands
@@ -23,13 +23,13 @@ export const buildProcedureCommands = ({
       const existingAnimal = procedureAnimalRepo.get(input.animalId)
       if (!existingAnimal) throw new Error("The animal does not exist")
 
-      const procedure = procedureActions.create(input)
+      const { procedure } = procedureActions.create(input)
       await procedureRepo.saveProcedureCreated(procedure)
     },
     begin: async ({ procedureId }: { procedureId: string }) => {
       const hydration = await procedureRepo.get(procedureId)
 
-      const procedure = procedureActions.begin({ procedure: hydration })
+      const { procedure } = procedureActions.begin({ procedure: hydration })
       await procedureRepo.saveProcedureBegan(procedure)
     },
     consumeGood: async (procedureId: string, consumedGood: ConsumedGood) => {
@@ -44,7 +44,7 @@ export const buildProcedureCommands = ({
     complete: async (procedureId: string) => {
       const hydration = await procedureRepo.get(procedureId)
 
-      const procedure = procedureActions.complete({ procedure: hydration })
+      const { procedure } = procedureActions.complete({ procedure: hydration })
       await procedureRepo.saveProcedureCompleted(procedure)
     },
   }

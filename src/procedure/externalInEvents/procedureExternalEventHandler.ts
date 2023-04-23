@@ -1,7 +1,7 @@
-import { ProcedureGoodRepo } from "../repo/procedureGoodRepo"
+import { ProcedureGoodRepo } from "../infrastructure/repo/procedureGoodRepo"
 import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
 import { IdempotencyEventFilter } from "../../packages/events/eventIdempotencyFilter"
-import { ProcedureAnimalRepo } from "../repo/procedureAnimalRepo"
+import { ProcedureAnimalRepo } from "../infrastructure/repo/procedureAnimalRepo"
 import { buildExternalEventHandler } from "../../packages/events/buildExternalEventHandler"
 
 export type ProcedureGood = {

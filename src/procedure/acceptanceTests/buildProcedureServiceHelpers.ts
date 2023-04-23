@@ -1,5 +1,5 @@
 // TODO swap out mock generator for this as coupling is fine here
-import { ProcedureCommands } from "../commands/procedureCommands"
+import { ProcedureService } from "../application/procedureService"
 import { procedureMock } from "../domain/procedureMock"
 import { Procedure } from "../domain/procedure"
 import { EventBroker } from "../../packages/events/eventBroker.types"
@@ -11,7 +11,7 @@ export const buildProcedureServiceHelpers = ({
   procedureCommands,
   externalEventBroker,
 }: {
-  procedureCommands: ProcedureCommands
+  procedureCommands: ProcedureService
   externalEventBroker: EventBroker
 }) => {
   const createProcedure = async (overrides?: Partial<Procedure>) => {

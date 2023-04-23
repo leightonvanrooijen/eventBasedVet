@@ -1,6 +1,8 @@
 import { procedureMock } from "./procedureMock"
 import { buildProcedureActions, makeProcedure, Procedure, ProcedureStatuses } from "./procedure"
 import { consumedGoodMock } from "./consumedGoodMock"
+import { buildProcedureEvents } from "../infrastructure/repo/events/procedureEvents"
+import { faker } from "@faker-js/faker"
 
 describe("procedure", () => {
   describe("makeProcedure", () => {
@@ -48,22 +50,23 @@ describe("procedure", () => {
       return buildProcedureActions({
         uuid: () => "xyz",
         makeProcedure,
+        events: buildProcedureEvents({ uuid: faker.datatype.uuid }),
       })
     }
     describe("create", () => {
       it("creates a procedure", () => {
-        const procedure = procedureMock({ status: "pending" })
+        const fake = procedureMock({ status: "pending" })
         const procedureActions = setUp()
         const input = {
-          name: procedure.name,
-          id: procedure.id,
-          appointmentId: procedure.appointmentId,
-          animalId: procedure.animalId,
+          name: fake.name,
+          id: fake.id,
+          appointmentId: fake.appointmentId,
+          animalId: fake.animalId,
         }
 
-        const updated = procedureActions.create(input)
+        const { procedure } = procedureActions.create(input)
 
-        expect(updated).toEqual({
+        expect(procedure).toEqual({
           ...input,
           status: "pending",
           goodsConsumed: [],
@@ -72,14 +75,12 @@ describe("procedure", () => {
     })
     describe("begin", () => {
       it("sets the procedure status to active", () => {
-        const procedure = procedureMock({ status: "pending" })
+        const fake = procedureMock({ status: "pending" })
         const procedureActions = setUp()
 
-        const updated = procedureActions.begin({
-          procedure,
-        })
+        const { procedure } = procedureActions.begin({ procedure: fake })
 
-        expect(updated.status).toEqual("active")
+        expect(procedure.status).toEqual("active")
       })
       it("throws if it is already active", () => {
         const procedure = procedureMock({ status: "active" })
@@ -95,42 +96,42 @@ describe("procedure", () => {
     })
     describe("consumeGood", () => {
       it("should add the consumed good to the goodsConsumed array if the good does not exist", () => {
-        const procedure = procedureMock()
+        const fake = procedureMock()
         const consumedGood = consumedGoodMock()
         const procedureActions = setUp()
 
-        const updated = procedureActions.consumeGood({
-          procedure,
+        const { procedure } = procedureActions.consumeGood({
+          procedure: fake,
           consumedGood,
         })
 
-        expect(updated.goodsConsumed[2]).toEqual(consumedGood)
+        expect(procedure.goodsConsumed[2]).toEqual(consumedGood)
       })
       it("should add the quantity of the goods consumed if a matching good exists", () => {
         const consumedGood = consumedGoodMock({ quantity: 4 })
-        const procedure = procedureMock({
+        const fake = procedureMock({
           goodsConsumed: [consumedGoodMock(), consumedGood],
         })
 
         const procedureActions = setUp()
 
-        const updated = procedureActions.consumeGood({
-          procedure,
+        const { procedure } = procedureActions.consumeGood({
+          procedure: fake,
           consumedGood,
         })
 
-        expect(updated.goodsConsumed[1].quantity).toEqual(8)
-        expect(updated.goodsConsumed[1].goodId).toEqual(consumedGood.goodId)
+        expect(procedure.goodsConsumed[1].quantity).toEqual(8)
+        expect(procedure.goodsConsumed[1].goodId).toEqual(consumedGood.goodId)
       })
     })
     describe("complete", () => {
       it("should complete a procedure", () => {
-        const procedure = procedureMock({ status: "active" })
+        const fake = procedureMock({ status: "active" })
         const procedureActions = setUp()
 
-        const completed = procedureActions.complete({ procedure })
+        const { procedure } = procedureActions.complete({ procedure: fake })
 
-        expect(completed.status).toEqual("complete")
+        expect(procedure.status).toEqual("complete")
       })
       it("cannot complete a already complete procedure", () => {
         const procedure = procedureMock({ status: "complete" })

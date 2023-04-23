@@ -1,6 +1,6 @@
 import { ChangeEvent } from "../../packages/eventSourcing/changeEvent.types"
 import { InvoiceProductRepo } from "../repo/invoiceProductRepo"
-import { ExternalProcedureCompletedEventType } from "../../procedure/repo/events/procedureEvents"
+import { ExternalProcedureCompletedEventType } from "../../procedure/infrastructure/repo/events/procedureEvents"
 import { InvoiceUseCases } from "../commmands/invoiceUseCases"
 import { buildExternalEventHandler } from "../../packages/events/buildExternalEventHandler"
 import { IdempotencyEventFilter } from "../../packages/events/eventIdempotencyFilter"

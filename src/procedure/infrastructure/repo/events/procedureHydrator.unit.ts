@@ -1,11 +1,11 @@
 import { buildProcedureHydrator } from "./procedureHydrator"
-import { Procedure, ProcedureActions } from "../../domain/procedure"
+import { Procedure, ProcedureActions } from "../../../domain/procedure"
 import {
   goodsConsumedOnProcedureEventMock,
   procedureCompletedEventMock,
   procedureCreatedEventMock,
 } from "./procedureEventMocks"
-import { procedureMock } from "../../domain/procedureMock"
+import { procedureMock } from "../../../domain/procedureMock"
 import { buildProcedureEventChecker } from "./procedureEvents"
 import { Thespian } from "thespian"
 import { assertThat, match } from "mismatched"
@@ -32,7 +32,7 @@ describe("buildProcedureHydrator", () => {
       const mockEvent = procedureCreatedEventMock()
       const procedure = procedureMock({ status: "pending" })
 
-      procedureActions.setup((f) => f.create(match.any())).returns(() => procedure)
+      procedureActions.setup((f) => f.create(match.any())).returns(() => ({ procedure, event: match.any() }))
 
       const hydration = procedureProjection.hydrate([mockEvent])
 
@@ -49,7 +49,7 @@ describe("buildProcedureHydrator", () => {
       }
       const procedure = procedureMock({ status: "active" })
 
-      procedureActions.setup((f) => f.create(input)).returns(() => procedure)
+      procedureActions.setup((f) => f.create(input)).returns(() => ({ procedure, event: match.any() }))
 
       const hydration = procedureProjection.hydrate([mockEvent])
 
@@ -58,16 +58,22 @@ describe("buildProcedureHydrator", () => {
     it("calls the consume good  action if one is received", () => {
       const { procedureProjection, procedureActions } = setUp()
       const mockEvent = goodsConsumedOnProcedureEventMock()
+      const procedure = procedureMock({ status: "active" })
 
-      procedureActions.setup((f) => f.consumeGood({ procedure: {} as Procedure, consumedGood: mockEvent.data }))
+      procedureActions
+        .setup((f) => f.consumeGood({ procedure: {} as Procedure, consumedGood: mockEvent.data }))
+        .returns(() => ({ procedure, event: match.any() }))
 
       procedureProjection.hydrate([mockEvent])
     })
     it("calls the complete action if one is received", () => {
       const { procedureProjection, procedureActions } = setUp()
       const mockEvent = procedureCompletedEventMock()
+      const procedure = procedureMock({ status: "active" })
 
-      procedureActions.setup((f) => f.complete({ procedure: {} as Procedure }))
+      procedureActions
+        .setup((f) => f.complete({ procedure: {} as Procedure }))
+        .returns(() => ({ procedure, event: match.any() }))
 
       procedureProjection.hydrate([mockEvent])
     })

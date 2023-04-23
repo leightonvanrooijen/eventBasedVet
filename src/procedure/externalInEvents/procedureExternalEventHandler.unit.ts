@@ -1,8 +1,8 @@
 import { buildProcedureExternalEventHandler, ProcedureAnimal, ProcedureGood } from "./procedureExternalEventHandler"
-import { buildProcedureGoodRepo } from "../repo/procedureGoodRepo"
+import { buildProcedureGoodRepo } from "../infrastructure/repo/procedureGoodRepo"
 import { TestDB } from "../../packages/db/testDB"
 import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"
-import { buildProcedureAnimalRepo } from "../repo/procedureAnimalRepo"
+import { buildProcedureAnimalRepo } from "../infrastructure/repo/procedureAnimalRepo"
 import { procedureAnimalCreatedEventMock } from "./procedureAnimalCreatedEventMock"
 
 const setUp = () => {
