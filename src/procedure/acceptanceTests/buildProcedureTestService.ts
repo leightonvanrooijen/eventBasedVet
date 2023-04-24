@@ -14,7 +14,7 @@ import { buildProcedureActions, makeProcedure } from "../domain/procedure"
 import { buildProcedureHydrator } from "../infrastructure/repo/events/procedureHydrator"
 import { buildTestEventDb } from "../../packages/eventSourcing/testEventDb"
 import { buildProcedureRepo } from "../infrastructure/repo/procedureRepo"
-import { buildProcedureCommands } from "../application/procedureService"
+import { buildProcedureService } from "../application/procedureService"
 import { v4 } from "uuid"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { buildEventBroker } from "../../packages/events/eventBroker"
@@ -48,7 +48,7 @@ export const buildProcedureTestService = ({ externalEventBroker }: { externalEve
     procedureEvents,
   })
 
-  const procedureCommands = buildProcedureCommands({
+  const procedureCommands = buildProcedureService({
     procedureGoodRepo,
     procedureRepo,
     procedureActions,

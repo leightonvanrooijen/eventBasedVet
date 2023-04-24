@@ -3,11 +3,9 @@ import { ConsumedGood, ProcedureActions } from "../domain/procedure"
 import { ProcedureGoodRepo } from "../infrastructure/repo/procedureGoodRepo"
 import { ProcedureAnimalRepo } from "../infrastructure/repo/procedureAnimalRepo"
 
-export type ProcedureService = ReturnType<typeof buildProcedureCommands>
+export type ProcedureService = ReturnType<typeof buildProcedureService>
 
-// TODO change repos to factory
-// TODO change naming of commands
-export const buildProcedureCommands = ({
+export const buildProcedureService = ({
   procedureRepo,
   procedureGoodRepo,
   procedureAnimalRepo,
@@ -23,14 +21,14 @@ export const buildProcedureCommands = ({
       const existingAnimal = procedureAnimalRepo.get(input.animalId)
       if (!existingAnimal) throw new Error("The animal does not exist")
 
-      const { procedure } = procedureActions.create(input)
-      await procedureRepo.saveProcedureCreated(procedure)
+      const { event } = procedureActions.create(input)
+      await procedureRepo.save([event])
     },
     begin: async ({ procedureId }: { procedureId: string }) => {
       const hydration = await procedureRepo.get(procedureId)
 
-      const { procedure } = procedureActions.begin({ procedure: hydration })
-      await procedureRepo.saveProcedureBegan(procedure)
+      const { event } = procedureActions.begin({ procedure: hydration })
+      await procedureRepo.save([event])
     },
     consumeGood: async (procedureId: string, consumedGood: ConsumedGood) => {
       const existingGood = procedureGoodRepo.get(consumedGood.goodId)
@@ -38,14 +36,14 @@ export const buildProcedureCommands = ({
 
       const hydration = await procedureRepo.get(procedureId)
 
-      procedureActions.consumeGood({ procedure: hydration, consumedGood })
-      await procedureRepo.saveGoodConsumed(hydration, consumedGood)
+      const { event } = procedureActions.consumeGood({ procedure: hydration, consumedGood })
+      await procedureRepo.save([event])
     },
     complete: async (procedureId: string) => {
       const hydration = await procedureRepo.get(procedureId)
 
-      const { procedure } = procedureActions.complete({ procedure: hydration })
-      await procedureRepo.saveProcedureCompleted(procedure)
+      const { event } = procedureActions.complete({ procedure: hydration })
+      await procedureRepo.save([event])
     },
   }
 }
