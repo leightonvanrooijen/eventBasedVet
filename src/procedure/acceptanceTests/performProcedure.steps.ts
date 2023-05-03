@@ -8,7 +8,7 @@ import {
   ProcedureCompletedEventType,
   ProcedureCreatedEventType,
 } from "../infrastructure/repo/events/procedureEvents"
-import { procedureMock } from "../domain/procedureMock"
+import { procedureMock } from "../domain/procedure.mock"
 
 Given("a vet is preforming a procedure", async function (this: CustomWorld) {
   this["procedure"] = procedureMock()

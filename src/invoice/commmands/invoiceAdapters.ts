@@ -1,7 +1,7 @@
-import { ConsumedGood, Procedure } from "../../procedure/domain/procedure"
 import { InvoiceProduct } from "../externalInEvents/invoiceExternalEventHandler"
 import { find, map, propEq } from "ramda"
 import { InvoiceOffer, InvoiceOrder } from "../domain/invoice"
+import { ConsumedGood, Procedure } from "../../procedure/domain/procedure.types"
 
 const adaptConsumedGoodToOffer = (consumedGood: ConsumedGood, good: InvoiceProduct): InvoiceOffer => {
   return {

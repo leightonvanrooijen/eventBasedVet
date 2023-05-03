@@ -1,25 +1,9 @@
 import { append, curry, lensPath, lensProp, over } from "ramda"
 import { Uuid } from "../../packages/uuid/uuid.types"
 import { ProcedureEventsMaker } from "../infrastructure/repo/events/procedureEvents"
+import { ConsumedGood, Procedure, ProcedureStatuses } from "./procedure.types"
 
-export type ConsumedGood = {
-  quantity: number
-  typeOfGood: "product"
-  goodId: string
-  businessFunction: "sell"
-}
-
-export type ProcedureStatuses = "active" | "complete" | "pending"
-
-export type Procedure = {
-  id: string
-  name: string
-  goodsConsumed: ConsumedGood[]
-  status: ProcedureStatuses
-  animalId: string
-  appointmentId: string
-}
-
+export type MakeProcedure = typeof makeProcedure
 export type ProcedureInput = {
   id: string
   name: string
@@ -28,15 +12,6 @@ export type ProcedureInput = {
   animalId: string
   appointmentId: string
 }
-
-const addQuantityToExistingItem = (consumedGood: ConsumedGood, matching: ConsumedGood): ConsumedGood => {
-  return {
-    ...matching,
-    quantity: matching.quantity + consumedGood.quantity,
-  }
-}
-
-export type MakeProcedure = typeof makeProcedure
 export const makeProcedure = ({
   id,
   name,
@@ -62,6 +37,7 @@ export const makeProcedure = ({
 }
 
 export type ProcedureActions = ReturnType<typeof buildProcedureActions>
+
 type ProcedureActionsInput = { uuid: Uuid; makeProcedure: MakeProcedure; events: ProcedureEventsMaker }
 export const buildProcedureActions = ({ uuid, makeProcedure, events }: ProcedureActionsInput) => {
   return {
@@ -110,5 +86,12 @@ export const buildProcedureActions = ({ uuid, makeProcedure, events }: Procedure
 
       return { procedure: updated, event }
     },
+  }
+}
+
+function addQuantityToExistingItem(consumedGood: ConsumedGood, matching: ConsumedGood): ConsumedGood {
+  return {
+    ...matching,
+    quantity: matching.quantity + consumedGood.quantity,
   }
 }

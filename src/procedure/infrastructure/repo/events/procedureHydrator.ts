@@ -1,30 +1,31 @@
-import { Procedure, ProcedureActions } from "../../../domain/procedure"
+import { ProcedureActions } from "../../../domain/procedure"
 import { ProcedureEventChecker, ProcedureEvents } from "./procedureEvents"
+import { Procedure } from "../../../domain/procedure.types"
 
 export type ProcedureHydrator = ReturnType<typeof buildProcedureHydrator>
 
 export const buildProcedureHydrator = ({
-  procedureActions,
-  procedureEventsChecker,
+  actions,
+  eventsChecker,
 }: {
-  procedureActions: ProcedureActions
-  procedureEventsChecker: ProcedureEventChecker
+  actions: ProcedureActions
+  eventsChecker: ProcedureEventChecker
 }) => {
   const apply = (state: Procedure, event: ProcedureEvents) => {
-    if (procedureEventsChecker.isProcedureCreateEvent(event)) {
-      const { procedure } = procedureActions.create({ ...event.data, id: event.aggregateId })
+    if (eventsChecker.isProcedureCreateEvent(event)) {
+      const { procedure } = actions.create({ ...event.data, id: event.aggregateId })
       return procedure
     }
-    if (procedureEventsChecker.isProcedureBeganEvent(event)) {
-      const { procedure } = procedureActions.begin({ procedure: state })
+    if (eventsChecker.isProcedureBeganEvent(event)) {
+      const { procedure } = actions.begin({ procedure: state })
       return procedure
     }
-    if (procedureEventsChecker.isGoodsConsumedOnProcedureEvent(event)) {
-      const { procedure } = procedureActions.consumeGood({ procedure: state, consumedGood: event.data })
+    if (eventsChecker.isGoodsConsumedOnProcedureEvent(event)) {
+      const { procedure } = actions.consumeGood({ procedure: state, consumedGood: event.data })
       return procedure
     }
-    if (procedureEventsChecker.isProcedureCompletedEventType(event)) {
-      const { procedure } = procedureActions.complete({ procedure: state })
+    if (eventsChecker.isProcedureCompletedEventType(event)) {
+      const { procedure } = actions.complete({ procedure: state })
       return procedure
     }
   }

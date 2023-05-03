@@ -1,8 +1,9 @@
-import { procedureMock } from "./procedureMock"
-import { buildProcedureActions, makeProcedure, Procedure, ProcedureStatuses } from "./procedure"
+import { procedureMock } from "./procedure.mock"
+import { buildProcedureActions, makeProcedure } from "./procedure"
 import { consumedGoodMock } from "./consumedGoodMock"
 import { buildProcedureEvents } from "../infrastructure/repo/events/procedureEvents"
 import { faker } from "@faker-js/faker"
+import { Procedure, ProcedureStatuses } from "./procedure.types"
 
 describe("procedure", () => {
   describe("makeProcedure", () => {

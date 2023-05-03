@@ -1,10 +1,10 @@
 // TODO swap out mock generator for this as coupling is fine here
 import { ProcedureService } from "../application/procedureService"
-import { procedureMock } from "../domain/procedureMock"
-import { Procedure } from "../domain/procedure"
+import { procedureMock } from "../domain/procedure.mock"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
+import { Procedure } from "../domain/procedure.types"
 
 export type ProcedureServiceHelpers = ReturnType<typeof buildProcedureServiceHelpers>
 export const buildProcedureServiceHelpers = ({

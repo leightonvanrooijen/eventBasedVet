@@ -1,14 +1,15 @@
 import { buildProcedureHydrator } from "./procedureHydrator"
-import { Procedure, ProcedureActions } from "../../../domain/procedure"
+import { ProcedureActions } from "../../../domain/procedure"
 import {
   goodsConsumedOnProcedureEventMock,
   procedureCompletedEventMock,
   procedureCreatedEventMock,
 } from "./procedureEventMocks"
-import { procedureMock } from "../../../domain/procedureMock"
+import { procedureMock } from "../../../domain/procedure.mock"
 import { buildProcedureEventChecker } from "./procedureEvents"
 import { Thespian } from "thespian"
 import { assertThat, match } from "mismatched"
+import { Procedure } from "../../../domain/procedure.types"
 
 let thespian: Thespian
 const setUp = () => {
@@ -17,8 +18,8 @@ const setUp = () => {
   const procedureEventsChecker = buildProcedureEventChecker()
 
   const procedureProjection = buildProcedureHydrator({
-    procedureActions: procedureActions.object,
-    procedureEventsChecker,
+    actions: procedureActions.object,
+    eventsChecker: procedureEventsChecker,
   })
 
   return { procedureProjection, procedureActions }

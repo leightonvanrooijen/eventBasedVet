@@ -1,7 +1,10 @@
 import { ProcedureRepo } from "../infrastructure/repo/procedureRepo"
-import { ConsumedGood, ProcedureActions } from "../domain/procedure"
+import { ProcedureActions } from "../domain/procedure"
 import { ProcedureGoodRepo } from "../infrastructure/repo/procedureGoodRepo"
 import { ProcedureAnimalRepo } from "../infrastructure/repo/procedureAnimalRepo"
+import { ConsumedGood } from "../domain/procedure.types"
+import { EventBroker } from "../../packages/events/eventBroker.types"
+import { ProcedureEventsMaker } from "../infrastructure/repo/events/procedureEvents"
 
 export type ProcedureService = ReturnType<typeof buildProcedureService>
 
@@ -10,11 +13,15 @@ export const buildProcedureService = ({
   procedureGoodRepo,
   procedureAnimalRepo,
   procedureActions,
+  events,
+  eventBroker,
 }: {
   procedureRepo: ProcedureRepo
   procedureGoodRepo: ProcedureGoodRepo
   procedureAnimalRepo: ProcedureAnimalRepo
   procedureActions: ProcedureActions
+  events: ProcedureEventsMaker
+  eventBroker: EventBroker
 }) => {
   return {
     create: async (input: { name: string; id?: string; appointmentId: string; animalId: string }) => {
@@ -42,8 +49,13 @@ export const buildProcedureService = ({
     complete: async (procedureId: string) => {
       const hydration = await procedureRepo.get(procedureId)
 
-      const { event } = procedureActions.complete({ procedure: hydration })
+      const { event, procedure } = procedureActions.complete({ procedure: hydration })
       await procedureRepo.save([event])
+
+      // TODO should this be here or in domain? Split out external from internal
+      // Looks like an alternative is to post all domain events and have the consumer build state
+      const externalEvent = events.externalCompleted(procedure)
+      await eventBroker.process([externalEvent])
     },
   }
 }

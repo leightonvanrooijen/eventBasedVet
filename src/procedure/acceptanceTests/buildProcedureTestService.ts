@@ -38,14 +38,15 @@ export const buildProcedureTestService = ({ externalEventBroker }: { externalEve
   const procedureEvents = buildProcedureEvents({ uuid: v4 })
   const procedureEventsChecker = buildProcedureEventChecker()
   const procedureActions = buildProcedureActions({ uuid: v4, makeProcedure, events: procedureEvents })
-  const procedureProjector = buildProcedureHydrator({ procedureActions, procedureEventsChecker })
+  const procedureProjector = buildProcedureHydrator({
+    actions: procedureActions,
+    eventsChecker: procedureEventsChecker,
+  })
   const procedureDb = buildTestEventDb<ProcedureEvents>({ eventBroker: internalEventBroker })
 
   const procedureRepo = buildProcedureRepo({
     db: procedureDb,
     procedureHydrator: procedureProjector,
-    externalEventBroker,
-    procedureEvents,
   })
 
   const procedureCommands = buildProcedureService({
@@ -53,6 +54,8 @@ export const buildProcedureTestService = ({ externalEventBroker }: { externalEve
     procedureRepo,
     procedureActions,
     procedureAnimalRepo,
+    events: procedureEvents,
+    eventBroker: externalEventBroker,
   })
 
   externalEventBroker.registerHandler(procedureExternalEventHandler)

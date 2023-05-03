@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker"
-import { procedureMock } from "../../../domain/procedureMock"
+import { procedureMock } from "../../../domain/procedure.mock"
 import {
   ExternalProcedureCompletedEvent,
   GoodsConsumedOnProcedureEvent,

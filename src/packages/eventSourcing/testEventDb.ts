@@ -9,8 +9,6 @@ export type EventDb<Event extends Record<string, any>> = {
 
 export type EventStore<Event extends ChangeEvent<any>> = Record<string, Event[]>
 
-const afterSave = () => {}
-
 export const buildTestEventDb = <Event extends ChangeEvent<any>>({
   eventBroker = buildEventBroker(),
   store = {},

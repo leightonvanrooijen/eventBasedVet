@@ -1,23 +1,18 @@
 import { ChangeEvent } from "../../../packages/eventSourcing/changeEvent.types"
 import { EventDb } from "../../../packages/eventSourcing/testEventDb"
-import { Procedure } from "../../domain/procedure"
-import { ProcedureEvents, ProcedureEventsMaker } from "./events/procedureEvents"
+import { ProcedureEvents } from "./events/procedureEvents"
 import { ProcedureHydrator } from "./events/procedureHydrator"
-import { EventBroker } from "../../../packages/events/eventBroker.types"
+import { Procedure } from "../../domain/procedure.types"
 
 export type ProcedureRepo = ReturnType<typeof buildProcedureRepo>
 
 type ProcedureEvent = ChangeEvent<any>
 export const buildProcedureRepo = ({
   db,
-  procedureEvents,
   procedureHydrator,
-  externalEventBroker,
 }: {
   db: EventDb<ProcedureEvent>
-  procedureEvents: ProcedureEventsMaker
   procedureHydrator: ProcedureHydrator
-  externalEventBroker: EventBroker
 }) => {
   return {
     get: async (aggregateId: string): Promise<Procedure> => {

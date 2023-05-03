@@ -1,7 +1,7 @@
 import { buildProcedureService } from "./procedureService"
 import { ProcedureRepo } from "../infrastructure/repo/procedureRepo"
 import { ProcedureActions } from "../domain/procedure"
-import { procedureMock } from "../domain/procedureMock"
+import { procedureMock } from "../domain/procedure.mock"
 import { ProcedureGoodRepo } from "../infrastructure/repo/procedureGoodRepo"
 import { Thespian } from "thespian"
 import { consumedGoodMock } from "../domain/consumedGoodMock"
@@ -13,6 +13,10 @@ import {
   procedureCompletedEventMock,
   procedureCreatedEventMock,
 } from "../infrastructure/repo/events/procedureEventMocks"
+import { buildProcedureEvents } from "../infrastructure/repo/events/procedureEvents"
+import { faker } from "@faker-js/faker"
+import { EventBroker } from "../../packages/events/eventBroker.types"
+import { match } from "mismatched"
 
 let thespian: Thespian
 const setUp = () => {
@@ -21,15 +25,19 @@ const setUp = () => {
   const procedureGoodRepo = thespian.mock<ProcedureGoodRepo>()
   const procedureAnimalRepo = thespian.mock<ProcedureAnimalRepo>()
   const procedureActions = thespian.mock<ProcedureActions>()
+  const events = buildProcedureEvents({ uuid: faker.datatype.uuid })
+  const eventBroker = thespian.mock<EventBroker>()
 
   const commands = buildProcedureService({
     procedureRepo: procedureRepo.object,
     procedureActions: procedureActions.object,
     procedureGoodRepo: procedureGoodRepo.object,
     procedureAnimalRepo: procedureAnimalRepo.object,
+    events,
+    eventBroker: eventBroker.object,
   })
 
-  return { commands, procedureRepo, procedureActions, procedureGoodRepo, procedureAnimalRepo }
+  return { commands, procedureRepo, procedureActions, procedureGoodRepo, procedureAnimalRepo, events, eventBroker }
 }
 afterEach(() => thespian.verify())
 
@@ -118,11 +126,14 @@ describe("buildProcedureCommands", () => {
     it("completes the procedure", async () => {
       const procedure = procedureMock()
       const event = procedureCompletedEventMock()
-      const { commands, procedureRepo, procedureActions } = setUp()
+      const { commands, procedureRepo, procedureActions, eventBroker } = setUp()
 
       procedureRepo.setup((f) => f.get(procedure.id)).returns(() => Promise.resolve(procedure))
       procedureActions.setup((f) => f.complete({ procedure })).returns(() => ({ procedure, event }))
       procedureRepo.setup((f) => f.save([event]))
+      eventBroker.setup((f) =>
+        f.process([match.obj.has({ aggregateId: procedure.id, data: procedure, type: "procedureCompletedEvent" })]),
+      )
 
       await commands.complete(procedure.id)
     })

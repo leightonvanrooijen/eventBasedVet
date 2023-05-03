@@ -4,7 +4,7 @@ import { InvoiceUseCases } from "../commmands/invoiceUseCases"
 import { EventBroker } from "../../packages/events/eventBroker.types"
 import { productCreatedEventMock } from "../../product/repo/events/productEventMocks"
 import { ProductCreatedEvent } from "../../product/repo/events/productEvents"
-import { procedureMock } from "../../procedure/domain/procedureMock"
+import { procedureMock } from "../../procedure/domain/procedure.mock"
 import { consumedGoodMocks } from "../../procedure/domain/consumedGoodMock"
 import { InvoiceRepos } from "../repo/invoiceRepoFactory"
 

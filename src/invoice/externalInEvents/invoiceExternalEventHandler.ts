@@ -4,7 +4,7 @@ import { ExternalProcedureCompletedEventType } from "../../procedure/infrastruct
 import { InvoiceUseCases } from "../commmands/invoiceUseCases"
 import { buildExternalEventHandler } from "../../packages/events/buildExternalEventHandler"
 import { IdempotencyEventFilter } from "../../packages/events/eventIdempotencyFilter"
-import { ConsumedGood, ProcedureStatuses } from "../../procedure/domain/procedure"
+import { ConsumedGood, ProcedureStatuses } from "../../procedure/domain/procedure.types"
 
 export type InvoiceProduct = { id: string; name: string; price: number }
 export type InvoiceAnimal = { id: string; name: string }
